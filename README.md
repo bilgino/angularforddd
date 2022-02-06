@@ -9,7 +9,7 @@ Angular embraces principles and patterns of Domain-Driven Design. Applying Domai
 
 The building blocks of Angular already provides us with code organisation strategies. Nevertheless, to gain a better design we will bypass the traditional data-driven approach and consider strategies like Domain-Driven Design and Command-Query-Responsibility-Segregation:
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/frontend_arch.PNG)
+![](src/assets/images/frontend_arch.png)
 
 Considering multilayered architectures, the question arises of how to organize layers in SPA applications? This question refers to code splitting, communication across layers and demanding business logic through services.
 
@@ -19,15 +19,15 @@ The multilayered architecture consists of the following layers:
 
 **» Horizontal cut**<br/> Cutting the application into layers...
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/layers_hc.PNG)
+![](src/assets/images/layers_hc.png)
 
 **» Vertical cut**<br/> Cutting the application into features / use cases...
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/layers_vc.PNG)
+![](src/assets/images/layers_vc.png)
 
 **» Cross cut**<br/> Cutting the application into modules...
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/layers_cc.PNG)
+![](src/assets/images/layers_cc.png)
 
 *» Abstraction layers*<br/>
 
@@ -91,7 +91,7 @@ The Angular styleguide names different categories for organizing blocks of code:
 
 **» Modular architecture**<br/>
 
-![alt text](https://github.com/bilgino/ng4StarterKit/blob/master/src/assets/images/module_arch.png)
+![](src/assets/images/module_arch.png)
 
 **» Examples**<br/>
 
@@ -118,7 +118,7 @@ A bounded context can be assigned either to an entire page or to page segments.
 
 Interaction between the bounded context pattern and Angular domain modules:
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/BoundedContext.PNG)
+![](src/assets/images/BoundedContext.png)
 
 **» Project scaffolding**<br/>
 
@@ -128,7 +128,7 @@ Another aspect relates to visibility. Angular services are very often provided a
 
 Domain-driven project scaffolding for Angular applications:
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/scaffolding.png)
+![](src/assets/images/scaffolding.png)
 
 ## Models 
 
@@ -199,7 +199,7 @@ Mapping JSON-encoded server data to the model is mandatory if:
 
 The Mapper pattern transfers data between two different schemas:
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/data_mapper.PNG)
+![](src/assets/images/data_mapper.png)
 
 Let's have a look at how to map the server response schema:
 
@@ -232,7 +232,7 @@ When building multi-layered, distributed web applications, data transformation i
 all layers (data flows up and down the stack). Hence, if the domain model resides on the client side, we must transform the server 
 response schema to a complex object graph: 
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/Mapper_Response.PNG)
+![](src/assets/images/Mapper_Response.png)
 
 For example, HAL is a hypermedia type that provides hypermedia links in the response schema so that we can make transitions 
 through the application state by navigating hypermedia. However, when mapping the response model to the domain model, it's 
@@ -284,7 +284,7 @@ We will expand the repository pattern with CQRS to stem the heavy-lift when buil
 
 **A reactive API exposes hot observables (BehaviorSubjects etc.)** to manage the complexity of asynchronous data handling. If we share data with other components, we must keep track of changes by applying reactivity to prevent stale data and keep the UI in sync. Hence, we ensure "eventual consistency" that normally arises when CQRS spans the client and server side, won't occur. RxJS gives us many great tools and operators to implement the "projection phase" between the read and write side. 
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/Reactive_Flow.png)
+![](src/assets/images/Reactive_Flow.png)
 
 Application services usually provide methods for retrieving view models of domain state. However, for complex user interfaces it would be inefficient to construct view models in an application service method requiring many dependencies. By using a view model provider however, we facilitate access to view models in a more efficient manner. Consequently, the UI controller uses the application service, that in turn, uses the view model provider to provide presentation data. In return a view model factory method uses all dependencies required to fulfill the presentation layer's need. 
 
@@ -294,7 +294,7 @@ It may be advantageous to use view model factories in UI controllers without an 
  
 With traditional CRUD-based web applications, conform to the REST architectural style, we may fall into the situation where we have to stitch together multiple resources to build a complex view model because often RESTful APIs are strict resource-oriented. In addition, we might transform and prepare that data for the presentation layer. Even in the case of sophisticated Web APIs, it's very likely that we must stitch together complex view models and disassemble them for CUD operations on the client side. Developers often implement mapper methods in UI controllers to elaborate view models, which in the end leads to fat and unmanagable UI controllers: 
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/Up_Down_Flow.PNG)
+![](src/assets/images/Up_Down_Flow.png)
 
 Domain models should not be used directly in the presentation layer or sent via message-passing queues. The domain model focuses on invariants and use cases rather than view layer concerns. Introducing view model providers in the frontend design system for the purpose of building complex user interfaces allows us to satisfy the needs of the presentation layer and only using dependencies that are essential to the view properties. In complex UX flows, CQRS can help to avoid over-bloated single models for every use case scenario. A view model provider is a perfect layer to pre-compute filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). 
 An important aspect which is neglected by many frontend developers. 
@@ -313,7 +313,7 @@ A view model factory provider in the frontend design system has many advantages:
 
 The "projection by entity" pattern makes domain events and eventual consistency redundant as changes will be reflected almost simultaneously. 
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/VMPRO.PNG)   
+![](src/assets/images/VMPRO.png)
 
 Let's have a look at how to keep models in sync using factory methods:
 
@@ -464,7 +464,7 @@ export class DomainModelRepository<T> extends ... {
 Angular's router service allows us to manage addressable state and UI state. Simply put, the router state determines which components are visible on the screen and 
 it manages navigation between application states (HATEOAS). Any state transition results in a URL change! It is very important to notice, due to the router is a resource-oriented engine, we **cannot place more than one component into the same location at the same time** (~Auxiliary Routes!). This means, if building a router SPA, we should blend with UX-Driven Design to determine the appropriate data models for the Web API interface. The UI project should comply with User-Centered Design (UCD), where user actions define the URL workflow.
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/Router.PNG)
+![](src/assets/images/Router.png)
 
 In Addition to this, we must ensure that routes are provided by the Web API layer. For example, don't use routes like /products/:id/edit?filter='mam', if the Web API layer
 doesn't support query params. Always check if routes are represented by the Web API layer! 
@@ -536,7 +536,7 @@ we are able to identify full business use cases. The following phase model will 
 
 `Information Architecture` &rarr; `Interaction Design` &rarr; `Visual Design` &rarr; `Usability Testing`
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/component_tree.PNG)
+![](src/assets/images/component_tree.png)
 
 Almost conform to REST and HATEOAS, we notice a clear navigation path which makes it considerable to map wireframes to the component tree. 
 It is obvious that this approach does not comply with a DDD task-based UI projection because the router configuration is tide coupled to HATEOAS.
@@ -553,14 +553,14 @@ normally address usability problems at first place and do not take into account 
 router engine is a resource-oriented engine (HATEOAS) with which we have limited possibilities regarding arbitrary navigation patterns. 
 The most commonly used navigation patterns are: 
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/Master2Details.PNG)
+![](src/assets/images/Master2Details.png)
 
 With the master-master and master-details patterns we comply with RESTful resource association and resource aggregation 
 with reference to one and only one component. Indeed secondary (Auxiliary) and pathless (Master-Children) routes allows us 
 to initiate multiple components in parallel, but bringing limitations and sacrifices to a special syntax that does not comply 
 with RESTful practices. 
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/Master2Aux.PNG)
+![](src/assets/images/Master2Aux.png)
 
 Pathless or componentless routes are a good way to share data between sibling components. This kind of routes provide a way
 to load multiple components at a time. However, deep-linking is not supported how it should be. It exists a hack to enable 
@@ -573,7 +573,7 @@ The pathless strategy is not well documented, especially when it comes to deep-l
 Secondary (Auxiliary) routes should be addressed in any use case that requires a few components to be initiated in 
 parallel at random places. The router module is therefore well suited for mobile related navigation patterns. 
 
-![alt text](https://raw.githubusercontent.com/bilgino/ng4StarterKit/master/src/assets/images/Notebook.PNG)
+![](src/assets/images/Notebook.png)
 
 # Summary
 
