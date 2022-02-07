@@ -402,14 +402,14 @@ class OrderViewModelProvider {
 
 ```
 @Component({
-  selector: 'order',
-  template: `...`,
-  providers: [OrderViewModelProvider]
+    selector: 'order',
+    template: `...`,
+    providers: [OrderViewModelProvider]
 })
 export class OrderComponent {
 
-  constructor(private orderVMProvider: OrderViewModelProvider) {}
-  
+    constructor(private orderVMProvider: OrderViewModelProvider) { }
+
 }
 ``` 
 
@@ -426,7 +426,7 @@ export class OrderResolver implements Resolve<Order> {
         private dateService: DateService                   
     ) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Order> | Promise<Order> | Order {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Order> {
         const id = route.paramMap.get('id');
         return combineLatest(this._orderRepository.getById(id), this._productRepository.getById(id)).pipe(
             groupBy(),
