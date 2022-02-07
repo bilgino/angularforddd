@@ -48,7 +48,7 @@ The multilayered architecture consists of the following layers:
 - Application layer: Data types (null, undefined), format (length, empty, whitespace), schema (email, creditcard)
 - Domain layer: Business/Domain Rules, Invariants<br/>
 
-Examples - Application layer: *Authetication, Search*<br/>
+Examples - Application layer: *Authentication, Search*<br/>
 Examples - Infrastructure layer: *Repository, Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*<br/>
 Examples - Cross-Cutting layer: *Logging, Error, Tracing, Security, Configuration, Token, Monitoring, Date*
 
@@ -56,7 +56,7 @@ Examples - Cross-Cutting layer: *Logging, Error, Tracing, Security, Configuratio
 
 An important aspect of Domain-Driven Design is that the complexity of the domain model is kept isolated from other concerns of the application. Ideally, the domain layer is self-contained and focused on abstracting business rules. Because frontend applications very often evaluate business rules that are reflected in the presentation layer right away - especially in SPA applications when navigating through HTML forms that have cross-dependencies in terms of composite business rules, a domain layer in the frontend sounds like a good idea.
 
-In Angular, domain-oriented layering (vertical cut) is often considered to be the first structuring criterion. However, layered architecture is considered to be a good design methodology even without domain-oriented layering. It's usually sufficient to use a layered model (horizontal cut), which is simply set up using folders. The main reason for modular segmentation in Angular is lazy-loading and distribution. 
+In Angular, domain-oriented layering (vertical cut) is often considered the first structuring criterion. However, layered architecture is a good design methodology even without domain-oriented layering. It's usually sufficient to use a layered model (horizontal cut), which is simply set up using folders. The main reason for modular segmentation in Angular is lazy-loading and distribution. 
 
 When application services carry out business use cases it may be a good idea to place business use cases that contain less logic directly in UI controllers (like in MVC). However, we don't want to hide business use cases from the rest of the application and declare dedicated classes! Additionally, we may want to share state and logic of an application service with other application services. **Application services may encapsulate logic that only take place as a part of the presentation layer such as "ProductCategorySelected" or "ProductSearch", described as action streams.**
 
@@ -66,8 +66,8 @@ It's debatable whether higher granularity distributed across many layers introdu
 
 ## Object-Oriented Design
 
-Although functional programming has gained a strong foothold in frontend development in recent years, a consistent object-oriented approach is better suited for Angular projects. Object-Oriented Design allows us to approach a more human-readable code base, where the UL (Ubiquitous language) can help to design a better taxonomy and complex 
-data types. It's important to note, the Angular framework embraces both programming paradigms (FP / OOP).
+Although functional programming has gained a strong foothold in frontend development in recent years, a consistent object-oriented approach is better suited for Angular projects. Object-oriented design allows us to approach a more human-readable code base, where the UL (Ubiquitous language) can help to design a better taxonomy and complex 
+data types. It's important to note, Angular embraces both programming paradigms (FP & OOP).
 
 **» Applying SOLID principles**<br/>
 
@@ -81,11 +81,11 @@ The infrastructure layer includes cross-cutting concerns such as logging, cachin
 
 # Angular strategies
 
-Angular's design strategies such as modules, services, components etc. encourages us to comply with DDD principles.
+The Angular design strategies such as modules, services, components etc. encourages us to comply with DDD principles.
 
 ## Modules
 
-The Angular styleguide names different categories for organizing blocks of code: **Shared Modules** and **Widget Modules** contain the most commonly used code, while **Domain Modules** encapsulate blocks of code, that is not intended to be used outside that module, makes **Domain Modules** a good candidate for the bounded context pattern. The **Service Module** shares it's content application wide as singletons. The **Root Module** includes multiple domain modules. That is, the entry point is the root module. For a more complete overview, visit the following website https://angular.io/guide/module-types#summary-of-ngmodule-categories
+The Angular styleguide names different categories for organizing blocks of code: **Shared Modules** and **Widget Modules** contain the most commonly used code, while **Domain Modules** encapsulate blocks of code, that is not intended to be used outside that module, makes **Domain Modules** a good candidate for the bounded context pattern. The **Service Module** shares its content application wide as singletons. The **Root Module** includes multiple domain modules. That is, the entry point is the root module. For a more complete overview, visit the following website https://angular.io/guide/module-types#summary-of-ngmodule-categories
 
  Angular's module system gives a clean design response:  
 
@@ -113,7 +113,7 @@ Following guidelines can help to facilitate the orchestration of ngModules:<br/>
 
 **» Bounded context pattern**<br/>
 
-The bounded context pattern in Domain-Driven Design divides the domain model into related domain fragments. In a service-based environment a bounded context marks the boundaries of an application service. An application service is a concretion of the bounded context pattern! This is similar to **Domain Modules** where we mark the boundries based on features. Applying the bounded context pattern to domain modules allows us to structure modules in a domain-driven context. A bounded context should be presented at minimum scale as an aggregate and may consist of several aggregates. An important aspect in conjunction with SPA applications is that a (client- or server-side) bounded context must provide a REST-based API because the Angular router engine complies with the navigatorial behaviour of hypermedia APIs. A bounded context is only coupled to the URI of the entry point resource (root), subsequently it's hypermedia to navigate the state of the application: `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
+The bounded context pattern in Domain-Driven Design divides the domain model into related domain fragments. In a service-based environment a bounded context marks the boundaries of an application service. An application service is a concretion of the bounded context pattern! This is similar to **Domain Modules** where we mark the boundaries based on features. Applying the bounded context pattern to domain modules allows us to structure modules in a domain-driven context. A bounded context should be presented at minimum scale as an aggregate and may consist of several aggregates. An important aspect in conjunction with SPA applications is that a (client- or server-side) bounded context must provide a REST-based API because the Angular router engine complies with the navigatorial behaviour of hypermedia APIs. A bounded context only coupled to the URI of the entry point resource (root), subsequently it's hypermedia to navigate the state of the application: `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
 A bounded context can be assigned either to an entire page or to page segments.
 
 Interaction between the bounded context pattern and Angular domain modules:
@@ -124,7 +124,7 @@ Interaction between the bounded context pattern and Angular domain modules:
 
 Many similarities exist when comparing Domain-Driven Design and Angular. However, there are also some points of friction. For example, the classification of the **Domain Module** is the only artifact that can be attributed directly to Domain-Driven Design. Other modular categories such as the **Routing Module**, **Widget Module** or **Service Module** can't be attributed to Domain-Driven Design, because Domain-Driven Design doesn't focus on the presentation layer / GUI. The **Shared Module** could be the equivalent of the **Shared Kernel** bounded context pattern. 
 
-Another aspect relates to visibility. Angular services are very often provided as global instance, which automatically gives them a shared status. Shared singletons and modular encapsulation aren't good to work hand-in-hand.
+Another aspect relates to visibility. Angular services very often provided as global instance, which automatically gives them a shared status. Shared singletons and modular encapsulation aren't good to work hand-in-hand.
 
 Domain-driven project scaffolding for Angular applications:
 
@@ -133,8 +133,8 @@ Domain-driven project scaffolding for Angular applications:
 ## Models 
 
 The model in the classic MVC pattern is a representation of application data. The model contains code to create, read, update and delete or transform model data. 
-It stores the domain knowledge and is very similar to the Repository pattern! The differences between the various patterns come down to the historcial 
-context and abstraction of the model data: Data Model (MVC), Resource Model (REST), Domain Model (DDD), View Model (UX), Class Model (UML), Entity Model (ERM) and so forth. 
+It stores the domain knowledge and is very similar to the Repository pattern! The differences between the various patterns come down to an historical 
+context of the model: Data Model (MVC), Resource Model (REST), Domain Model (DDD), View Model (UX), Class Model (UML), Entity Model (ERM) and so forth. 
   
 Angular promotes two types of models:
 
@@ -150,9 +150,9 @@ The view model and domain model should have different schemas to hold the domain
 - View Model 
 
 The anemic domain model is quite often used in CRUD-based web applications as value container, conform to RESTful practices. The anemic domain model, however, is considered an 
-anti-pattern because it does not contain business logic except `get` and `set` (CRUD) methods. It introduces a tight coupling with the UI controller and can't protect it's invariants. Hence, the rich domain model is a more suitable candidate. By leveraging rich domain model representations in the UI controller, we prevent **domain logic spreading across different layers multiple times**. The following example shows the negative side effect when using anemic domain models. 
+anti-pattern because it does not contain business logic except `get` and `set` (CRUD) methods. It introduces a tight coupling with the UI controller and can't protect its invariants. Hence, the rich domain model is a more suitable candidate. By leveraging rich domain model representations we prevent **domain logic spreading across different layers multiple times**. The following example shows the negative side effect when using anemic domain models. 
 
-Domain logic is coded in UI controllers: 
+Domain logic is coded in the UI controller: 
 
 *»  Effects of anemic models* <br/> 
 ```
@@ -185,7 +185,7 @@ A rich domain model instead hides and encapsulates domain logic:
 ```
 
 In the second example the domain logic is loosely coupled from the UI controller. Encapsulation protects the integrity of the model data.
-Keeping the model as independent as possible improves reusability and allows easier refactoring.
+Keeping the model as independent as possible improves usability and allows easier refactoring.
 **Neither domain state nor domain logic should be coded in UI controllers**.
 
 **» Mapper pattern**<br/>
@@ -234,10 +234,10 @@ response schema to a complex object graph:
 
 ![](src/assets/images/Mapper_Response.png)
 
-For example, HAL is a hypermedia type that provides hypermedia links in the response schema so that we can make transitions 
+For example, HAL is a hypermedia type that provides hypermedia links in the response schema, so that we can make transitions 
 through the application state by navigating hypermedia. However, when mapping the response model to the domain model, it's 
-indispensable to provide a response schema that also includes data and not just hypermedia links. We can't map hypermedia 
-links to a domain model! Many additional requests may be required; in a worst case scenario for every resource, which may result in the
+indispensable to provide a response schema that also includes data and not just hyperlinks. We can't map hyperlinks to a domain model! 
+Many additional requests may be required; In the worst case scenario for every resource, which can result in the
 dreaded N+1 problem. Hence, the Web API layer not only should include hypermedia links but also application data. There are many 
 HATEOAS implementation patterns such as the JSON API specification, which seems to be a good solution to the aforementioned problem. 
 
@@ -253,8 +253,8 @@ HATEOAS implementation patterns such as the JSON API specification, which seems 
 
 ## Services
 
-Singleton services are important artifacts in Angular applications. Most of the functionality that doesn't belong to UI components are normally placed in services! 
-We will taxonomize our code base in favor of Domain-Driven Design, which embraces application-, domain- and infrastructure services. We will introduce the shared repository pattern in favor of state management services. One may get confused about the objectives and limitations between services in Domain-Driven Design and services in Angular. 
+Singleton services are important artifacts in Angular applications. Most of the functionality that doesn't belong to UI components will normally be placed in services! 
+We will taxonomize the code base in favor of Domain-Driven Design, which embraces application-, domain- and infrastructure services. We will introduce the repository pattern in favor of state management services. 
 
 Following guidelines can help to facilitate scope and lifetime of providers:
 
@@ -268,7 +268,7 @@ Following guidelines can help to facilitate scope and lifetime of providers:
 **» Services shared through the component providers array**<br/>
 
 -	The component `providers` array will request a service instance from the injector and shares the service class with its children as singleton
--	If a component is instantiated more than once, a new service instance will be injected to the respective component
+-	If a component instantiated more than once, a new service instance will be injected to the respective component
 - Use dependency lookup hook decorators `@Host, @Optional, @Skip or @SkipSelf` to manage the dependency lookups 
 
 **» Services shared through the provideIn property**<br/>
@@ -278,9 +278,9 @@ Following guidelines can help to facilitate scope and lifetime of providers:
 
 **» Stateful services vs. Stateful repositories**<br/>
 
-As previously mentioned, it's common for Angular projects to use services for business functionality or shared state. We relate to stateful services if we need to share data across components. Often simple services process HTTP requests and responses that perform CRUD operations. **We will deviate from the status quo and use reactive repositories in favor of an active data store**. A domain model repository acts as a central shared data repository used by other independent components. Repositories are not just for Entities or Aggregates, but for all domain objects like anemic domain models.
+Just as mentioned before, it's common in Angular projects to use services for business functionality and state management. We use stateful services if we need to share data across independent components. Often simple services process HTTP requests and responses that perform CRUD operations. **We will deviate from the status quo and use reactive repositories in favor of an active data store**. A domain model repository serves as a shared data repository used by other components. Repositories are not just for Entities, but for all domain objects including anemic domain objects.
 
-We will expand the repository pattern with CQRS to stem the heavy-lift when building complex user interfaces by introducing a provider factory implementation only for (reactive) view models. The CQRS pattern allows us to answer different use cases with the respective data model. State changes in repositories are immediately replicated back to the view model provider (read side). This process is called "projection". A projection can be leveraged in many different ways or layers. The most commonly used approach is an event-based projection causing an eventually consistent system. However, we will not encounter any problems of this kind, due to Angular's (RxJS) reactive change detection behaviour. 
+In addition, we will introduce the CQRS pattern to stem the heavy-lift when building complex user interfaces. The CQRS pattern allows us to answer different use cases with the respective data model. State changes in repositories will replicate back to a view model provider (read side). This is called "projection". A projection can be leveraged in many ways or layers. The most commonly used approach is an event-based projection causing an eventually consistent system. However, we will not encounter any problems of this kind, due to the reactive change detection behaviour of Angular (RxJS). 
 
 **A reactive API exposes hot observables (BehaviorSubjects etc.)** to manage the complexity of asynchronous data handling. If we share data with other components, we must keep track of changes by applying reactivity to prevent stale data and keep the UI in sync. Hence, we ensure "eventual consistency" that normally arises when CQRS spans the client and server side, won't occur. RxJS gives us many great tools and operators to implement the "projection phase" between the read and write side. 
 
@@ -296,7 +296,7 @@ With traditional CRUD-based web applications, conform to the REST architectural 
 
 ![](src/assets/images/Up_Down_Flow.png)
 
-Domain models should not be used directly in the presentation layer or sent via message-passing queues. The domain model focuses on invariants and use cases rather than view layer concerns. Introducing view model providers in the frontend design system for the purpose of building complex user interfaces allows us to satisfy the needs of the presentation layer and only using dependencies that are essential to the view properties. In complex UX flows, CQRS can help to avoid over-bloated single models for every use case scenario. A view model provider is a perfect layer to pre-compute filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). 
+Domain models should not be used directly in the presentation layer or sent via message-passing queues. The domain model focuses on invariants and use cases rather than view layer concerns. Introducing view model providers in the frontend design system for the purpose of building complex user interfaces allows us to satisfy the needs of the presentation layer and only querying dependencies that are essential to the view properties. In complex UX flows, CQRS can help to avoid over-bloated single models for every use case scenario. A view model provider is a perfect layer to pre-compute filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). 
 An important aspect which is neglected by many frontend developers. 
 
 A view model factory provider in the frontend design system has many advantages:
@@ -361,13 +361,13 @@ This implementation has some drawbacks. It only works for a single entity! What 
 @Injectable()
 class OrderViewModelProvider {
 
-    order: OrderForInitialisation = OrderFactory.empty();
+    order: OrderForInit = OrderFactory.empty();           // Order factory
     
     constructor(
-      private orderRepository: OrderRepository,      // Infrastructure service
-      private productRepository: ProductRepository,  // Infrastructure service
-      private productSelected : ProductSelected,     // Application / UI service
-      private dateService: DateService               // Infrastructure service
+      private orderRepository: OrderRepository,           // Infrastructure service
+      private productRepository: ProductRepository,       // Infrastructure service
+      private productSelected : ProductSelected,          // Application / UI service
+      private dateService: DateService                    // Infrastructure service
       ){}
 
     public getOrderForSales(id:number): Observable<OrderForSales> {
@@ -375,7 +375,7 @@ class OrderViewModelProvider {
           groupBy(),
           filter(),
           mergeMap(()=>{
-             return of(new OrderForSales());
+             return of(new OrderForSales());              // Order View Model
           })
         )
     }
@@ -385,7 +385,7 @@ class OrderViewModelProvider {
           groupBy(),
           filter(),
           mergeMap() => {
-            return of(new OrderForProductAndSales());
+            return of(new OrderForProductAndSales());     // Order View Model
           }),
           shareReplay(1)
         )        
