@@ -414,10 +414,30 @@ export class OrderComponent {
 }
 ``` 
 
-Using Angular Resolvers as view model providers
+Another possible solution for building view model abstractions are Resolver services.
 
-@TODO [text]
-@TODO [image]
+```
+@Injectable()
+export class OrderResolver implements Resolve<Order> {
+
+    constructor(
+        private orderRepository: OrderRepository,          
+        private productRepository: ProductRepository,      
+        private productSelected: ProductSelected,          
+        private dateService: DateService                   
+    ) {}
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Hero> | Promise<Hero> | Hero {
+        const id = route.paramMap.get('id');
+        return combineLatest(this._orderRepository.getById(id), this._productRepository.getById(id)).pipe(
+            groupBy(),
+            filter(id),
+            mergeMap() => {
+            return of(new OrderForProductAndSales());    
+        })
+    }
+}
+``` 
 
 # State Management 
 
