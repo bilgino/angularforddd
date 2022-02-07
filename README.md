@@ -38,10 +38,9 @@ The multilayered architecture consists of the following layers:
 
 *» Service layers* <br/>
 
-- Stateful UI services coordinate UX logic and state that doesn't change the domain state
 - Stateful application services carry out business and UI use cases and are procedural 
 - Stateless domain services carry out business use cases at a higher level than entities or value objects
-- Infrastructure services help to separate technical and business concepts  <br/>
+- Infrastructure services help to separate technical and business concepts <br/>
 
 *» Validation layers*<br/>
 
@@ -50,13 +49,13 @@ The multilayered architecture consists of the following layers:
 
 Examples - Application layer: *Authentication, Search*<br/>
 Examples - Infrastructure layer: *Repository, Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*<br/>
-Examples - Cross-Cutting layer: *Logging, Error, Tracing, Security, Configuration, Token, Monitoring, Date*
+*Logging, Error, Tracing, Security, Configuration, Token, Monitoring, Date*
 
 *» Angular adoption*<br/>
 
 - Presentation layer: Components, Directives, Pipes, Animations
 - Application layer: Controller, Guards, ValidationFn <br/>
-- Domain layer: Classes <br/>
+- Domain layer: Classes, Interfaces <br/>
 - Infrastructure layer: Resolvers, Interceptors<br/>
 
 **» Applying DDD to Angular**<br/>
@@ -427,7 +426,7 @@ export class OrderResolver implements Resolve<Order> {
         private dateService: DateService                   
     ) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Hero> | Promise<Hero> | Hero {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Order> | Promise<Order> | Order {
         const id = route.paramMap.get('id');
         return combineLatest(this._orderRepository.getById(id), this._productRepository.getById(id)).pipe(
             groupBy(),
