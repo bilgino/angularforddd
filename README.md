@@ -373,7 +373,7 @@ class OrderViewModelProvider {
     public getOrderForSales(id:number): Observable<OrderForSales> {
         return this._orderRepository.getById(id).pipe(
           groupBy(),
-          filter(),
+          filter(id),
           mergeMap(()=>{
              return of(new OrderForSales());              // Order View Model
           })
@@ -383,7 +383,7 @@ class OrderViewModelProvider {
     public getOrderForProductAndSales(id:number): Observable<OrderForProductAndSales> {
         return combineLatest(this._orderRepository.getById(id), this._productRepository.getById(id)).pipe(
           groupBy(),
-          filter(),
+          filter(id),
           mergeMap() => {
             return of(new OrderForProductAndSales());     // Order View Model
           }),
