@@ -68,7 +68,7 @@ When application services carry out business use cases it may be a good idea to 
 
 Using business services only for structural and behavioral modeling while domain models remain pure value containers that can't protect their invariants is a common bad practice in frontend projects. Hence, building rich domain models is a major objective in object-oriented applications. In general, using rich domain models means more entities than business services. 
 
-It's debatable whether higher granularity distributed across many layers introduce extra complexity in the frontend design system. Do we really need Domain-Driven Design in frontend development? As a consequence, many developers tend to lean toward weaker patterns because they see it as an unnecessary practice. Often a simpler data-driven approach is sufficient enough. For most web applications MVC or Flux/Redux may be more appropriate. Before starting using advanced concepts we must evaluate incoming requirements.
+It's debatable whether higher granularity distributed across several layers introduce extra complexity in the frontend design system. Do we really need Domain-Driven Design in frontend development? As a consequence, many developers tend to lean toward weaker patterns because they see it as an unnecessary practice. Often a simpler data-driven approach is sufficient enough. For most web applications MVC or Flux/Redux may be more appropriate. Before starting using advanced concepts we must evaluate incoming requirements.
 
 ## Object-Oriented Design
 
@@ -91,7 +91,7 @@ The Angular design strategies such as modules, services, components etc. encoura
 
 ## Modules
 
-The Angular styleguide names different categories for organizing blocks of code: **Shared Modules** and **Widget Modules** contain the most commonly used code, while **Domain Modules** encapsulate blocks of code, that is not intended to be used outside that module, makes **Domain Modules** a good candidate for the bounded context pattern. The **Service Module** shares its content application wide as singletons. The **Root Module** includes multiple domain modules. That is, the entry point is the root module. For a more complete overview, visit the following website https://angular.io/guide/module-types#summary-of-ngmodule-categories
+The Angular styleguide names different categories for organizing blocks of code: **Shared Modules** and **Widget Modules** contain the most commonly used code, while **Domain Modules** encapsulate blocks of code, that is not intended to be used outside that module, makes **Domain Modules** a good candidate for the bounded context pattern. The **Service Module** shares its content application wide as singletons. The **Root Module** includes several domain modules. That is, the entry point is the root module. For a more complete overview, visit the following website https://angular.io/guide/module-types#summary-of-ngmodule-categories
 
  Angular's module system gives a clean design response:  
 
@@ -286,7 +286,7 @@ Following guidelines can help to facilitate scope and lifetime of providers:
 
 Just as mentioned before, it's common in Angular projects to use services for business functionality and state management. We use stateful services if we need to share data across independent components. Often simple services process HTTP requests and responses that perform CRUD operations. **We will deviate from the status quo and use reactive repositories in favor of an active data store**. A domain model repository serves as a shared data repository used by other components. Repositories are not just for Entities, but for all domain objects including anemic domain objects.
 
-In addition, we will introduce the CQRS pattern to stem the heavy-lift when building complex user interfaces. The CQRS pattern allows us to answer different use cases with the respective data model. State changes in repositories will replicate back to a view model provider (read side). This is called "projection". A projection can be leveraged in many ways or layers. The most commonly used approach is an event-based projection causing an eventually consistent system. However, we will not encounter any problems of this kind, due to the reactive change detection behaviour of Angular (RxJS). 
+In addition, we will introduce the CQRS pattern to stem the heavy-lift when building complex user interfaces. The CQRS pattern allows us to answer different use cases with the respective data model. State changes in repositories will replicate back to a view model provider (read side). This is called "projection". A projection can be leveraged in several ways or layers. The most commonly used approach is an event-based projection causing an eventually consistent system. However, we will not encounter any problems of this kind, due to the reactive change detection behaviour of Angular (RxJS). 
 
 **A reactive API exposes hot observables (BehaviorSubjects etc.)** to manage the complexity of asynchronous data handling. If we share data with other components, we must keep track of changes by applying reactivity to prevent stale data and keep the UI in sync. Hence, we ensure "eventual consistency" that normally arises when CQRS spans the client and server side, won't occur. RxJS gives us many great tools and operators to implement the "projection phase" between the read and write side. 
 
@@ -298,7 +298,7 @@ It may be advantageous to use view model factories in UI controllers without an 
 
 **» Why CQRS in the frontend?**<br/>
  
-With traditional CRUD-based web applications, conform to the REST architectural style, we may fall into the situation where we have to stitch together multiple resources to build a complex view model because often RESTful APIs are strict resource-oriented. In addition, we might transform and prepare that data for the presentation layer. Even in the case of sophisticated Web APIs, it's very likely that we must stitch together complex view models and disassemble them for CUD operations on the client side. Developers often implement mapper methods in UI controllers to elaborate view models, which in the end leads to fat and unmanagable UI controllers: 
+With traditional CRUD-based web applications, conform to the REST architectural style, we may fall into the situation where we have to stitch together several resources to build a complex view model because often RESTful APIs are strict resource-oriented. In addition, we might transform and prepare that data for the presentation layer. Even in the case of sophisticated Web APIs, it's very likely that we must stitch together complex view models and disassemble them for CUD operations on the client side. Developers often implement mapper methods in UI controllers to elaborate view models, which in the end leads to fat and unmanagable UI controllers: 
 
 ![](src/assets/images/Up_Down_Flow.png)
 
@@ -309,7 +309,7 @@ A view model factory provider in the frontend design system has many advantages:
 
 - Separating concerns of each data model and the provider API
 - Unidirectional data flow 
-- Easily composing multiple API endpoints 
+- Easily composing several API endpoints 
 - Immutable query objects complies with the `.onPush` strategy
 - Sort and filter functions can be detached from template (https://angular.io/guide/styleguide#do-not-add-filtering-and-sorting-logic-to-pipes)
 - Storing UI state on the server side, if necessary
@@ -361,7 +361,7 @@ class Order extends OrderViewModel {
 }
 ``` 
 
-This implementation has some drawbacks. It only works for a single entity! What if a view model requires multiple sources? When building complex user interfaces that require multiple sources (aggregates), we need a dedicated class in form of a view model provider. The purpose of a view model provider is to provide view model schemas for specific use cases and allowing us to merge multiple sources or action streams. 
+This implementation has some drawbacks. It only works for a single entity! What if a view model requires several sources? When building complex user interfaces that require several sources (aggregates), we need a dedicated class in form of a view model provider. The purpose of a view model provider is to provide view model schemas for specific use cases and allowing us to merge several sources or action streams. 
 
 ```
 @Injectable()
@@ -473,7 +473,7 @@ class Customer {
 **» Reactive CUD Repository**<br/>
 
 By implementing a CQRS-oriented repository, we share state and communicate domain state changes through reactive operators (RxJS BehaviorSubjects), along with the operations, transformations, and rules for creating, manipulating and storing domain state, emitting data anytime a business action occurs.
-The repository is allowed to perform data queries, but we don't use the repository for reporting to the presentation layer! Unlike the Redux pattern where all the state got located in a single central store, we undoubtedly must think a bit more complex on how to manage state crossing many layers. 
+The repository is allowed to perform data queries, but we don't use the repository for reporting! Unlike the Redux pattern where all the state got located in a single central store, we undoubtedly must think a bit more complex on how to manage state crossing several layers. 
 
 Let's have a look at how to define a shared reactive CUD repository: 
            
@@ -590,13 +590,13 @@ The most commonly used navigation patterns are:
 
 With the master-master and master-details patterns we comply with RESTful resource association and resource aggregation 
 with reference to one and only one component. Indeed secondary (Auxiliary) and pathless (Master-Children) routes allows us 
-to initiate multiple components in parallel, but bringing limitations and sacrifices to a special syntax that does not comply 
+to initiate several components in parallel, but bringing limitations and sacrifices to a special syntax that does not comply 
 with RESTful practices. 
 
 ![](src/assets/images/Master2Aux.png)
 
 Pathless or componentless routes are a good way to share data between sibling components. This kind of routes provide a way
-to load multiple components at a time. However, deep-linking is not supported how it should be. It exists a hack to enable 
+to load several components at a time. However, deep-linking is not supported how it should be. It exists a hack to enable 
 deep-linking to some extend. This is achieved by checking route params in named router outlets or by intervening with
 Resolvers or Route Guards. If specific invariants evaluate to true, we will display the component:
 
