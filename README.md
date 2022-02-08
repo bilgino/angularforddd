@@ -275,7 +275,7 @@ Following guidelines can help to facilitate scope and lifetime of providers:
 
 -	The component `providers` array will request a service instance from the injector and shares the service class with its children as singleton
 -	If a component instantiated more than once, a new service instance will be injected to the respective component
-- Use dependency lookup hook decorators `@Host, @Optional, @Skip or @SkipSelf` to manage the dependency lookups 
+- Use DI lookup hooks `@Host, @Optional, @Skip or @SkipSelf` for dependency management 
 
 **» Services shared through the provideIn property**<br/>
 
@@ -309,7 +309,7 @@ A view model factory provider in the frontend design system has many advantages:
 
 - Separating concerns of each data model and the provider API
 - Unidirectional data flow 
-- Easily composing multiple API endoints 
+- Easily composing multiple API endpoints 
 - Immutable query objects complies with the `.onPush` strategy
 - Sort and filter functions can be detached from template (https://angular.io/guide/styleguide#do-not-add-filtering-and-sorting-logic-to-pipes)
 - Storing UI state on the server side, if necessary
@@ -338,7 +338,7 @@ class Order {
 }
 ``` 
 
-Providing view models through a domain model violates the single responsibility rule! 
+Providing view models by a domain model violates the single responsibility rule! 
 Using an abstract class, we can summarize reusable factory methods:
 
 ```
@@ -361,14 +361,12 @@ class Order extends OrderViewModel {
 }
 ``` 
 
-This implementation has some drawbacks. It only works for a single entity! What if a view model requires multiple sources? When building complex user interfaces that require multiple sources (aggregates), we need a dedicated class in form of a view model provider. The purpose of a view model provider is to deliver different view model schemas for different use cases and allows us to merge multiple source & action streams. 
+This implementation has some drawbacks. It only works for a single entity! What if a view model requires multiple sources? When building complex user interfaces that require multiple sources (aggregates), we need a dedicated class in form of a view model provider. The purpose of a view model provider is to provide view model schemas for specific use cases and allowing us to merge multiple sources or action streams. 
 
 ```
 @Injectable()
 class OrderViewModelProvider {
-
-    order: OrderForInit = OrderFactory.empty();           // Order factory
-    
+   
     constructor(
       private orderRepository: OrderRepository,           // Infrastructure service
       private productRepository: ProductRepository,       // Infrastructure service
@@ -381,7 +379,7 @@ class OrderViewModelProvider {
           groupBy(),
           filter(id),
           mergeMap(()=>{
-             return of(new OrderForSales());              // Order View Model
+             return of(new OrderForSales(...));            // Order View Model
           })
         )
     }
@@ -391,7 +389,7 @@ class OrderViewModelProvider {
           groupBy(),
           filter(id),
           mergeMap() => {
-            return of(new OrderForProductAndSales());     // Order View Model
+            return of(new OrderForProductAndSales(...));   // Order View Model
           }),
           shareReplay(1)
         )        
@@ -408,12 +406,14 @@ class OrderViewModelProvider {
 })
 export class OrderComponent {
 
-  constructor(private orderVMProvider: OrderViewModelProvider) {}
+  constructor(private orderProvider: OrderViewModelProvider) {
+    this.orderProvider.getOrderForSales(33).subscribe(()=>{})
+  }
   
 }
 ``` 
 
-Another possible solution for building view model abstractions are Resolver services.
+Another possible solution for building view model abstractions are Resolver services:
 
 ```
 @Injectable()
@@ -426,7 +426,7 @@ export class OrderResolver implements Resolve<Order> {
         private dateService: DateService                   
     ) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Order> | Promise<Order> | Order {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Order> {
         const id = route.paramMap.get('id');
         return combineLatest(this._orderRepository.getById(id), this._productRepository.getById(id)).pipe(
             groupBy(),
@@ -441,11 +441,10 @@ export class OrderResolver implements Resolve<Order> {
 # State Management 
 
 With Single Page Applications (SPA), we get the flexibility and cross-platform functionality of a web application as well as the 
-client state management of native applications. In a SPA business logic is also implemented in the client, while the server 
-manages authentication, validation or persistence. Typically, a SPA has more complex states than traditional server-side 
-applications. In Angular applications, stateful services are usually used to share state beyond the lifetime of a component. 
+client state management of native applications. Typically, SPA applications have more complex states than traditional server-side 
+applications. In Angular applications, stateful services are the first choice to share state beyond the lifetime of components. 
 
-There are an array of different state types to deal with:
+There are an array of different states to deal with:
 
 Domain State | Addressable State (URL) | Draft State | Persisted State | UI State | Session State | Application State |
 ------------|------------------|-------------|-----------------|--------------|--------------|--------------|
@@ -473,10 +472,10 @@ class Customer {
 
 **» Reactive CUD Repository**<br/>
 
-By implementing a CQRS-based repository, we share state and communicate domain state changes through reactive operators (RxJS BehaviorSubjects), along with the operations, transformations, and rules for creating, manipulating and storing domain state, emitting data anytime a business action occurs. There's one important consideration when using
-the repository pattern: it was not designed to store UI state, but is rather a concept for the domain state! Unlike in flux/redux pattern where all the state is located in a single central store, we must think a little bit more complex on how to manage state through multiple layers. 
+By implementing a CQRS-oriented repository, we share state and communicate domain state changes through reactive operators (RxJS BehaviorSubjects), along with the operations, transformations, and rules for creating, manipulating and storing domain state, emitting data anytime a business action occurs.
+The repository is allowed to perform data queries, but we don't use the repository for reporting to the presentation layer! Unlike the Redux pattern where all the state got located in a single central store, we undoubtedly must think a bit more complex on how to manage state crossing many layers. 
 
-Let's have a look at how to define a global shared reactive repository: 
+Let's have a look at how to define a shared reactive CUD repository: 
            
 ```
 @Injectable()
@@ -484,16 +483,19 @@ export class DomainModelRepository<T> extends ... {
     private _data : BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
     public data$ = this._data.asObservable();
     
-    public createDomainModel(model:T): Observable<T[]>{}
-    public updateDomainModel(model:T): Observable<T[]>{} 
-    public deleteDomainModel(id: number):void {}
+    constructor(private httpClient: HttpClient){}
+    
+    public findById(...): Observable<T> {}
+    public createDomainModel(...): void {}
+    public updateDomainModel(...): void {} 
+    public deleteDomainModel(...): void {}
 }
 ```
 
 ## Router state
 
-Angular's router service allows us to manage addressable state and UI state. Simply put, the router state determines which components are visible on the screen and 
-it manages navigation between application states (HATEOAS). Any state transition results in a URL change! It is very important to notice, due to the router is a resource-oriented engine, we **cannot place more than one component into the same location at the same time** (~Auxiliary Routes!). This means, if building a router SPA, we should blend with UX-Driven Design to determine the appropriate data models for the Web API interface. The UI project should comply with User-Centered Design (UCD), where user actions define the URL workflow.
+Angular's router service allows us to manage domain and UI state. Put simply, the router state determines which components are visible on the screen, and 
+it manages navigation through application state (HATEOAS). Any state transition results in a URL change! It's important to note, the router is a resource-oriented engine, we **cannot place more than one component into the same location at the same time** (~Auxiliary Routes!). This means, if building a router SPA, we should drive with UX-Driven Design to determine the appropriate data models for the Web API interface. The UI project should comply with User-Centered Design (UCD), where user actions define the URL workflow.
 
 ![](src/assets/images/Router.png)
 
@@ -561,7 +563,7 @@ export class NotificationService {
 # Component Tree Design
 
 When developing a single page application based on the router module, we should primarily think of the component hierarchy and sketch 
-wireframes alongside the component tree. That way, we can easily approach a UX-Driven API design. The top-down flow ensures that the GUI 
+wireframes alongside the component tree. This way, we can easily approach an UX-Driven API design. The top-down flow ensures that the GUI 
 storyboard is compatible with the resource representation enforced by RESTful practices. By mapping a GUI storyboard to the component tree 
 we are able to identify full business use cases. The following phase model will be used as a basis:
 
