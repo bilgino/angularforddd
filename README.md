@@ -1,9 +1,9 @@
-# Introduction (WORK IN PROGRESS) 
-An introduction to build enterprise web applications with Angular.
+# Introduction (WORK IN PROGRESS)
+An introduction for building enterprise web applications with Angular.
 
 # Application architecture 
 
-Angular embraces principles and patterns of Domain-Driven Design. Applying Domain-Driven Design and Command-Query-Responsibility-Segregation in the frontend design system, we break down complex requirements into logical boundaries and divide business logic into layers with different responsibilities to keep our code in good condition.
+Applying Domain-Driven Design and Command-Query-Responsibility-Segregation in the frontend design system, we break down complex requirements into logical boundaries and divide business logic into layers with different responsibilities to keep our code in good condition.
 
 ## Frontend coupled to DDD, OOD and CQRS
 
@@ -47,26 +47,26 @@ The multilayered architecture consists of the following layers:
 - Application layer: Data types (null, undefined), format (length, empty, whitespace), schema (email, creditcard)
 - Domain layer: Business/Domain Rules, Invariants<br/>
 
-Examples - Application layer: *Authentication, Search*<br/>
+Examples - Application layer: *Authentication, Search, Validation*<br/>
 Examples - Infrastructure layer: *Repository, Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*<br/>
 *Logging, Error, Tracing, Security, Configuration, Token, Monitoring, Date*
 
 *» Angular adoption*<br/>
 
 - Presentation layer: Components, Directives, Pipes, Animations
-- Application layer: Controller, Guards, ValidationFn <br/>
+- Application layer: View Controller Classes, Guards, Validator Functions <br/>
 - Domain layer: Classes, Interfaces <br/>
 - Infrastructure layer: Resolvers, Interceptors<br/>
 
 **» Applying DDD to Angular**<br/>
 
-An important aspect of Domain-Driven Design is that the complexity of the domain model is kept isolated from other concerns of the application. Ideally, the domain layer is self-contained and focused on abstracting business rules. Because frontend applications very often evaluate business rules that are reflected in the presentation layer right away - especially in SPA applications when navigating through HTML forms that have cross-dependencies in terms of composite business rules, a domain layer in the frontend sounds like a good idea.
+An important aspect of Domain-Driven Design is that the complexity of the domain model is kept isolated from other concerns of the application. Ideally, the domain layer is self-contained and focused on abstracting business rules. Because frontend applications very often evaluate business rules that are reflected in the presentation layer right away - especially in SPA applications when navigating through HTML forms that have cross-dependencies in terms of composite business rules, a domain layer in the frontend sounds like a good idea. We don't want to command against the server upon every user input. 
 
 In Angular, domain-oriented layering (vertical cut) is often considered the first structuring criterion. However, layered architecture is a good design methodology even without domain-oriented layering. It's usually sufficient to use a layered model (horizontal cut), which is simply set up using folders. The main reason for modular segmentation in Angular is lazy-loading and distribution. 
 
 When application services carry out business use cases it may be a good idea to place business use cases that contain less logic directly in UI controllers (like in MVC). However, we don't want to hide business use cases from the rest of the application and declare dedicated classes! Additionally, we may want to share state and logic of an application service with other application services. **Application services may encapsulate logic that only take place as a part of the presentation layer such as "ProductCategorySelected" or "ProductSearch", described as action streams.**
 
-Using business services only for structural and behavioral modeling while domain models remain pure value containers that can't protect their invariants is a common bad practice in frontend projects. Hence, building rich domain models is a major objective in object-oriented applications. In general, using rich domain models means more entities than business services. 
+Using business services only for structural and behavioral modeling while domain models remain pure value containers that can't protect their domain invariants is a common bad practice in frontend projects. Hence, building rich domain models is a major objective in object-oriented applications. In general, using rich domain models means more entities than business services. 
 
 It's debatable whether higher granularity distributed across several layers introduce extra complexity in the frontend design system. Do we really need Domain-Driven Design in frontend development? As a consequence, many developers tend to lean toward weaker patterns because they see it as an unnecessary practice. Often a simpler data-driven approach is sufficient enough. For most web applications MVC or Flux/Redux may be more appropriate. Before starting using advanced concepts we must evaluate incoming requirements.
 
@@ -190,7 +190,7 @@ A rich domain model instead hides and encapsulates domain logic:
 }
 ```
 
-In the second example the domain logic is loosely coupled from the UI controller. Encapsulation protects the integrity of the model data.
+In the second example, domain logic is loosely coupled from the UI controller. Encapsulation protects the integrity of the model data.
 Keeping the model as independent as possible improves usability and allows easier refactoring.
 **Neither domain state nor domain logic should be coded in UI controllers**.
 
@@ -225,7 +225,7 @@ read(): Observable<Customer[]> {
 };
 ```
 
-The data mapper is used in the repository pattern to elaborate the correct domain model schema. 
+The data mapper will be used in the repository to elaborate the right domain model schema. 
 
 **» Translator pattern (Mapping VM to DM and vice versa)**<br/>
 
