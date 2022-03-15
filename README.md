@@ -278,19 +278,21 @@ The data mapper is associated in the repository to elaborate the appropriate mod
 @TODO [text]
 @TODO [image]
 
-**» REST & HATEOAS**<br/>
+**» REST, HATEOAS & CO. **<br/>
 
 When building multi-layered, distributed web applications, data transformation is among the major challenges that occur when data traverses 
-all layers (data flows up and down the stack). If the domain layer has been replicated on the client-side, we possibly have to transform the 
-server response schema to a complex object graph: 
+all layers (data flows up and down the stack). If the domain layer has been replicated to the client-side, we possibly need to transform the 
+server response schema to a complex domain model: 
 
 ![](src/assets/images/Mapper_Response.png)
 
-For example, HATEOAS embraces hyperlinks between external resources to make transitions through the application state by navigating hyperlinks. 
-However, mapping hyperlinks to a client-side domain model is not so easy! When consuming REST APIs, very often multiple HTTP request 
-need to be sent asynchronously to assemble a model for a specific use case (UI). If the applied HATEOAS pattern includes hyperlinks and 
-constrains the client to interact with the REST API in a navigatorial synchronous way, we might get into trouble.
-If possible, avoid HATEOAS for Angular applications!
+For example, HATEOAS forms hyperlinks between external resources to make transitions through the application state by navigating hyperlinks. 
+However, mapping related hyperlinks to a client-side domain model is not possible! When consuming REST APIs, very often multiple HTTP request 
+need to be sent asynchronously to assemble a model for a specific use case in the presentation layer. If the applied HATEOAS implementation
+includes related hyperlinks, then it constrains the user interface to incorporate with the REST API in a synchronous way. UX Designer usually 
+don't model their interaction, navigation or screen patterns around HATEOAS. Furthermore, the Angular router engine doesn't comply very easily 
+with the URI templates of the HATEOAS response schema. HATEOAS has its advantages as well as disadvantages.
+If possible, avoid HATEOAS for Angular SPA applications!
 
 **» Domain model**<br/>
 
