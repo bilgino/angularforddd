@@ -126,7 +126,8 @@ Interaction between the bounded context pattern and Angular domain modules:
 
 **» Project scaffolding**<br/>
 
-A common practice in Angular projects, is to split the project into following folders /core, /shared, /features, which is a naive technical outline. However, when setting up a project skeleton, we should thrive a more advanced domain-driven outline.
+A common practice in Angular projects is to split the project into the following folders: `/core`, `/shared`, `/features`, this is a naive approach and not really suited for complex projects. 
+However, when setting up a project skeleton, we should thrive a more advanced domain-driven approach.
 
 Domain-driven scaffolding for Angular applications:
 
@@ -188,7 +189,7 @@ A rich domain model instead hides and encapsulates domain logic:
 
 In the second example, the domain logic is loosely coupled to the UI controller. Encapsulation protects the integrity of the model data.
 Keeping the model as independent as possible improves usability and allows easier refactoring.
-**Neither domain state nor domain logic should be coded as part of UI controllers**.
+**Neither domain state nor domain logic should be developed as part of UI controllers**.
 
 **» Mapper pattern**<br/>
 
@@ -244,7 +245,7 @@ dreaded N+1 problem. Hence, the Web API layer not only should include hypermedia
 HATEOAS implementation patterns such as the JSON API specification, which seems to be a good solution to the aforementioned problem.
 The best solution is to avoid HATEOAS for Angular applications!
 
-**» Domain Model - Aggregate**<br/>
+**» Domain Model**<br/>
 
 @TODO [text]
 @TODO [image]
@@ -254,14 +255,14 @@ The best solution is to avoid HATEOAS for Angular applications!
 @TODO [text]
 @TODO [image]
 
-**» Model declarations **<br/>
+**» Model declarations in TypeScript**<br/>
 
 @TODO [text]
 @TODO [image]
 
 ## Services
 
-Singleton services are important artifacts in Angular applications. Most of the functionality that doesn't belong to UI components is placed in services! 
+Singleton services are important artifacts in Angular applications. Most of the functionality that doesn't belong in UI components is developed in services! 
 We will taxonomize the code base in favor of Domain-Driven Design, which embraces application-, domain- and infrastructure services. We will introduce the repository pattern in favor of domain state management services. 
 
 Following guidelines can help to facilitate scope and lifetime of providers:
@@ -306,19 +307,17 @@ With traditional CRUD-based web applications, conform to the REST architectural 
 
 ![](src/assets/images/Up_Down_Flow.png)
 
-Domain models should not be used directly in the presentation layer or sent via message-passing queues. The domain model focuses on invariants and use cases rather than view layer concerns. Introducing view model providers in the frontend design system for the purpose of building complex user interfaces allows us to satisfy the needs of the presentation layer and only querying dependencies that are essential to view properties. In complex UX flows, CQRS can help to avoid over-bloated single models for every use case scenario. A view model provider is a perfect layer to pre-compute filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). 
+Domain models shouldn't be used in the presentation layer or sent via message-passing queues. The domain model focuses on invariants and use cases rather than presentation layer needs. Introducing view model providers in the frontend design system for the purpose of building complex user interfaces allows us to satisfy the needs of the presentation layer and only querying dependencies that are essential to view properties. In complex UX flows, CQRS can help to avoid over-bloated single models for every use case scenario. A view model provider is a perfect layer to pre-compute filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). 
 An important aspect which is neglected by many frontend developers. 
 
-A view model factory provider in the frontend design system has many advantages:
+A view model provider in the frontend design system has many advantages:
 
-- Separating concerns of each data model and the provider API
+- Separating concerns of each data model
 - Unidirectional data flow 
-- Easily composing several API endpoints 
-- Immutable query objects complies with the `.onPush` strategy
-- Sort and filter functions can be detached from template (https://angular.io/guide/styleguide#do-not-add-filtering-and-sorting-logic-to-pipes)
-- Storing UI state on the server side, if necessary
-- Better testing ability
- 
+- Composing several API endpoints 
+- Immutable view models complies with the `.onPush` strategy
+- sort() and filter() pipes can be detached from templates (https://angular.io/guide/styleguide#do-not-add-filtering-and-sorting-logic-to-pipes)
+
 **» Projection patterns**<br/>
 
 The "projection by entity" pattern makes domain events and eventual consistency redundant as changes will be reflected almost simultaneously. 
@@ -444,6 +443,11 @@ export class OrderResolver implements Resolve<Order> {
     }
 }
 ``` 
+
+**» CQRS and the Command Pattern**<br/>
+
+@TODO [text]
+@TODO [image]
 
 # State Management 
 
