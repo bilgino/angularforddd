@@ -179,7 +179,7 @@ Domain-driven folder structure for Angular applications:
 When deciding on a design, customizing the look of default components can quickly become challenging.
 Creating frontends that feature modular and reusable CSS without overriding existing CSS rules is an important part of
 every frontend project. Usually every component in an Angular project appears in the default style and serves a singular purpose.
-Augmenting reusable components for specific content regions can be leveraged with the `:host` and `:host-context()` selectors.
+Design adjustments for reusable components to specific content areas can be implemented with the :host and :host-context() selectors.
 Through the `:host` and `:host-context()` selectors, components are aware about any of its ancestors in the outer document.
 
 ![](src/assets/images/Customizing.png)
