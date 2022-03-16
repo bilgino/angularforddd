@@ -153,10 +153,10 @@ Following checklist can help to facilitate the orchestration of modules:<br/>
 The bounded context pattern in Domain-Driven Design divides the domain model into related domain fragments. In a service-based environment a 
 bounded context marks the boundaries of an application service. An application service is a concretion of the bounded context pattern! 
 This is similar to **Domain Modules** where we mark the boundaries based on features. Applying the bounded context pattern to domain modules 
-allows us to structure modules in a domain-driven context. A bounded context should consist of at least one aggregate and may consist of 
+allows us to structure modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
 several aggregates. An important aspect with regard to SPA applications is that the (client- or server-side) bounded context must integrate 
-a REST-based interface because router engine in Angular complies with the navigational behaviour of hypermedia APIs. A bounded context should not only
-coupled to the URI of the entry point (root): `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
+a REST interface because the router engine in Angular complies with the navigational behaviour of hypermedia APIs. A bounded context should not only
+be coupled to the URI of the entry point (root): `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
 A bounded context can be assigned either to an entire page or to page segments.
 
 Interaction between the bounded context pattern and domain modules:
