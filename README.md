@@ -242,12 +242,13 @@ Keeping the model as independent as possible improves usability and allows easie
 By implementing a domain layer in the frontend, we ensure that business behavior works. 
 With higher functional ability through the use of (rich) domain models, we should take the Mapper pattern into consideration. 
 A common practice for the reason of typesaftyness is to declare interfaces in support of plain JavaScript object literals. 
-In the context of mapping, it's important to make a clear distinction between the typing system in TypeScript and data schema of models.
+In the context of mapping, it's important to make a clear distinction between the typing system in TypeScript and the data schema of models.
 
 Mapping JSON-encoded server data in the frontend is mandatory if:
 
 - The domain model object defines any methods
 - The schema in the database is different from its representation in the application
+- The typing system should consist of classes instead of interfaces
 
 The Mapper pattern transfers data between two different schemas:
 
@@ -281,18 +282,18 @@ The data mapper is associated in the repository to elaborate the appropriate (vi
 **» REST, HATEOAS & CO.**<br/>
 
 When building multi-layered, distributed web applications, data transformation is among the major challenges that occur when data traverses 
-all layers (data flows up and down the stack). If the domain layer has been replicated to the client-side, we possibly need to transform the 
+all layers (data flows up and down the stack). If the domain layer has been replicated to the client-side, we may need to transform the 
 server response schema to a complex domain model: 
 
 ![](src/assets/images/Mapper_Response.png)
 
 For example, HATEOAS forms hyperlinks between external resources to make transitions through the application state by navigating hyperlinks. 
-However, mapping hyperlinks to a client-side domain model is not possible! When consuming REST APIs, very often multiple HTTP request 
-need to be sent asynchronously to assemble a model for a specific use case in the presentation layer. If the applied HATEOAS implementation
-forms interconnected hyperlinks, then it constrains the user interface to incorporate with the REST API in a synchronous way. UX designers usually 
-don't model their interaction, navigation and screen patterns around HATEOAS. Furthermore, the Angular router engine doesn't comply with the URI 
-templates of the HATEOAS response schema. HATEOAS has its advantages as well as disadvantages.
-If possible, avoid HATEOAS for Angular SPA applications!
+However, mapping hyperlinks to a client-side domain model is not possible! In addition to consuming REST APIs very often multiple HTTP request 
+need to be sent asynchronously to assemble a model for a specific use case in the presentation layer. If the applied HATEOAS implementation pattern
+forms interconnected hyperlinks in a response object, it would limit the user interface to incorporate with the REST API in a synchronous way. 
+UX designers usually don't model their interaction, navigation and screen patterns around HATEOAS. Furthermore, the Angular router engine doesn't 
+comply well with the URI templates of HATEOAS patterns. HATEOAS has its advantages as well as disadvantages. Even though the router in Angular 
+complies with the navigatorial behaviour of hypermedia, you should avoid HATEOAS APIs for Angular SPA applications!
 
 **» Domain model**<br/>
 
@@ -344,10 +345,10 @@ Often simple services process HTTP requests and responses that perform CRUD oper
 A domain model repository serves as a shared data repository used by other components. 
 Repositories are not just for Entities, but for all domain objects including anemic domain objects.
 
-In addition, we will introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. The CQRS pattern allows us to answer 
-different use cases with the respective data model. State changes in repositories will replicate back to a view model provider (read side). 
-This is called "projection". A projection can be leveraged in several ways or layers. The most commonly used approach is an event-based projection 
-causing an eventually consistent system. However, we will not encounter any problems of this kind, due to the reactive design pattern 
+In addition, we will introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. 
+The CQRS pattern allows us to answer different use cases with the respective data model. State changes in repositories will replicate back to a 
+view model provider (read side). This is called "projection". A projection can be leveraged in several ways or layers. The most commonly used approach 
+is an event-based projection causing an eventually consistent system. However, we will not encounter any problems of this kind, due to the reactive design pattern 
 of Angular (RxJS). 
 
 **A reactive API exposes hot observables (BehaviorSubjects etc.)** to manage the complexity of asynchronous data handling. If we share data with 
@@ -360,12 +361,12 @@ operators to implement the "projection phase" between the read and write side.
 Application services usually provide query methods for retrieving view models of domain state. However, for complicated page flows and user interfaces 
 it would be inefficient to create view models in an application service method requiring many dependencies. By using a view model provider however, 
 we facilitate access to view models in a more efficient manner. Consequently, the UI controller uses the application service, that in turn, 
-uses the view model provider to provide presentation data. In return the view model query method use these dependencies to fulfill 
-the presentation needs. 
+uses the view model provider to report presentation data. The view model query method then use all dependencies to fulfill 
+the presentation needs. This might seem more complex than just coming up with state management service. The level of abstraction is up to the developer.
 
 ![](src/assets/images/QuerySideService.PNG)
 
-It may be advantageous to use view model factories in UI controllers without an application service. It depends on your specific use case.
+It may be advantageous to use view model factories in UI controllers without an application service. It always depends on the specific use case.
 
 **» Why CQRS in the frontend?**<br/>
  
@@ -373,7 +374,7 @@ With traditional CRUD-based web applications, conform to the REST architectural 
 together several resources to build a complex view model because often RESTful APIs are strict resource-oriented. In addition, we might 
 transform and prepare that data for the presentation layer. Even in the case of sophisticated Web APIs, it's very likely that we must stitch 
 together complex view models and disassemble them for CUD operations on the client-side. Developers often implement mapper methods in UI 
-controllers to elaborate view models, which in the end leads to fat and unmanagable UI controllers: 
+controllers to elaborate view models, which in the end leads to fat and unmanageable UI controllers: 
 
 ![](src/assets/images/Up_Down_Flow.png)
 
@@ -575,9 +576,9 @@ export class DomainModelRepository<T> extends ... {
     constructor(private httpClient: HttpClient){}
     
     public findById(...): Observable<T> {}
-    public createDomainModel(...): void {}
-    public updateDomainModel(...): void {} 
-    public deleteDomainModel(...): void {}
+    public create(...): void {}
+    public update(...): void {} 
+    public delete(...): void {}
 }
 ```
 
