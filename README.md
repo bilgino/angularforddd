@@ -86,7 +86,7 @@ Additionally, we may want to share state and logic of an application service wit
 It's debatable whether higher granularity distributed across several layers introduce extra complexity in the frontend design system. 
 Do we really need Domain-Driven Design in frontend development? 
 As a consequence, many developers tend to lean toward weaker patterns because they see it as an unnecessary practice. 
-Often a simpler data-driven approach is sufficient enough. For most web applications MVC or Flux/Redux may be more appropriate. 
+Often a simpler data-driven approach is sufficient. For most web applications MVC or Flux/Redux may be more appropriate. 
 Before starting using advanced concepts we must evaluate incoming requirements.
 
 ## Object-Oriented Design
@@ -113,8 +113,7 @@ visit the following website: https://jaxenter.com/cross-cutting-concerns-angular
 
 # Angular core patterns
 
-Angular's core patterns such as modules, services, entities, factories etc. encourages us to comply with the domain-focused
-DDD principles.
+Angular's core patterns such as modules, services, entities, factories encourages complying with domain-focused principles.
 
 ## Modules
 
@@ -155,12 +154,12 @@ The bounded context pattern in Domain-Driven Design divides the domain model int
 bounded context marks the boundaries of an application service. An application service is a concretion of the bounded context pattern! 
 This is similar to **Domain Modules** where we mark the boundaries based on features. Applying the bounded context pattern to domain modules 
 allows us to structure modules in a domain-driven context. A bounded context should consist of at least one aggregate and may consist of 
-several aggregates. An important aspect in conjunction with SPA applications is that a (client- or server-side) bounded context must integrate 
-a REST-based API because Angular's router engine complies with the navigatorial behaviour of hypermedia APIs. A bounded context is coupled only 
-to the URI of the entry point (root), subsequently it's hypermedia to navigate the state of the application: `/BoundedContextA/*API`; 
-`/BoundedContextB/*API`. A bounded context can be assigned either to an entire page or to page segments.
+several aggregates. An important aspect with regard to SPA applications is that the (client- or server-side) bounded context must integrate 
+a REST-based interface because router engine in Angular complies with the navigational behaviour of hypermedia APIs. A bounded context should not only
+coupled to the URI of the entry point (root): `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
+A bounded context can be assigned either to an entire page or to page segments.
 
-Interaction between the bounded context pattern and Angular domain modules:
+Interaction between the bounded context pattern and domain modules:
 
 ![](src/assets/images/BoundedContext.png)
 
@@ -168,7 +167,7 @@ Interaction between the bounded context pattern and Angular domain modules:
 
 A common practice in Angular projects is to structure the project into `/core`, `/shared`, `/features` folders. 
 Unfortunately this naive approach works only for simple applications and isn't suited for a complex projects. 
-Furthermore, the folder structure is driven by technical constraints. 
+Furthermore, the folder structure is inspired by technical constraints. 
 When setting up a project, we should outline a folder structure that is driven by business logic.
 
 Domain-driven folder structure for Angular applications:
@@ -293,7 +292,7 @@ need to be sent asynchronously to assemble a model for a specific use case in th
 forms interconnected hyperlinks in a response object, it would limit the user interface to incorporate with the REST API in a synchronous way. 
 UX designers usually don't model their interaction, navigation and screen patterns around HATEOAS. Furthermore, the Angular router engine doesn't 
 comply well with the URI templates of HATEOAS patterns. HATEOAS has its advantages as well as disadvantages. Even though the router in Angular 
-complies with the navigatorial behaviour of hypermedia, you should avoid HATEOAS APIs for Angular SPA applications!
+complies with the navigational behaviour of hypermedia, you should avoid HATEOAS APIs for Angular SPA applications!
 
 **» Domain model**<br/>
 
