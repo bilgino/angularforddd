@@ -111,10 +111,10 @@ The Aspect Oriented Programming promotes an abstraction and encapsulation of cro
 resulting in loose coupling between the actual logic and the infrastructure logic. For more information about AOP in TypeScript please 
 visit the following website: https://jaxenter.com/cross-cutting-concerns-angular-2-typescript-128925.html
 
-# Angular strategies
+# Angular core patterns
 
-Angular's core patterns such as modules, services, factories or components etc. encourages us to comply with the tactical patterns of 
-Domain-Driven Design.
+Angular's core patterns such as modules, services, entities, factories etc. encourages us to comply with the domain-focused
+DDD principles.
 
 ## Modules
 
@@ -271,14 +271,14 @@ read(): Observable<Customer[]> {
 };
 ```
 
-The data mapper is associated in the repository to elaborate the appropriate model schema. 
+The data mapper is associated in the repository to elaborate the appropriate (view or domain) model schema. 
 
 **» Translator pattern (Mapping VM to DM and vice versa, XMapper.toXY)**<br/>
 
 @TODO [text]
 @TODO [image]
 
-**» REST, HATEOAS & CO. **<br/>
+**» REST, HATEOAS & CO.**<br/>
 
 When building multi-layered, distributed web applications, data transformation is among the major challenges that occur when data traverses 
 all layers (data flows up and down the stack). If the domain layer has been replicated to the client-side, we possibly need to transform the 
@@ -287,11 +287,11 @@ server response schema to a complex domain model:
 ![](src/assets/images/Mapper_Response.png)
 
 For example, HATEOAS forms hyperlinks between external resources to make transitions through the application state by navigating hyperlinks. 
-However, mapping related hyperlinks to a client-side domain model is not possible! When consuming REST APIs, very often multiple HTTP request 
+However, mapping hyperlinks to a client-side domain model is not possible! When consuming REST APIs, very often multiple HTTP request 
 need to be sent asynchronously to assemble a model for a specific use case in the presentation layer. If the applied HATEOAS implementation
-includes related hyperlinks, then it constrains the user interface to incorporate with the REST API in a synchronous way. UX Designer usually 
-don't model their interaction, navigation or screen patterns around HATEOAS. Furthermore, the Angular router engine doesn't comply very easily 
-with the URI templates of the HATEOAS response schema. HATEOAS has its advantages as well as disadvantages.
+forms interconnected hyperlinks, then it constrains the user interface to incorporate with the REST API in a synchronous way. UX designers usually 
+don't model their interaction, navigation and screen patterns around HATEOAS. Furthermore, the Angular router engine doesn't comply with the URI 
+templates of the HATEOAS response schema. HATEOAS has its advantages as well as disadvantages.
 If possible, avoid HATEOAS for Angular SPA applications!
 
 **» Domain model**<br/>
@@ -311,11 +311,11 @@ If possible, avoid HATEOAS for Angular SPA applications!
 
 ## Services
 
-Singleton services are important artifacts in Angular applications. Most of the functionality that doesn't belong in UI components 
-is developed in services! We will taxonomize the code base in favor of Domain-Driven Design, which embraces application-, 
-domain- and infrastructure services. We will introduce the repository pattern in favor of domain state management services. 
+Singleton services are important artifacts in Angular applications. Most of the functionality that doesn't belong to UI components 
+will be delegated to the service layer, that we abstract in favor of Domain-Driven Design application-, 
+domain- and infrastructure services. We will introduce the repository pattern in favor of state management services. 
 
-Following guidelines can help to facilitate scope and lifetime of providers:
+Following checklist can help to facilitate the orchestration of providers:
 
 **» Services shared through the module providers array**<br/>
 
@@ -340,14 +340,14 @@ Following guidelines can help to facilitate scope and lifetime of providers:
 Just as mentioned before, it's common in Angular projects to use services for business functionality and state management. 
 We use stateful services if we need to share data across independent components. 
 Often simple services process HTTP requests and responses that perform CRUD operations. 
-**We will deviate from the status quo and use reactive repositories in favor of an active data store**. 
+**We will move away from the status quo and use reactive repositories in favor of an active data store**. 
 A domain model repository serves as a shared data repository used by other components. 
 Repositories are not just for Entities, but for all domain objects including anemic domain objects.
 
-In addition, we will introduce the CQRS pattern to stem the heavy-lift when building complex user interfaces. The CQRS pattern allows us to answer 
+In addition, we will introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. The CQRS pattern allows us to answer 
 different use cases with the respective data model. State changes in repositories will replicate back to a view model provider (read side). 
 This is called "projection". A projection can be leveraged in several ways or layers. The most commonly used approach is an event-based projection 
-causing an eventually consistent system. However, we will not encounter any problems of this kind, due to the reactive change detection behaviour 
+causing an eventually consistent system. However, we will not encounter any problems of this kind, due to the reactive design pattern 
 of Angular (RxJS). 
 
 **A reactive API exposes hot observables (BehaviorSubjects etc.)** to manage the complexity of asynchronous data handling. If we share data with 
@@ -357,10 +357,10 @@ operators to implement the "projection phase" between the read and write side.
 
 ![](src/assets/images/Reactive_Flow.png)
 
-Application services usually provide methods for retrieving view models of domain state. However, for complex user interfaces it would be 
-inefficient to construct view models in an application service method requiring many dependencies. By using a view model provider however, 
+Application services usually provide query methods for retrieving view models of domain state. However, for complicated page flows and user interfaces 
+it would be inefficient to create view models in an application service method requiring many dependencies. By using a view model provider however, 
 we facilitate access to view models in a more efficient manner. Consequently, the UI controller uses the application service, that in turn, 
-uses the view model provider to provide presentation data. In return a view model factory method uses all dependencies required to fulfill 
+uses the view model provider to provide presentation data. In return the view model query method use these dependencies to fulfill 
 the presentation needs. 
 
 ![](src/assets/images/QuerySideService.PNG)
@@ -378,9 +378,9 @@ controllers to elaborate view models, which in the end leads to fat and unmanaga
 ![](src/assets/images/Up_Down_Flow.png)
 
 Domain models shouldn't be used in the presentation layer or sent via message-passing queues. The domain model focuses on invariants and use 
-cases rather than presentation needs. Introducing view model providers in the frontend design system for the purpose of building complex user 
-interfaces allows us to satisfy the needs of the presentation layer and only querying dependencies that are essential to view properties. 
-In complex UX flows, CQRS can help to avoid over-bloated single models for every use case scenario. A view model provider is a perfect layer 
+cases rather than reporting requests. Introducing view model providers in the frontend for the purpose of building complicated page
+flows and user interfaces allows us to satisfy the needs of the presentation layer and querying appropriate dependencies which are essential to view properties. 
+In complicated page flows and user interfaces the CQRS pattern can help to avoid over-bloated single models for every use case scenario. A view model provider is a perfect layer 
 to pre-compute filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). 
 An important aspect which is neglected by many frontend developers. 
 
@@ -440,7 +440,7 @@ class Order extends OrderViewModel {
 
 This implementation has some drawbacks either. It only works for a single entity! 
 What if a view model requires several sources? 
-When building complex user interfaces that require several sources (aggregates), we should declare a dedicated class in form of a view model provider. 
+When building complicated page flows and user interfaces that require several sources (aggregates), we should declare a dedicated class in form of a view model provider. 
 The purpose of a view model provider is to provide view model schemas for specific use cases and allowing us to merge several sources or action streams in one place. 
 
 ```
@@ -559,8 +559,10 @@ class Customer {
 
 **» Reactive CUD Repository**<br/>
 
-By implementing a CQRS-oriented repository, we share state and communicate domain state changes through reactive operators (RxJS BehaviorSubjects), along with the operations, transformations, and rules for creating, manipulating and storing domain state, emitting data anytime a business action occurs.
-The repository is allowed to perform data queries, but we don't use the repository for reporting! Unlike the Redux pattern where all the state got located in a single central store, we undoubtedly must think a bit more complex on how to manage state crossing several layers. 
+By implementing a CQRS-oriented repository, we share state and communicate domain state changes through reactive operators (RxJS BehaviorSubjects),
+along with the operations, transformations, and rules for creating, manipulating and storing domain state, emitting data anytime a business action
+occurs.The repository is allowed to perform data queries, but we don't use the repository for reporting! Unlike the Redux pattern where all the 
+state got located in a single central store, we undoubtedly must think a bit more complex on how to manage state crossing several layers. 
 
 Let's have a look at how to define a shared reactive CUD repository: 
            
@@ -582,12 +584,16 @@ export class DomainModelRepository<T> extends ... {
 ## Router state
 
 Angular's router service allows us to manage domain and UI state. Put simply, the router state determines which components are visible on the screen, and 
-it manages navigation through application state (HATEOAS). Any state transition results in a URL change! It's important to note, the router is a resource-oriented engine, we **cannot place more than one component into the same location at the same time** (~Auxiliary Routes!). This means, if building a router SPA, we should drive with UX-Driven Design to determine the appropriate data models for the Web API interface. The UI project should comply with User-Centered Design (UCD), where user actions define the URL workflow.
+it manages navigation through application state (HATEOAS). Any state transition results in a URL change! It's important to note, the router is a 
+resource-oriented engine, we **cannot place more than one component into the same location at the same time** (~Auxiliary Routes!). 
+This means, if building a router SPA, we should drive with UX-Driven Design to determine the appropriate data models for the Web API interface. 
+The UI project should comply with User-Centered Design (UCD), where user actions define the URL workflow.
 
 ![](src/assets/images/Router.png)
 
-In Addition to this, we must ensure that routes are provided by the Web API layer. For example, don't use routes like /products/:id/edit?filter='mam', if the Web API layer
-doesn't support query params. Always check if routes are represented by the Web API layer! 
+In Addition to this, we must ensure that routes are provided by the Web API layer. For example, don't use routes 
+like /products/:id/edit?filter='mam', if the Web API layer doesn't support query params. Always validate if API routes will be available 
+through the Web API! 
 
 ## UI state
 
@@ -611,8 +617,8 @@ When sharing data that should always be in sync, reactive extensions are good so
 ## Application-, Domain- and Infrastrucutre services
 
 One downside of sharing and binding state through services is that they are coupled to the view. Delayed changes to the state must be managed 
-by asynchronous binding techniques to **keep the shared state in sync**. However, with EventEmitters, Subjects or BehaviorSubjects we share data through notifications. 
-We subscribe and react to changes using notification services. Those notifications are more than just changes to bound values. 
+by asynchronous binding techniques to **keep the shared state in sync**. However, with EventEmitters, Subjects or BehaviorSubjects we share data 
+through notifications. We subscribe and react to changes using notification services. Those notifications are more than just changes to bound values. 
 
 **» Application service**<br/>
 
