@@ -179,8 +179,8 @@ Domain-driven folder structure for Angular applications:
 When deciding on a design, customizing the look of default components can quickly become challenging.
 Creating frontends that feature modular and reusable CSS without overriding existing CSS rules is an important part of
 every frontend project. Usually every component in an Angular project appears in the default style and serves a singular purpose.
-Design adjustments for reusable components to specific content areas can be implemented with the :host and :host-context() selectors.
-Through the `:host` and `:host-context()` selectors, components are aware about any of its ancestors in the outer document.
+Design adjustments for reusable components to specific content areas can be implemented with the `:host` and `:host-context()` selectors.
+These types of selectors 
 
 ![](src/assets/images/Customizing.png)
 
@@ -374,11 +374,11 @@ Application services usually provide query methods for retrieving view models of
 it would be inefficient to create view models in an application service method requiring many dependencies. By using a view model provider however, 
 we facilitate access to view models in a more efficient manner. Consequently, the UI controller uses the application service, that in turn, 
 uses the view model provider to report presentation data. The view model query method then use all dependencies to fulfill 
-the presentation needs. This might seem more complex than just coming up with state management service. The level of abstraction is up to the developer.
+the presentation needs. 
 
 ![](src/assets/images/QuerySideService.PNG)
 
-It may be advantageous to use view model factories in UI controllers without an application service. It always depends on the specific use case.
+This might seem more complex than just using a single state management service. The level of abstraction is up to the developer and requirements. 
 
 **» Why CQRS in the frontend?**<br/>
  
@@ -463,7 +463,7 @@ class OrderViewModelProvider {
     constructor(
       private orderRepository: OrderRepository,           // Infrastructure service
       private productRepository: ProductRepository,       // Infrastructure service
-      private productSelected : ProductSelected,          // Application / UI service
+      private productSelected : ProductSelectedId,        // Application / UI service
       private dateService: DateService                    // Infrastructure service
       ){}
 
@@ -478,11 +478,11 @@ class OrderViewModelProvider {
     }
     
     public getOrderForProductAndSales(id:number): Observable<OrderForProductAndSales> {
-        return combineLatest(this._orderRepository.getById(id), this._productRepository.getById(id)).pipe(
+        return combineLatest(this._orderRepository.getOrders(), this._productRepository.getProducts()).pipe(
           groupBy(),
           filter(id),
           mergeMap() => {
-            return of(new OrderForProductAndSales(...));   // Order View Model
+            return of(new OrderForProductAndSales([]));   // Order View Model
           }),
           shareReplay(1)
         )        
