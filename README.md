@@ -448,27 +448,27 @@ class Order extends OrderViewModel {
 
 This implementation has some drawbacks either. It only works for a single entity! 
 What if a view model requires several sources? 
-When building complicated page flows and user interfaces that require several sources (aggregates), we should declare a dedicated class in form of a view model provider. 
-The purpose of a view model provider is to provide view model schemas for specific use cases and allowing us to merge several sources or action streams in one place. 
+When building complicated page flows and user interfaces that require several sources (aggregates), we should create a helper class in form of a view model provider. 
+The purpose of the view model provider is to encapsulate and build view models for specific use cases. 
 
 ```
 @Injectable()
 class OrderViewModelProvider {
    
     constructor(
-      private orderRepository: OrderRepository,             // Infrastructure service
-      private productRepository: ProductRepository,         // Infrastructure service
-      private dateService: DateService                      // Infrastructure service
-      private transService: TranslationService              // Infrastructure service i18n
+      private orderRepository: OrderRepository,             
+      private productRepository: ProductRepository,         
+      private dateService: DateService                      
+      private translateService: TranslationService              
       ){}
 
-    public getOrderForSalesById(id:number): Observable<OrderForSales> {
+    public getOrdersByStatus(status:string): Observable<OrderListView[]> {
         return this._orderRepository.getAll()
         .pipe(
-          groupBy(),
-          filter(id),
+          groupBy(status),
+          filter(status),
           mergeMap(()=>{
-             return of(new OrderForSales(...));             // OrderForSales View Model
+             return of(new OrderListView([]));             
           })
         )
     }
@@ -479,7 +479,7 @@ class OrderViewModelProvider {
           groupBy(),
           filter(searchTerm),
           mergeMap() => {
-            return of(new OrderForProduct([]));             // OrderForProduct View Model
+            return of(new OrderForProduct([]));           
           }),
           shareReplay(1)
         )        
