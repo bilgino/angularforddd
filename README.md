@@ -369,7 +369,7 @@ operators to implement the "projection phase" between the read and write side.
 
 Application services usually provide query methods (CQS) for retrieving view models of domain state, besides command methods. However, for 
 complicated page flows and user interfaces it would be inefficient to create view models in an application service method requiring many dependencies.
-By using a view model provider however, we facilitate access to view models in a more efficient manner. Consequently, the UI controller uses the 
+By using a view model provider however, we facilitate access to view models in a more efficient manner. Consequently, the application service uses the 
 view model provider to report presentation data. 
 
 ![](src/assets/images/QuerySideService.PNG)
