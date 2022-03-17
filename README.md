@@ -41,7 +41,7 @@ The multilayered architecture consists of the following layers:
 
 *» Service layers* <br/>
 
-- Stateful application services carry out business and UI use cases and are procedural 
+- Stateless application services carry out business and UI use cases and are procedural 
 - Stateless domain services carry out business use cases at a higher level than entities or value objects
 - Infrastructure services help to separate technical and business concepts <br/>
 
@@ -180,12 +180,11 @@ When deciding on a design, customizing the look of default components can quickl
 Creating frontends that feature modular and reusable CSS without overriding existing CSS rules is an important part of
 every frontend project. Usually every component in an Angular project appears in the default style and serves a singular purpose.
 Design adjustments for reusable components to specific content areas can be implemented with the `:host` and `:host-context()` selectors.
-These types of selectors 
 
 ![](src/assets/images/Customizing.png)
 
-Unfortunately `:host-context()` lacks browser support. Luckily, Angular supports an emulated version of the `:host-context()` pseudo
-class selector in the default settings of the view encapsulation mode.
+Unfortunately the `:host-context()` CSS pseudo-class function lacks browser support. Luckily, Angular supports an emulated version of it 
+in the default settings of the view encapsulation mode.
 
 ## Models 
 
