@@ -155,7 +155,7 @@ allows us to structure modules in a domain-driven approach. A bounded context sh
 several aggregates. An important aspect with regard to SPA applications is that the (client- or server-side) bounded context must integrate 
 a REST interface because the router engine in Angular complies with the navigational behaviour of hypermedia APIs. A bounded context should not only
 be coupled to the URI of the entry point (root): `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
-A bounded context can be assigned either to an entire page or to page segments.
+**A bounded context can be assigned either to an entire page or to page segments**.
 
 Interaction between the bounded context pattern and domain modules:
 
@@ -412,15 +412,15 @@ class Order {
     private orderId: number;
     private quantity: number; 
 
-    public getOrderForSales(): OrderForSales {
-        return new OrderForSales(this.quantity);
+    public getOrderForSalesView(): OrderForSalesView {
+        return new OrderForSalesView(this.quantity);
     }
 
-    public getOrderForCatalog(): OrderForCatalog {
-        return new OrderForCatalog(this.orderId);
+    public getOrderForCatalogView(): OrderForCatalogView {
+        return new OrderForCatalogView(this.orderId);
     }
 }
-``` 
+```
 
 Elaborating view models of domain entities violates the single responsibility rule! 
 Using abstract classes, we can aggregate reusable factory methods:
@@ -430,12 +430,12 @@ abstract class OrderViewModel {
     abstract orderId:number;
     abstract quantity:number;
 
-    public getOrderForSales(): OrderForSales {
-        return new OrderForSales(this.quantity);
+    public getOrderForSalesView(): OrderForSalesView {
+        return new OrderForSalesView(this.quantity);
     }
 
-    public getOrderForCatalog(): OrderForCatalog {
-        return new OrderForCatalog(this.orderId);
+    public getOrderForCatalogView(): OrderForCatalogView {
+        return new OrderForCatalogView(this.orderId);
     }
 }
 
@@ -461,24 +461,26 @@ class OrderViewModelProvider {
       private translateService: TranslationService              
       ){}
 
-    public getOrdersByStatus(status:string): Observable<OrderListView[]> {
+    public getOrdersByStatus(status:string): Observable<Array<OrderViewModel>> {
         return this._orderRepository.getAll()
         .pipe(
           groupBy(status),
           filter(status),
+          map(()=>{
+             return translateService(data);             
+          })
           mergeMap(()=>{
-             return of(new OrderListView([]));             
+             return of([new OrderViewModel(data)...]);             
           })
         )
     }
     
-    public getOrderForProductSearch(searchTerm:string): Observable<OrderForProduct> {
-        return combineLatest(this._orderRepository.getOrders(), this._productRepository.getProducts())
+    public getProductsByOrderId(id:number): Observable<Array<ProductViewModel>> {
+        return combineLatest([this._orderRepository.getOrders(), this._productRepository.getProducts()])
         .pipe(
-          groupBy(),
-          filter(searchTerm),
-          mergeMap() => {
-            return of(new OrderForProduct([]));           
+          filter(id),
+          mergeMap([...]) => {
+            return of([new ProductViewModel(data)...]);           
           }),
           shareReplay(1)
         )        
@@ -487,7 +489,7 @@ class OrderViewModelProvider {
 }
 ``` 
 
-Requesting the view model provider (application service) in the constructor of a view controller class:
+Requesting the view model provider in the view controller class:
 
 ```
 @Component({
@@ -497,14 +499,13 @@ Requesting the view model provider (application service) in the constructor of a
 })
 export class OrderComponent {
 
-  constructor(private orderProvider: OrderViewModelProvider) {
-    this.orderProvider.getOrderForSales(33).subscribe(()=>{})
+  constructor(private orderViewModelProvider: OrderViewModelProvider) {
+    this.orderViewModelProvider.getOrdersByStatus('pending').subscribe(()=>{})
   }
-  
 }
 ``` 
 
-Another possible solution for building view model abstractions are Angular resolver services:
+View model abstractions can also be achieved in Angular resolver services:
 
 ```
 @Injectable()
@@ -519,12 +520,13 @@ export class OrderResolver implements Resolve<Order> {
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Order> {
         const id = route.paramMap.get('id');
-        return combineLatest(this._orderRepository.getById(id), this._productRepository.getById(id)).pipe(
-            groupBy(),
-            filter(id),
-            mergeMap() => {
-            return of(new OrderForProductAndSales());    
-        })
+        return combineLatest([this._orderRepository.getOrders(), this._productRepository.getProducts()])
+        .pipe(
+          filter(id),
+          mergeMap([...]) => {
+            return of([new OrderViewModel(data)...]);           
+          })
+        )  
     }
 }
 ``` 
