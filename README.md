@@ -3,10 +3,10 @@ An introduction for building large-scale enterprise applications with Angular.
 
 # Application architecture 
 
-Applying Domain-Driven Design and Command-Query-Responsibility-Segregation in the frontend design system, we break down complex requirements 
+Applying Object-Oriented Design, Domain-Driven Design and Command-Query-Responsibility-Segregation in the frontend design system, we break down complex requirements 
 into logical boundaries and divide business logic into layers with different responsibilities to keep our code in good condition.
 
-## Frontend coupled to DDD, OOD and CQRS
+## Frontend coupled to OOD, DDD and CQRS
 
 The building blocks of Angular already provides us with code organisation strategies. Nevertheless, to gain a better design we will bypass the 
 traditional data-driven approach and consider strategies like Domain-Driven Design and Command-Query-Responsibility-Segregation:
@@ -15,6 +15,29 @@ traditional data-driven approach and consider strategies like Domain-Driven Desi
 
 Considering multilayered architectures, the question arises of how to organize layers in SPA applications? This question refers to code splitting, 
 communication across layers and demanding business logic through services.
+
+
+## Object-Oriented Design
+
+Although functional programming has gained a strong foothold in frontend development in recent years, a consistent object-oriented approach
+is better suited for Angular projects. Object-oriented design allows us to approach a more human-readable code base, where the UL
+(Ubiquitous language) can help to design a better taxonomy and complex data types. It's important to note, Angular embraces both programming
+paradigms (FP & OOP).
+
+**» Applying SOLID principles**<br/>
+
+In object orientation the SOLID principles can help to make better design decisions (high cohesion and low coupling). Applying the Dependency
+Inversion Principle, we ensure that layers depend on abstraction as opposed to depending on concretion. => Programming to an Interface!
+
+For example, we provide the domain layer as an abstraction by using interfaces / type aliases.
+
+**» Applying cross-cutting concerns**<br/>
+
+The infrastructure layer includes cross-cutting concerns such as logging, caching or security. A naive approach to implement cross-cutting
+functionality usually leads to duplicated or coupled code, which violates Don't Repeat Yourself and Single Responsibility Principle.
+The Aspect Oriented Programming promotes an abstraction and encapsulation of cross-cutting concerns by interlacing additional code,
+resulting in loose coupling between the actual logic and the infrastructure logic. For more information about AOP in TypeScript please
+visit the following website: https://jaxenter.com/cross-cutting-concerns-angular-2-typescript-128925.html
 
 ## Layered architecture
 
@@ -86,28 +109,6 @@ It's questionable whether higher granularity distributed across several layers i
 Should we really comply with Domain-Driven Design in frontend development? As a consequence, many developers tend to lean toward weaker 
 patterns because they see it as an unnecessary practice. Often a simpler data-driven approach is sufficient. For most web applications MVC 
 or Flux/Redux may be more appropriate. Before starting using advanced concepts we must evaluate incoming requirements.
-
-## Object-Oriented Design
-
-Although functional programming has gained a strong foothold in frontend development in recent years, a consistent object-oriented approach 
-is better suited for Angular projects. Object-oriented design allows us to approach a more human-readable code base, where the UL 
-(Ubiquitous language) can help to design a better taxonomy and complex data types. It's important to note, Angular embraces both programming 
-paradigms (FP & OOP).
-
-**» Applying SOLID principles**<br/>
-
-In object orientation the SOLID principles can help to make better design decisions (high cohesion and low coupling). Applying the Dependency 
-Inversion Principle, we ensure that layers depend on abstraction as opposed to depending on concretion. => Programming to an Interface!
-
-For example, we provide the domain layer as an abstraction by using interfaces / type aliases.
-
-**» Applying cross-cutting concerns**<br/>
-
-The infrastructure layer includes cross-cutting concerns such as logging, caching or security. A naive approach to implement cross-cutting 
-functionality usually leads to duplicated or coupled code, which violates Don't Repeat Yourself and Single Responsibility Principle. 
-The Aspect Oriented Programming promotes an abstraction and encapsulation of cross-cutting concerns by interlacing additional code, 
-resulting in loose coupling between the actual logic and the infrastructure logic. For more information about AOP in TypeScript please 
-visit the following website: https://jaxenter.com/cross-cutting-concerns-angular-2-typescript-128925.html
 
 # Angular core patterns
 
@@ -353,7 +354,7 @@ Often simple services process HTTP requests and responses that perform CRUD oper
 A repository serves as a central shared state repository used by other independent components. 
 Repositories are not just for Entities, but for all domain objects including anemic domain or view models.
 
-In addition to that, we will introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. 
+In addition to that, we can introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. 
 The CQRS pattern supports us to answer different use cases with the respective model structure. State changes in repositories will immediately 
 replicate back to a view model provider (read side). This process is called "projection". Projections can be leveraged in several ways or layers. 
 The most common approach is an event-based projection causing an eventually consistent system. However, we will not encounter any problems of this kind,
@@ -376,12 +377,11 @@ view model provider to report presentation data.
 This might seem more complex than just using a single state management service. The level of abstraction is up to the developer and requirements. 
 
 **» Why CQRS in the frontend?**<br/>
- 
-With traditional CRUD-based web applications, conform to the REST architectural style, we may fall into the situation where we have to stitch 
-together several resources to build a complex view model due to RESTful APIs are often strict resource-oriented. In addition, we might 
-transform and prepare data for the presentation layer. Even in case of sophisticated Web APIs, it's likely that we must stitch 
-together complex view models and disassemble them for CUD operations on the client-side. Developers often implement the mapper pattern in UI 
-controllers to elaborate view models. Which in the end leads to fat and unmanageable UI controllers: 
+
+With traditional CRUD-based web applications conform to the REST architectural style and the single data model approach, 
+we may fall into the situation where we have to stitch together several resources to build a rich view models . 
+Even in the case of sophisticated Web APIs, it's likely that we will encounter these problems. Developers often implement the 
+mapper pattern in UI controllers to elaborate view models. Which in the end leads to fat and unmanageable UI controllers: 
 
 ![](src/assets/images/Up_Down_Flow.png)
 
