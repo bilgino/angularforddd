@@ -176,7 +176,7 @@ Domain-driven folder structure for Angular applications:
 When deciding on a design, customizing the look of default components can quickly become challenging.
 Creating frontends that feature modular and reusable CSS without overriding existing CSS rules is an important part of
 every frontend project. Usually every component in an Angular project appears in the default style and serves a singular purpose.
-Design adjustments for reusable components to specific content areas can be implemented with the `:host` and `:host-context()` selectors.
+Design adjustments for reusable components to specific content areas can be implemented with the `:host()` and `:host-context()` selectors.
 
 ![](src/assets/images/Customizing.png)
 
@@ -346,18 +346,18 @@ Following checklist can help to facilitate the orchestration of providers:
 
 **» Stateful services vs. stateful repositories**<br/>
 
-Just as mentioned before, it's common in Angular projects to use services for business functionality and state management. 
+Just as mentioned before, it's common for Angular projects to use services for business functionality or state management. 
 We use stateful services if we need to share data across independent components. 
 Often simple services process HTTP requests and responses that perform CRUD operations. 
-**We will deviate from the status quo and use reactive repositories in favor of a data store**. 
-A repository serves as a shared data repository used by other independent components or services. 
-Repositories are not just for Entities, but for all domain objects including anemic domain models or view models.
+**We will deviate from that and use reactive repositories in favor of a reactive data store**. 
+A repository serves as a central shared state repository used by other independent components. 
+Repositories are not just for Entities, but for all domain objects including anemic domain or view models.
 
-In addition, we will introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. 
-The CQRS pattern allows us to answer different use cases with the respective data model. State changes in repositories will replicate back to a 
-view model provider (read side). This is called "projection". A projection can be leveraged in several ways or layers. The most commonly used approach 
-is an event-based projection causing an eventually consistent system. However, we will not encounter any problems of this kind, due to the reactive design pattern 
-of Angular (RxJS). 
+In addition to that, we will introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. 
+The CQRS pattern supports us to answer different use cases with the respective model structure. State changes in repositories will immediately 
+replicate back to a view model provider (read side). This process is called "projection". Projections can be leveraged in several ways or layers. 
+The most common approach is an event-based projection causing an eventually consistent system. However, we will not encounter any problems of this kind,
+due to the reactive design pattern of Angular (RxJS). 
 
 **A reactive API exposes hot observables (BehaviorSubjects etc.)** to manage the complexity of asynchronous data handling. If we share data with 
 other components, we must keep track of changes by applying reactivity to prevent stale data and keep the UI in sync. Hence, we ensure 
@@ -366,7 +366,7 @@ operators to implement the "projection phase" between the read and write side.
 
 ![](src/assets/images/Reactive_Flow.png)
 
-Application services usually provide query methods (CQS) for retrieving view models of domain state, besides command methods. However, for 
+Application services usually provide query methods for retrieving view models of domain state, besides command methods (CQS). However, for 
 complicated page flows and user interfaces it would be inefficient to create view models in an application service method requiring many dependencies.
 By using a view model provider however, we facilitate access to view models in a more efficient manner. Consequently, the application service uses the 
 view model provider to report presentation data. 
