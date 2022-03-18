@@ -66,7 +66,7 @@ Examples - Infrastructure layer: *Repository, Persistence, Caching, Messaging, C
 An important aspect in Domain-Driven Design is that the complexity of the domain model is kept isolated from other concerns of the application. 
 Ideally, the domain layer is self-contained and focused on abstracting the business domain. Very often frontend applications evaluate business rules 
 that will immediately be reflected in the presentation layer - especially in SPA applications when navigating through HTML forms that have 
-cross-dependencies in terms of composite business rules. A domain layer in the frontend sounds like a good idea. A domain layer helps 
+cross-dependencies in terms of composite business rules, a domain layer in the frontend sounds like a good idea. A domain layer helps 
 us to prevent domain logic from scattering everywhere. In addition, we don't want to command against the server upon every user input. 
 
 Domain-oriented layering is often considered the first structuring criterion in Angular applications. However, layered architecture 
@@ -164,9 +164,8 @@ Interaction between the bounded context pattern and domain modules:
 **» Project scaffolding**<br/>
 
 A common practice in Angular projects is to structure the project into `/core`, `/shared`, `/features` folders. 
-Unfortunately this naive approach works only for simple applications and isn't suited for a complex projects. 
-Furthermore, the folder structure is inspired by technical constraints. 
-When setting up a project, we should outline a folder structure that is driven by business logic.
+Unfortunately this approach isn't sufficient for a complex projects and is mainly inspired by technical constraints. 
+When setting up a project, we should use a folder structure that is driven by business logic.
 
 Domain-driven folder structure for Angular applications:
 
@@ -249,7 +248,7 @@ Neither domain state nor domain logic should be developed as part of UI controll
 **» Mapper pattern**<br/>
 
 By implementing a domain layer in the frontend, we ensure that business behavior works. 
-With higher functional ability using domain models, we should take the mapper pattern into consideration. 
+With the higher functional ability using domain models, we should take the mapper pattern into consideration. 
 A common practice for the reason of typesaftyness is to declare interfaces in support of plain JavaScript object literals. 
 In the context of mapping, it's important to make a clear distinction between the typing system in TypeScript and the data structure of models.
 
