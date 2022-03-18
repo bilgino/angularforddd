@@ -72,21 +72,20 @@ good idea.
 
 Domain-oriented layering is often considered the first structuring criterion in Angular applications. However, layered architecture 
 is independent of vertical structuring criterion. It's sufficient to comply with horizontal layers. The main reasons for modular segmentation in 
-Angular are lazy-loading, scoping and distribution. 
+Angular is lazy-loading, scoping and distribution. 
 
 Using business services only for structural and behavioral modeling while domain models remain pure value containers that can't protect their 
 integrity (invariants) is a common bad practice in frontend projects. Hence, building rich domain models is a major objective in 
 object-oriented applications. In general, using rich domain models means more entities than business services.
 
-When application services carry out business or UI use cases, it may be a good idea to move use cases that contain less logic directly in the 
-UI controller like in the MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated classes! 
+When application services carry out business or UI use cases, it may be a good idea to write use cases that contain less logic directly in the 
+UI controller, like in the MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated classes instead! 
 Additionally, we may want to share state and logic of that dedicated class with other independent components. 
 
-It's debatable whether higher granularity distributed across several layers introduce extra complexity in the frontend design system. 
-Should we really comply with Domain-Driven Design in frontend development? 
-As a consequence, many developers tend to lean toward weaker patterns because they see it as an unnecessary practice. 
-Often a simpler data-driven approach is sufficient. For most web applications MVC or Flux/Redux may be more appropriate. 
-Before starting using advanced concepts we must evaluate incoming requirements.
+It's questionable whether higher granularity distributed across several layers introduce extra complexity in the frontend design system. 
+Should we really comply with Domain-Driven Design in frontend development? As a consequence, many developers tend to lean toward weaker 
+patterns because they see it as an unnecessary practice. Often a simpler data-driven approach is sufficient. For most web applications MVC 
+or Flux/Redux may be more appropriate. Before starting using advanced concepts we must evaluate incoming requirements.
 
 ## Object-Oriented Design
 
@@ -116,7 +115,7 @@ Angular's core patterns such as modules, services, entities, factories affords u
 
 ## Modules
 
-The official angular.io styleguide names different categories for organizing blocks of code: **Shared Modules** and **Widget Modules** contain the 
+The angular.io styleguide states categories for organizing blocks of code: **Shared Modules** and **Widget Modules** contain the 
 most commonly used code, while **Domain Modules** encapsulate blocks of code, that is not intended to be used outside that module, 
 makes **Domain Modules** a good candidate for the bounded context pattern. The **Service Module** shares its content application 
 wide as singletons. The **Root Module** includes several domain modules. That is, the entry point is the root module. For a more complete 
@@ -131,18 +130,18 @@ Angular's modular system gives a clean design response:
 **» Examples**<br/>
 
 `Service Module`: Application wide services as singletons e.g. *AuthenticationService, LoggerService*<br/>
-`Shared Module`: Highly reusable components as multitons e.g. *DropDownComponent, PaginatorComponent*<br/>
+`Shared Module`: Highly reusable components as non-singletons e.g. *DropDownComponent, PaginatorComponent*<br/>
 `Domain Module`: Domain modules such as *OrderModule* (Bounded Context) or *SalesModule* (Bounded Context)<br/>
-`Widget Module`: Highly reusable widgets as multitons e.g. *MatSidenavModule, MatSnackBarModule* <br/>
+`Widget Module`: Highly cohesive and reusable widgets e.g. *MatSidenavModule, MatSnackBarModule* <br/>
 
 **» Module guidelines**<br/>
 
-Following checklist can help to facilitate the orchestration of modules:<br/>
+Following checklist can help to facilitate the orchestration of ngModules:<br/>
 
 - Every component, directive and pipe must belong to **one** and **only one** module
 - **Never** re-declare these elements in another module
 - **Do not** share contents of a domain module, instead add reusable elements to a shared module
-- **Do not** use the providers array of a module to register global services (provideIn)
+- **Do not** use the providers array of a module to register global services (use provideIn)
 - Module content is private by default and only visible to its own content
 - Transitive dependencies aren't visible, reexport them to make them available to other modules
 - Module content can be exported without being imported
