@@ -274,7 +274,7 @@ export class AccountService {
     constructor(//Inject Account Repository) { }
 
         changeBalance(id: number, amount: number): void {
-            if (id) {
+            if (id > 0) {
                 const account = this.accountRepositoryService.getAccountById(id);
                 account.updateBalance(amount);
             }
