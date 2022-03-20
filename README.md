@@ -243,10 +243,60 @@ Neither domain state nor domain logic should be developed as part of UI controll
 
 Using business services only for structural and behavioral modeling while domain models remain pure value containers that can't protect their
 integrity (invariants) is a common bad practice in frontend projects. Hence, building rich domain models is a major objective in
-object-oriented applications. In general, using rich domain models means more entities than business services.
+object-oriented applications.
 
-@TODO [text]
-@TODO [image]
+```
+@Injectable({
+  providedIn: 'root'
+})
+export class AccountService {
+    private accounts = [{ id: 1, balance: 1200 }];
+
+    constructor() { }
+
+    changeBalance(id: number, amount: number) {
+        if (id > 0 && amount < AMOUNT.MAX_VALID) {
+            this.accounts[id].balance += amount;
+        }
+        return this.accounts[id].balance;
+    }
+}
+```
+
+Another better solution is to create rich domain models that encloses domain logic:
+
+```
+@Injectable({
+  providedIn: 'root'
+})
+export class AccountService {
+
+    constructor(//Inject Account Repository) { }
+
+        changeBalance(id: number, amount: number): void {
+            if (id) {
+                const account = this.accountRepositoryService.getAccountById(id);
+                account.updateBalance(amount);
+            }
+        }
+}
+
+class Account {
+    readonly id: number;
+    balance: number;
+
+    constructor() {}
+    
+    updateBalance(amount: number): number {
+        if (amount < AMOUNT.MAX_VALID) {
+            this.balance += amount;
+        }
+    }
+}
+
+```
+
+In general, using rich domain models means more entities than business services.
 
 **» Mapper pattern**<br/>
 
