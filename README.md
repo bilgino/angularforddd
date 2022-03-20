@@ -9,7 +9,7 @@ into logical boundaries and divide business logic into layers with different res
 ## Frontend coupled to OOD, DDD and CQRS
 
 The building blocks of Angular already provides us with code organisation strategies. Nevertheless, to gain a better design we will bypass the 
-traditional data-driven approach and consider strategies like Domain-Driven Design and Command-Query-Responsibility-Segregation:
+traditional data-driven approach and consider strategies like Object-Oriented Design, Domain-Driven Design and Command-Query-Responsibility-Segregation:
 
 ![](src/assets/images/frontend_arch.png)
 
@@ -17,15 +17,13 @@ traditional data-driven approach and consider strategies like Domain-Driven Desi
 
 Although functional programming has gained a strong foothold in frontend development in recent years, a consistent object-oriented approach
 is better suited for Angular projects. Object-oriented design allows us to approach a more human-readable code base, where the UL
-(Ubiquitous language) can help to design a better taxonomy and complex data types. It's important to note, Angular embraces both programming
-paradigms (FP & OOP).
+(Ubiquitous language) can help to design a better taxonomy and complex data types. It's important to note, that the Angular framework embraces 
+both programming paradigms (FP & OOP).
 
 **» Applying SOLID principles**<br/>
 
 In object orientation the SOLID principles can help to make better design decisions (high cohesion and low coupling). Applying the Dependency
-Inversion Principle, we ensure that layers depend on abstraction as opposed to depending on concretion. => Programming to an Interface!
-
-For example, we provide the domain layer as an abstraction by using interfaces / type aliases.
+Inversion Principle, we ensure that layers depend on abstraction as opposed to depending on concretion. (Programming to an Interface)
 
 **» Applying cross-cutting concerns**<br/>
 
@@ -38,7 +36,7 @@ visit the following website: https://jaxenter.com/cross-cutting-concerns-angular
 ## Layered architecture
 
 Considering multilayered architectures, the question arises of how to organize layers in SPA applications? This question refers to code splitting,
-communication across layers and demanding business logic through services. The multilayered architecture consists of the following layers:
+communication across layers and demanding business logic through services. The multilayered architecture in Domain-Driven Design embraces the following layers:
 
 **» Horizontal cut**<br/> Cutting the application into layers...
 
@@ -61,8 +59,8 @@ communication across layers and demanding business logic through services. The m
 
 *» Service layers* <br/>
 
-- User Interface services carry out interactions concepts
-- Application services carry out business and UI use cases and are procedural 
+- User Interface services carry out dialog or interaction concepts
+- Application services carry out business use cases and are procedural 
 - Domain services carry out business use cases at a higher level than entities or value objects
 - Infrastructure services help to separate technical and business concepts <br/>
 
@@ -80,7 +78,7 @@ communication across layers and demanding business logic through services. The m
 
 For example:<br/>
 
-Presentation layer: *ModalDialog, PopUp*<br/>
+Presentation layer: *ModalDialog, ConfirmationPopup*<br/>
 Application layer: *Authentication, Search*<br/>
 Domain layer: *Calculations, Transfers*<br/>
 Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*
@@ -163,8 +161,8 @@ Interaction between the bounded context pattern and domain modules:
 **» Scaffolding**<br/>
 
 A common practice in Angular projects is to structure the project into `/core`, `/shared`, `/features` folders. 
-Unfortunately this approach isn't sufficient for a complex projects and is mainly inspired by technical constraints. 
-When setting up a project, we should use a folder structure that is driven by business logic.
+Unfortunately this approach isn't sufficient for complex projects and is mainly inspired by technical constraints. 
+When setting up a folder structure, a domain-driven layout is much better.
 
 Domain-driven folder structure for Angular applications:
 
@@ -202,13 +200,13 @@ The view model and domain model should maintain different schemas to keep the do
 - Rich Domain Model
 - View Model 
 
-The anemic domain model is quite often used in CRUD-based web applications as value container, conform to RESTful practices. 
-The anemic domain model, however, is considered an anti-pattern because it does not contain business logic except `get` and `set` (CRUD) methods. 
-It introduces a tight coupling with the UI controller and can't protect its invariants. Hence, the rich domain model is a more suitable candidate. 
-Using rich domain model implementations, we prevent domain logic scattering everywhere multiple times. 
-The following example shows the negative side effects when using anemic domain models. 
+The anemic domain model is quite often used in CRUD-based web applications as value container, conform to 
+RESTful practices. However, its considered an anti-pattern because it doesn't enclose business logic and
+can't protect its invariants. Furthermore, it introduces a tight coupling with the client. 
+Using rich domain models, we prevent domain logic from scattering everywhere multiple times. 
+The following example shows the negative side effects of anemic domain models. 
 
-Domain logic coupled in the UI controller: 
+Domain logic coupled in the UI controller (client): 
 
 *»  Effects of anemic models* <br/> 
 ```
@@ -240,15 +238,15 @@ A rich domain model instead hides and encapsulates domain logic:
 }
 ```
 
-In the second example, the domain logic is decoupled from the UI controller. Encapsulation protects the integrity of the model data.
+In the second example, domain logic is decoupled to the UI controller. Encapsulation protects the integrity of the model data.
 Keeping the model as independent as possible improves usability and allows easier refactoring.
-Neither domain state nor domain logic should be developed as part of UI controllers.
+Neither domain state nor domain logic should be written as part of the client (UI controller etc.).
 
 Using business services only for structural and behavioral modeling while domain models remain pure value containers that can't protect their
 integrity (invariants) is a common bad practice in frontend projects. Hence, building rich domain models is a major objective in
 object-oriented applications. 
 
-For example:
+A common practice in Angular project:
 
 ```
 @Injectable({
@@ -268,15 +266,15 @@ export class AccountService {
 }
 ```
 
-A better solution is to enclose domain logic in rich domain models:
+A better solution is to enclose domain logic in the domain model itself:
 
 ```
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
-    //Inject Account Repository
-    constructor() { }
+   
+    constructor() { }  //Inject Account Repository
 
     changeBalance(id: number, amount: number): void {
         if (id > 0) {
