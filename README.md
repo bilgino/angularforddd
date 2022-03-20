@@ -61,7 +61,7 @@ communication across layers and demanding business logic through services. The m
 
 *» Service layers* <br/>
 
-- User Interface services carry out ...
+- User Interface services carry out interactions concepts
 - Application services carry out business and UI use cases and are procedural 
 - Domain services carry out business use cases at a higher level than entities or value objects
 - Infrastructure services help to separate technical and business concepts <br/>
@@ -71,17 +71,20 @@ communication across layers and demanding business logic through services. The m
 - Application layer: Data types (null, undefined), format (length, empty, whitespace), schema (email, creditcard)
 - Domain layer: Business/Domain Rules, Domain Invariants<br/>
 
-Examples - Presentation layer: *ModalDialog, PopUp*<br/>
-Examples - Application layer: *Authentication, Search*<br/>
-Examples - Infrastructure layer: *Repository, Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*<br/>
-*Logging, Error, Tracing, Security, Configuration, Token, Monitoring, Date*
-
 *» Angular adoption*<br/>
 
-- Presentation layer: Components, Directives, Templates, Pipes, Animations
-- Application layer: View Controller Classes, Guards, Validator Functions <br/>
-- Domain layer: Classes <br/>
+- Presentation layer: Views, Templates, Directives, Pipes, Animations
+- Application layer: Components, Guards, Validator Functions, Forms <br/>
+- Domain layer: Classes, Interfaces <br/>
 - Infrastructure layer: Resolvers, Interceptors<br/>
+
+For example:<br/>
+
+Presentation layer: *ModalDialog, PopUp*<br/>
+Application layer: *Authentication, Search*<br/>
+Domain layer: *Calculations, Transfers*<br/>
+Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*
+*Logging, Error, Security, Configuration, Token, Monitoring, Date*
 
 **» Applying DDD to Angular**<br/>
 
@@ -157,7 +160,7 @@ Interaction between the bounded context pattern and domain modules:
 
 ![](src/assets/images/BoundedContext.png)
 
-**» Project scaffolding**<br/>
+**» Scaffolding**<br/>
 
 A common practice in Angular projects is to structure the project into `/core`, `/shared`, `/features` folders. 
 Unfortunately this approach isn't sufficient for a complex projects and is mainly inspired by technical constraints. 
@@ -243,7 +246,9 @@ Neither domain state nor domain logic should be developed as part of UI controll
 
 Using business services only for structural and behavioral modeling while domain models remain pure value containers that can't protect their
 integrity (invariants) is a common bad practice in frontend projects. Hence, building rich domain models is a major objective in
-object-oriented applications.
+object-oriented applications. 
+
+For example:
 
 ```
 @Injectable({
@@ -251,9 +256,9 @@ object-oriented applications.
 })
 export class AccountService {
     private accounts = [{ id: 1, balance: 1200 }];
-
+    
     constructor() { }
-
+    
     changeBalance(id: number, amount: number) {
         if (id > 0 && amount < AMOUNT.MAX_VALID) {
             this.accounts[id].balance += amount;
@@ -263,7 +268,7 @@ export class AccountService {
 }
 ```
 
-Another better solution is to create rich domain models that encloses domain logic:
+A better solution is to enclose domain logic in rich domain models:
 
 ```
 @Injectable({
@@ -282,9 +287,9 @@ export class AccountService {
 }
 
 class Account {
-    readonly id: number;
+    id: number;
     balance: number;
-
+    
     constructor() {}
     
     updateBalance(amount: number): number {
