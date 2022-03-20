@@ -270,15 +270,15 @@ Another better solution is to create rich domain models that encloses domain log
   providedIn: 'root'
 })
 export class AccountService {
+    //Inject Account Repository
+    constructor() { }
 
-    constructor(//Inject Account Repository) { }
-
-        changeBalance(id: number, amount: number): void {
-            if (id > 0) {
-                const account = this.accountRepositoryService.getAccountById(id);
-                account.updateBalance(amount);
-            }
+    changeBalance(id: number, amount: number): void {
+        if (id > 0) {
+            const account = this.accountRepositoryService.getAccountById(id);
+            account.updateBalance(amount);
         }
+    }
 }
 
 class Account {
