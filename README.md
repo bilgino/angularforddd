@@ -13,10 +13,6 @@ traditional data-driven approach and consider strategies like Domain-Driven Desi
 
 ![](src/assets/images/frontend_arch.png)
 
-Considering multilayered architectures, the question arises of how to organize layers in SPA applications? This question refers to code splitting, 
-communication across layers and demanding business logic through services.
-
-
 ## Object-Oriented Design
 
 Although functional programming has gained a strong foothold in frontend development in recent years, a consistent object-oriented approach
@@ -41,7 +37,8 @@ visit the following website: https://jaxenter.com/cross-cutting-concerns-angular
 
 ## Layered architecture
 
-The multilayered architecture consists of the following layers:
+Considering multilayered architectures, the question arises of how to organize layers in SPA applications? This question refers to code splitting,
+communication across layers and demanding business logic through services. The multilayered architecture consists of the following layers:
 
 **» Horizontal cut**<br/> Cutting the application into layers...
 
@@ -57,15 +54,16 @@ The multilayered architecture consists of the following layers:
 
 *» Abstraction layers*<br/>
 
-- Presentation layer: Components, Widgets
-- Application layer: Use Case (UI) Services, View models, View model providers <br/>
-- Domain layer: Aggregates, Entities, Value objects, Repository interfaces <br/>
-- Infrastructure layer: Repository implementations <br/>
+- Presentation layer: Components, Widgets, User Interface Services
+- Application layer: Use Case Services, View Models, View Model Providers <br/>
+- Domain layer: Aggregates, Entities, Value Objects <br/>
+- Infrastructure layer: Repositories <br/>
 
 *» Service layers* <br/>
 
-- Stateless application services carry out business and UI use cases and are procedural 
-- Stateless domain services carry out business use cases at a higher level than entities or value objects
+- User Interface services carry out ...
+- Application services carry out business and UI use cases and are procedural 
+- Domain services carry out business use cases at a higher level than entities or value objects
 - Infrastructure services help to separate technical and business concepts <br/>
 
 *» Validation layers*<br/>
@@ -73,7 +71,8 @@ The multilayered architecture consists of the following layers:
 - Application layer: Data types (null, undefined), format (length, empty, whitespace), schema (email, creditcard)
 - Domain layer: Business/Domain Rules, Domain Invariants<br/>
 
-Examples - Application layer: *Authentication, Search, Validation*<br/>
+Examples - Presentation layer: *ModalDialog, PopUp*<br/>
+Examples - Application layer: *Authentication, Search*<br/>
 Examples - Infrastructure layer: *Repository, Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*<br/>
 *Logging, Error, Tracing, Security, Configuration, Token, Monitoring, Date*
 
@@ -81,7 +80,7 @@ Examples - Infrastructure layer: *Repository, Persistence, Caching, Messaging, C
 
 - Presentation layer: Components, Directives, Templates, Pipes, Animations
 - Application layer: View Controller Classes, Guards, Validator Functions <br/>
-- Domain layer: Classes, Interfaces <br/>
+- Domain layer: Classes <br/>
 - Infrastructure layer: Resolvers, Interceptors<br/>
 
 **» Applying DDD to Angular**<br/>
@@ -96,10 +95,6 @@ good idea.
 Domain-oriented layering is often considered the first structuring criterion in Angular applications. However, layered architecture 
 is independent of vertical structuring criterion. It's sufficient to comply with horizontal layers. The main reasons for modular segmentation in 
 Angular is lazy-loading, scoping and distribution. 
-
-Using business services only for structural and behavioral modeling while domain models remain pure value containers that can't protect their 
-integrity (invariants) is a common bad practice in frontend projects. Hence, building rich domain models is a major objective in 
-object-oriented applications. In general, using rich domain models means more entities than business services.
 
 When application services carry out business or UI use cases, it may be a good idea to write use cases that contain less logic directly in the 
 UI controller, like in the MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated classes instead! 
@@ -245,6 +240,13 @@ A rich domain model instead hides and encapsulates domain logic:
 In the second example, the domain logic is decoupled from the UI controller. Encapsulation protects the integrity of the model data.
 Keeping the model as independent as possible improves usability and allows easier refactoring.
 Neither domain state nor domain logic should be developed as part of UI controllers.
+
+Using business services only for structural and behavioral modeling while domain models remain pure value containers that can't protect their
+integrity (invariants) is a common bad practice in frontend projects. Hence, building rich domain models is a major objective in
+object-oriented applications. In general, using rich domain models means more entities than business services.
+
+@TODO [text]
+@TODO [image]
 
 **» Mapper pattern**<br/>
 
@@ -512,11 +514,11 @@ View model abstractions can also be achieved in Angular resolver services:
 export class OrderResolver implements Resolve<Order> {
 
     constructor(
-        private orderRepository: OrderRepository,          
-        private productRepository: ProductRepository,      
-        private productSelected: ProductSelected,          
-        private dateService: DateService                   
-    ) {}
+      private orderRepository: OrderRepository,             
+      private productRepository: ProductRepository,         
+      private dateService: DateService                      
+      private translateService: TranslationService              
+      ){}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Order> {
         const id = route.paramMap.get('id');
