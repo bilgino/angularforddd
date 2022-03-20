@@ -91,7 +91,7 @@ Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Valid
 An important aspect of Domain-Driven Design is that the complexity of the domain model is kept isolated from other concerns of the application. 
 Ideally, the domain layer is self-contained and focused on abstracting the business domain. Very often frontend applications evaluate business rules 
 that will immediately be reflected in the presentation layer, especially in SPA applications when navigating through HTML forms that have 
-cross-dependencies in terms of composite business rules. A dedicated domain layer supports us to prevent domain logic from scattering everywhere. 
+cross-dependencies in terms of distributed business rules. A dedicated domain layer supports us to prevent domain logic from scattering everywhere. 
 In addition to that, we don't want to command against the server upon every user input; therefore, a domain layer in the frontend sounds like a 
 good idea.
 
