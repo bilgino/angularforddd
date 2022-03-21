@@ -383,9 +383,9 @@ We will also implement the repository pattern in favor of state management servi
 Just as mentioned before, it's common for Angular projects to use services for business functionality or state management. 
 We use stateful services if we need to share data across independent components. 
 Often simple services only process HTTP requests and responses that perform CRUD operations. 
-In order to comply with Domain-Driven Design we will use reactive repositories in favor of an active data store. 
+In order to comply with Domain-Driven Design we will use reactive repositories in favor of a active data store. 
 The repository serves as a shared state service used by other independent components. 
-Frontend repositories are not just for Entities, but for all domain objects including anemic domain models or view models.
+Frontend repositories are not just for Entities, but for all domain objects including anemic domain models.
 
 Furthermore, we will introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. 
 The CQRS pattern helps us to answer different use cases with the respective data model. State changes in the repository will immediately
@@ -401,8 +401,8 @@ operators to implement the "projection phase" between the read and write side.
 **» Why CQRS in the frontend?**<br/>
 
 With traditional CRUD-based web applications conform to the REST architectural style and the single data model approach,
-we may fall into the situation where we have to stitch together several resources to build a rich view models .
-Even in the case of sophisticated Web APIs, it's likely that we will encounter these problems. Developers often implement the
+we may fall into the situation where we have to stitch together several resources to build a rich view model.
+Even in the case of RPC-like Web APIs, it's likely that we will encounter problems of this kind. Developers often implement the
 mapper pattern in UI controllers to elaborate view models. Which in the end leads to fat and unmanageable UI controllers:
 
 ![](src/assets/images/Up_Down_Flow.png)
@@ -413,7 +413,7 @@ For complicated page flows and user interfaces the CQRS pattern can help to avoi
 A view model provider is a perfect layer to pre-compute filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13).
 An important aspect which is neglected by many frontend developers.
 
-A view model provider in the frontend design system has many advantages:
+CQRS in the frontend design system has many advantages:
 
 - Separating concerns of each data model
 - Unidirectional data flow
@@ -429,10 +429,10 @@ A view model provider in the frontend design system has many advantages:
 
 ![](src/assets/images/Reactive_Flow.png)
 
-Application services usually provide query methods for retrieving view models of domain state, besides command methods (CQS). However, for 
-complicated page flows and user interfaces it would be inefficient to create view models in an application service method requiring many dependencies.
-By using a view model provider however, we facilitate access to view models in a more efficient manner. Consequently, the application service uses the 
-view model provider to report presentation data. 
+Application services usually provide query methods for retrieving view models of domain state (CQS). However, for 
+complicated page flows and user interfaces it would be inefficient to build view models in an application service query method.
+By using a view model provider however, we facilitate access to view models in a more efficient manner. 
+Consequently, the application service uses the view model provider to retrieve presentation data. 
 
 ![](src/assets/images/QuerySideService.PNG)
 
