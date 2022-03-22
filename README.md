@@ -405,9 +405,10 @@ mapper pattern in UI controllers to elaborate view models. Which in the end lead
 
 ![](src/assets/images/Up_Down_Flow.png)
 
-The domain model focuses on invariants and business rules rather than presentational data. Introducing view model provider services for the purpose of 
-supporting complicated page flows and user interfaces allows us to query the appropriate view properties for different use cases. That is, the CQRS pattern supports us to avoid over-bloated all-in-one models. The view model provider service may appear in different forms. It may appear 
-as a query method in an application service, or in a dedicated class. A view model provider service is a perfect layer to pre-compute 
+The domain model focuses on invariants and business rules rather than presentational data. Introducing view model provider services to support 
+complicated page flows and user interfaces enables us to query the appropriate view properties for different UX scenarios. 
+That is, the CQRS pattern supports us to avoid over-bloated all-in-one models. The view model provider service may appear in different forms. It may appear 
+as a query method in an application service, or as a dedicated class. The view model provider service is a perfect fit to pre-compute 
 filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). 
 
 CQRS in the frontend design system has many advantages:
