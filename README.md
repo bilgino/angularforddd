@@ -330,7 +330,7 @@ read(): Observable<Customer[]> {
 };
 ```
 
-The data mapper is associated in the repository to elaborate an appropriate (view or domain) model schema. 
+The data mapper is associated in the repository to elaborate an appropriate model schema. 
 
 **» Translator pattern (Mapping VM to DM and vice versa, XMapper.toXY)**<br/>
 
@@ -403,11 +403,11 @@ mapper pattern in UI controllers to elaborate view models. Which in the end lead
 
 ![](src/assets/images/Up_Down_Flow.png)
 
-The domain model focuses on invariants and use cases rather than reporting needs. Introducing view model providers in the frontend for the purpose
-of building complicated page flows and user interfaces allows us querying appropriate dependencies that are necessary to view properties.
-For complicated page flows and user interfaces the CQRS pattern can help to avoid over-bloated single models for every use case scenario.
-A view model provider is a perfect layer to pre-compute filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13).
-An important aspect which is neglected by many frontend developers.
+The domain model focuses on invariants and business rules rather than presentational data. Introducing view model provider services  
+for the purpose of supporting complicated page flows and user interfaces allows us to query the appropriate view properties for different use cases.
+That is, the CQRS pattern supports us to avoid over-bloated all-in-one models. The view model provider service may appear in different forms. It may appear 
+as a query method in an application service, or in a dedicated class. A view model provider service is a perfect layer to pre-compute 
+filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). 
 
 CQRS in the frontend design system has many advantages:
 
@@ -427,12 +427,12 @@ CQRS in the frontend design system has many advantages:
 
 Application services usually provide query methods for retrieving view models of domain state (CQS). However, for 
 complicated page flows and user interfaces it would be inefficient to build view models in a query method, 
-due to the large amount of dependencies. By using a view model provider however, we facilitate access to view models 
-in a more efficient manner. Consequently, the application service uses the view model provider to retrieve presentation data. 
+due to the large number of additional dependencies. Instead, we can use a view model provider service to facilitate access to view models 
+in a more efficient manner. Consequently, the application service can use the view model provider service to retrieve presentation data. 
 
 ![](src/assets/images/QuerySideService.PNG)
 
-This might seem more complex than just using a single state management service. The level of abstraction is up to the developer and requirements. 
+This might seem more complex than just using a single state management service. The level of abstraction is up to the developer. 
 
 **» Projection patterns**<br/>
 
@@ -481,9 +481,8 @@ class Order extends OrderViewModel {
 ``` 
 
 This implementation has some drawbacks either. It only works for a single entity! 
-What if a view model requires several sources? 
-When building complicated page flows and user interfaces that require several sources (aggregates), we should create a helper class in form of a view model provider. 
-The purpose of the view model provider is to encapsulate and build view models for specific use cases. 
+What if a view model requires several sources? We can create a dedicated class in form of a view model provider service. 
+The purpose of the view model provider service is to enclose and create view models for specific use cases. 
 
 ```
 @Injectable()
@@ -491,8 +490,7 @@ class OrderViewModelProvider {
    
     constructor(
       private orderRepository: OrderRepository,             
-      private productRepository: ProductRepository,         
-      private dateService: DateService                      
+      private productRepository: ProductRepository,                         
       private translateService: TranslationService              
       ){}
 
@@ -524,7 +522,7 @@ class OrderViewModelProvider {
 }
 ``` 
 
-Requesting the view model provider in the view controller class:
+Requiring the view model provider service in the view controller class:
 
 ```
 @Component({
