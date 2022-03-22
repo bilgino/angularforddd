@@ -266,28 +266,30 @@ export class AccountService {
 A better solution is to enclose domain logic in the domain model itself:
 
 ```
+class Account {
+    id: number;
+    balance: number;
+    
+    constructor() {}
+    
+    updateBalance(amount: number): number {
+        if (amount < AMOUNT.MAX_VALID) {
+            this.balance += amount;
+        }
+    }
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
+
     constructor() { }  //Inject Account Repository
 
     changeBalance(id: number, amount: number): void {
         if (id > 0) {
             const account = this.accountRepositoryService.getAccountById(id);
             account.updateBalance(amount);
-        }
-    }
-}
-
-class Account {
-    id: number;
-    balance: number;
-    constructor() {}
-    
-    updateBalance(amount: number): number {
-        if (amount < AMOUNT.MAX_VALID) {
-            this.balance += amount;
         }
     }
 }
@@ -365,8 +367,8 @@ However, mapping hyperlinks to a client-side domain model is not desirable! In a
 need to be sent asynchronously to assemble a model for a specific use case in the presentation layer. If the applied HATEOAS implementation pattern
 forms hyperlinks in a response schema, it would limit the user interface to incorporate with REST APIs synchronously. 
 UX designers usually don't model their interaction, navigation and screen patterns around HATEOAS. Furthermore, the Angular router engine doesn't 
-comply well with the URI templates of HATEOAS  implementation patterns. HATEOAS has its advantages as well as disadvantages. Even though the router in Angular 
-complies with the navigational behaviour of hypermedia APIs, you should avoid HATEOAS for Angular SPA applications!
+comply well with the URI templates of HATEOAS  implementation patterns. HATEOAS has its advantages as well as disadvantages. Even though the router 
+in Angular complies with the navigational behaviour of hypermedia APIs, you should avoid HATEOAS for Angular SPA applications!
 
 ## Services
 
