@@ -251,8 +251,7 @@ A common practice in Angular project:
   providedIn: 'root'
 })
 export class AccountService {
-    private accounts = [{ id: 1, balance: 1200 }];
-    
+    accounts = [{ id: 1, balance: 1200 }];
     constructor() { }
     
     changeBalance(id: number, amount: number) {
@@ -271,7 +270,6 @@ A better solution is to enclose domain logic in the domain model itself:
   providedIn: 'root'
 })
 export class AccountService {
-   
     constructor() { }  //Inject Account Repository
 
     changeBalance(id: number, amount: number): void {
@@ -285,7 +283,6 @@ export class AccountService {
 class Account {
     id: number;
     balance: number;
-    
     constructor() {}
     
     updateBalance(amount: number): number {
@@ -294,7 +291,6 @@ class Account {
         }
     }
 }
-
 ```
 
 In general, using rich domain models means more entities than business services.
@@ -341,6 +337,21 @@ The data mapper is associated in the repository to elaborate an appropriate (vie
 @TODO [text]
 @TODO [image]
 
+**» Domain model**<br/>
+
+@TODO [text]
+@TODO [image]
+
+**» View model**<br/>
+
+@TODO [text]
+@TODO [image]
+
+**» Model declaration strategies**<br/>
+
+@TODO [text]
+@TODO [image]
+
 **» REST, HATEOAS & CO.**<br/>
 
 When building multi-layered, distributed web applications, data transformation is among the major challenges that occur when data traverses 
@@ -356,21 +367,6 @@ forms hyperlinks in a response schema, it would limit the user interface to inco
 UX designers usually don't model their interaction, navigation and screen patterns around HATEOAS. Furthermore, the Angular router engine doesn't 
 comply well with the URI templates of HATEOAS  implementation patterns. HATEOAS has its advantages as well as disadvantages. Even though the router in Angular 
 complies with the navigational behaviour of hypermedia APIs, you should avoid HATEOAS for Angular SPA applications!
-
-**» Domain model**<br/>
-
-@TODO [text]
-@TODO [image]
-
-**» View model**<br/>
-
-@TODO [text]
-@TODO [image]
-
-**» Model declaration strategies**<br/>
-
-@TODO [text]
-@TODO [image]
 
 ## Services
 
@@ -430,9 +426,9 @@ CQRS in the frontend design system has many advantages:
 ![](src/assets/images/Reactive_Flow.png)
 
 Application services usually provide query methods for retrieving view models of domain state (CQS). However, for 
-complicated page flows and user interfaces it would be inefficient to build view models in an application service query method.
-By using a view model provider however, we facilitate access to view models in a more efficient manner. 
-Consequently, the application service uses the view model provider to retrieve presentation data. 
+complicated page flows and user interfaces it would be inefficient to build view models in a query method, 
+due to the large amount of dependencies. By using a view model provider however, we facilitate access to view models 
+in a more efficient manner. Consequently, the application service uses the view model provider to retrieve presentation data. 
 
 ![](src/assets/images/QuerySideService.PNG)
 
