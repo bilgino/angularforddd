@@ -78,9 +78,9 @@ communication across layers and demanding business logic through services. The m
 
 For example:<br/>
 
-Presentation layer: *ModalDialog, ConfirmationPopup*<br/>
+Presentation layer: *ModalDialog, Popover*<br/>
 Application layer: *Authentication, Search*<br/>
-Domain layer: *Calculations, Transfers*<br/>
+Domain layer: *Calculations*<br/>
 Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*
 *Logging, Error, Security, Configuration, Token, Monitoring, Date*
 
@@ -183,7 +183,7 @@ in the default settings of the view encapsulation mode.
 ## Models 
 
 The model in the classic MVC pattern is a representation of application data. The model contains code to create, read, update and delete or 
-transform model data. It stores the domain knowledge and is very similar to the Repository pattern! 
+transform model data. It stores the domain knowledge and is very similar to the repository pattern! 
 
 Angular promotes two types of models:
 
@@ -199,7 +199,7 @@ The view model and domain model should maintain different schemas to keep the do
 - View Model 
 
 The anemic domain model is quite often used in CRUD-based web applications as value container, conform to 
-RESTful practices. However, its considered an anti-pattern because it doesn't enclose business logic and
+RESTful practices. However, it's considered an anti-pattern because it doesn't enclose business logic and
 can't protect its invariants. Furthermore, it introduces a tight coupling with the client. 
 Using rich domain models, we prevent domain logic from scattering everywhere multiple times. 
 The following example shows the negative side effects of anemic domain models. 
@@ -241,7 +241,7 @@ Keeping the model as independent as possible improves usability and allows easie
 Neither domain state nor domain logic should be written as part of the client (UI controller).
 
 Using business services only for structural and behavioral modeling while domain models remain pure value containers that can't protect their
-integrity (invariants) is a common bad practice in frontend projects. Hence, building rich domain models is a major objective in
+integrity is a common bad practice in frontend projects. Hence, building rich domain models is a major objective in
 object-oriented applications. 
 
 A common practice in Angular project:
@@ -251,19 +251,18 @@ A common practice in Angular project:
   providedIn: 'root'
 })
 export class AccountService {
-    accounts = [{ id: 1, balance: 1200 }];
+    accounts = [{ id: 1, balance: 4500 }];
     constructor() { }
     
-    changeBalance(id: number, amount: number) {
+    changeBalance(id: number, amount: number) : void {
         if (id > 0 && amount < AMOUNT.MAX_VALID) {
             this.accounts[id].balance += amount;
         }
-        return this.accounts[id].balance;
     }
 }
 ```
 
-A better solution is to enclose domain logic in the domain model itself:
+A better solution is to keep the domain logic in the domain model entity class:
 
 ```
 class Account {
@@ -272,7 +271,7 @@ class Account {
     
     constructor() {}
     
-    updateBalance(amount: number): number {
+    updateBalance(amount: number): void {
         if (amount < AMOUNT.MAX_VALID) {
             this.balance += amount;
         }
@@ -288,7 +287,7 @@ export class AccountService {
 
     changeBalance(id: number, amount: number): void {
         if (id > 0) {
-            const account = this.accountRepositoryService.getAccountById(id);
+            const account = this.accountRepositoryService.getById(id);
             account.updateBalance(amount);
         }
     }
@@ -300,7 +299,7 @@ In general, using rich domain models means more entities than business services.
 **» Mapper pattern**<br/>
 
 By implementing a domain layer in the frontend, we ensure that business behavior works. 
-With the higher functional ability using domain models, we should take the mapper pattern into consideration. 
+With higher functional ability by using rich domain models, we must take the mapper pattern into consideration. 
 A common practice for the reason of typesaftyness is to declare interfaces in support of plain JavaScript object literals. 
 In the context of mapping, it's important to make a clear distinction between the typing system in TypeScript and the data structure of models.
 
@@ -386,8 +385,8 @@ The repository serves as a shared state service used by other independent compon
 Frontend repositories are not just for Entities, but for all domain objects including anemic domain models.
 
 Furthermore, we will introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. 
-The CQRS pattern helps us to answer different use cases with the respective data model. State changes in the repository will immediately
-replicate back to a view model (read side), that is, reactive projection through observables. Projections can be leveraged in several ways or layers. 
+The CQRS pattern enables us to answer different use cases with the respective data model. State changes in the repository will immediately
+replicate back to the view model (read side), that is, reactive projection through observables. Projections can be leveraged in several ways or layers. 
 The most common approach is an event-based projection causing an eventually consistent system. However, we will not encounter any problems of this kind,
 due to the reactive design of RxJS (Angular).
 
