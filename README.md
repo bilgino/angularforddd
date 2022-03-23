@@ -9,7 +9,7 @@ into logical boundaries and divide business logic into layers with different res
 ## Frontend coupled to OOD, DDD and CQRS
 
 The building blocks of Angular already provides us with code organisation strategies. Nevertheless, to gain a better design we will bypass the 
-traditional data-driven approach and consider strategies like Object-Oriented Design, Domain-Driven Design and Command-Query-Responsibility-Segregation:
+traditional data-centric design and consider strategies like Object-Oriented Design, Domain-Driven Design and Command-Query-Responsibility-Segregation:
 
 ![](src/assets/images/frontend_arch.png)
 
@@ -89,7 +89,7 @@ Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Valid
 An important aspect of Domain-Driven Design is that the complexity of the domain model is kept isolated from other concerns of the application. 
 Ideally, the domain layer is self-contained and focused on abstracting the business domain. Very often frontend applications evaluate business rules 
 that will immediately be reflected in the presentation layer, especially in SPA applications when navigating through HTML forms that have 
-cross-dependencies in terms of distributed business rules. A dedicated domain layer supports us in avoiding domain logic from scattering everywhere. 
+cross-dependencies in terms of distributed business rules. A dedicated domain layer helps us to avoid domain logic leaking into other layers. 
 In addition to that, we don't want to command against the server upon every user input; therefore, a domain layer in the frontend sounds like a 
 good idea.
 
@@ -199,9 +199,9 @@ The view model and domain model should maintain different schemas to keep the do
 - View Model 
 
 The anemic domain model is quite often used in CRUD-based web applications as value container, conform to 
-RESTful practices. However, it's considered an anti-pattern because it doesn't enclose business logic and
+RESTful practices. However, it's considered an anti-pattern because it doesn't include business logic and
 can't protect its invariants. Furthermore, it introduces a tight coupling with the client. 
-Using rich domain models, we prevent domain logic from scattering everywhere multiple times. 
+Applying rich domain models, we prevent domain logic from leaking into other layers. 
 The following example shows the negative side effects of anemic domain models. 
 
 Domain logic coupled to the UI controller (client): 
@@ -240,11 +240,10 @@ In the second example, domain logic is decoupled from the UI controller. Encapsu
 Keeping the model as independent as possible improves usability and allows easier refactoring.
 Neither domain state nor domain logic should be written as part of the client (UI controller).
 
-Using business services only for structural and behavioral modeling while domain models remain pure value containers that can't protect their
-integrity is a common bad practice in frontend projects. Hence, building rich domain models is a major objective in
-object-oriented applications. 
+Furthermore, using business services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
+practice in Angular projects.
 
-A common practice in Angular project:
+A common practice in Angular project, where boundaries get unclear:
 
 ```
 @Injectable({
@@ -262,7 +261,7 @@ export class AccountService {
 }
 ```
 
-A better solution is to keep the domain logic in the domain model entity class:
+A better solution is to move the domain logic to entity classes to ensure that boundaries are clear:
 
 ```
 class Account {
@@ -298,10 +297,10 @@ In general, using rich domain models means more entities than business services.
 
 **» Mapper pattern**<br/>
 
-By implementing a domain layer in the frontend, we ensure that business behavior works. 
+Implementing a domain layer in the frontend, we ensure that business behavior works. 
 With higher functional ability by using rich domain models, we must take the mapper pattern into consideration. 
 A common practice for the reason of typesaftyness is to declare interfaces in support of plain JavaScript object literals. 
-In the context of mapping, it's important to make a clear distinction between the typing system in TypeScript and the data structure of models.
+In the context of data mapping, it's important to make a clear distinction between the typing system and the data structure of models.
 
 Mapping JSON-encoded server data in the frontend is mandatory if:
 
