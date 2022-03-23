@@ -98,7 +98,7 @@ is independent of vertical structuring. It's sufficient to comply with horizonta
 Angular is lazy-loading, scoping and distribution. 
 
 When application services carry out business or UI use cases, it may be a good idea to write use cases that contain less logic directly in the 
-UI controller, like in the MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated classes instead! 
+UI controller, like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated classes instead! 
 Additionally, we may want to share state and logic of that dedicated class with other independent components. 
 
 It's questionable whether higher granularity distributed across several layers introduce extra complexity in the frontend design system. 
@@ -198,8 +198,8 @@ The view model and domain model should maintain different schemas to keep the do
 - Rich Domain Model
 - View Model 
 
-The anemic domain model is quite often used in CRUD-based web applications as value container, conform to 
-RESTful practices. However, it's considered an anti-pattern because it doesn't include business logic and
+The anemic domain model is quite often used in CRUD-based web applications as value container without any behavior of its own, 
+conform to RESTful practices. However, it's considered an anti-pattern because it doesn't include business logic and
 can't protect its invariants. Furthermore, it introduces a tight coupling with the client. 
 Applying rich domain models, we prevent domain logic from leaking into other layers. 
 The following example shows the negative side effects of anemic domain models. 
@@ -241,9 +241,9 @@ Keeping the model as independent as possible improves usability and allows easie
 Neither domain state nor domain logic should be written as part of the client (UI controller).
 
 Furthermore, using business services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
-practice in Angular projects.
+practice in Angular projects. Building rich domain models is a major objective in object-oriented design.
 
-A common practice in Angular project, where boundaries get unclear:
+A common practice in Angular projects are feature services or the "Fat Service, Skinny Model" pattern:
 
 ```
 @Injectable({
@@ -261,7 +261,7 @@ export class AccountService {
 }
 ```
 
-A better solution is to move the domain logic to entity classes to ensure that boundaries are clear:
+A better solution is to move the domain logic to entity classes to make boundaries clear:
 
 ```
 class Account {
@@ -376,12 +376,11 @@ We will also implement the repository pattern in favor of state management servi
 
 **» Stateful services vs. stateful repositories**<br/>
 
-Just as mentioned before, it's common for Angular projects to use services for business functionality or state management. 
-We use stateful services if we need to share data across independent components. 
-Often simple services only process HTTP requests and responses that perform CRUD operations. 
+Just as mentioned before, it's common for Angular projects to use feature services for business functionality and state management. 
+We use stateful services if we need to share data across components or process simple HTTP requests and responses that perform CRUD operations. 
 In order to comply with Domain-Driven Design we will use reactive repositories in favor of an active data store. 
-The repository serves as a shared state service used by other independent components. 
-Frontend repositories are not just for Entities, but for all domain objects including anemic domain models.
+The repository acts as a storage place for globally accessible objects that can be used by other independent components. 
+Repositories are not just for Entities, but for all domain objects including anemic domain models ~~or view models~~.
 
 Furthermore, we will introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. 
 The CQRS pattern enables us to answer different use cases with the respective data model. State changes in the repository will immediately
@@ -417,7 +416,7 @@ CQRS in the frontend design system has many advantages:
 
 The view model provider service may appear in different forms. It may appear as a query method in an application service, or as a dedicated class:
 
-**» CQRS with state management services**<br/>
+**» CQRS with API Segregation (Feature Services)**<br/>
 
 ![](src/assets/images/Service_CQRS.png)
 
