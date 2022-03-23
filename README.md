@@ -89,7 +89,7 @@ Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Valid
 An important aspect of Domain-Driven Design is that the complexity of the domain model is kept isolated from other concerns of the application. 
 Ideally, the domain layer is self-contained and focused on abstracting the business domain. Very often frontend applications evaluate business rules 
 that will immediately be reflected in the presentation layer, especially in SPA applications when navigating through HTML forms that have 
-cross-dependencies in terms of distributed business rules. A dedicated domain layer supports us to prevent domain logic from scattering everywhere. 
+cross-dependencies in terms of distributed business rules. A dedicated domain layer supports us in avoiding domain logic from scattering everywhere. 
 In addition to that, we don't want to command against the server upon every user input; therefore, a domain layer in the frontend sounds like a 
 good idea.
 
@@ -254,7 +254,7 @@ export class AccountService {
     accounts = [{ id: 1, balance: 4500 }];
     constructor() { }
     
-    changeBalance(id: number, amount: number) : void {
+    changeBalance(id: number, amount: number): void {
         if (id > 0 && amount < AMOUNT.MAX_VALID) {
             this.accounts[id].balance += amount;
         }
@@ -405,7 +405,7 @@ mapper pattern in UI controllers to elaborate view models. Which in the end lead
 
 The domain model focuses on invariants and business rules rather than presentational data. Introducing view model provider services to manage 
 complicated page flows and user interfaces allows us to query the appropriate view properties for different UX scenarios. 
-That is, the CQRS pattern supports us to avoid over-bloated all-in-one models. The view model provider service is a perfect fit to pre-compute 
+That is, the CQRS pattern supports us in avoiding over-bloated all-in-one models. The view model provider service is a perfect fit to pre-compute 
 filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). 
 
 CQRS in the frontend design system has many advantages:
