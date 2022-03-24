@@ -426,8 +426,8 @@ The view model provider service may appear in different forms. It may appear as 
 
 Application services usually provide query methods for retrieving view models of domain state (CQS). However, for 
 complicated page flows and user interfaces it would be inefficient to build view models in a query method, 
-due to the large number of additional dependencies. Instead, we can use a view model provider service to facilitate access to view models 
-in a more efficient manner. Consequently, the application service can use the view model provider service to retrieve presentation data. 
+due to the large number of additional dependencies. Instead, we can use view model provider services to facilitate access to view models 
+in a more efficient manner. Consequently, the application service may use the view model provider service to retrieve presentation data. 
 
 ![](src/assets/images/QuerySideService.PNG)
 
