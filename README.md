@@ -330,7 +330,7 @@ read(): Observable<Customer[]> {
 };
 ```
 
-The data mapper is associated in the repository to elaborate an appropriate model schema. 
+The data mapper is associated in the repository to elaborate the appropriate model schema. 
 
 **» Translator pattern (Mapping VM to DM and vice versa, XMapper.toXY)**<br/>
 
@@ -396,13 +396,13 @@ operators to implement the "projection phase" between the read and write side.
 
 With traditional CRUD-based web applications conform to the REST architectural style and the single data model approach,
 we may fall into the situation where we have to stitch together several resources to build a rich view model.
-Even in the case of RPC-like Web APIs, it's likely that we will encounter problems of this kind. Developers often implement the
-mapper pattern in UI controllers to elaborate view models. Which in the end leads to fat and unmanageable UI controllers:
+Even in the case of RPC-like Web APIs, it's likely that we will encounter problems of this kind. Developers often use mapper methods 
+in UI controllers to elaborate view models. Which in the end leads to fat and unmanageable UI controllers:
 
 ![](src/assets/images/Up_Down_Flow.png)
 
-The domain model focuses on invariants and business rules rather than presentational data. Introducing view model provider services to manage 
-complicated page flows and user interfaces allows us to query the appropriate view properties for different UX scenarios. 
+The domain model focuses on invariants and business rules rather than presentation needs. Introducing view model provider services to manage 
+complicated page flows and user interfaces allows us to query the appropriate view model for different UI scenarios. 
 That is, the CQRS pattern supports us in avoiding over-bloated all-in-one models. The view model provider service is a perfect fit to pre-compute 
 filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). 
 
@@ -427,12 +427,12 @@ The view model provider service may appear in different forms. It may appear as 
 Application services usually provide query methods for retrieving view models of domain state (CQS). However, for 
 complicated page flows and user interfaces it would be inefficient to build view models in a query method, 
 due to the large number of additional dependencies. Instead, we can use view model provider services to facilitate access to view models 
-in a more efficient manner. Consequently, the application service may use the view model provider service to retrieve presentation data. 
+in a more efficient way. Consequently, the application service may use the view model provider service to retrieve presentation data. 
 
 ![](src/assets/images/QuerySideService.PNG)
 
 This might seem more complex than just using a single feature service for business logic and state management. 
-The level of abstraction is up to the developer and is be dependent on the requirements. 
+The level of abstraction is up to the developer and is dependent on the requirements. 
 
 **» Projection patterns**<br/>
 
@@ -538,7 +538,7 @@ export class OrderComponent {
 }
 ``` 
 
-View model abstractions can also be achieved with Angular resolver services!
+View model objects can also be elaborated with Angular resolver services!
 
 **» CQRS and the Command Pattern**<br/>
 
