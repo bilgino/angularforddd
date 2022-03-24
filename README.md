@@ -35,7 +35,7 @@ visit the following website: https://jaxenter.com/cross-cutting-concerns-angular
 
 ## Layered architecture
 
-Considering multilayered (4-tier architecture) architectures, the question arises of how to organize layers in SPA applications? This question refers to code splitting,
+Considering multilayered (4-tier) architectures, the question arises of how to organize layers in SPA applications? This question refers to code splitting,
 communication across layers and demanding business logic through services. The multilayered architecture in Domain-Driven Design embraces the following layers:
 
 **» Horizontal cut**<br/> Cutting the application into layers...
