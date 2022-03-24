@@ -431,7 +431,8 @@ in a more efficient manner. Consequently, the application service may use the vi
 
 ![](src/assets/images/QuerySideService.PNG)
 
-This might seem more complex than just using a single state management service. The level of abstraction is up to the developer and requirements. 
+This might seem more complex than just using a single feature service for business logic and state management. 
+The level of abstraction is up to the developer and is be dependent on the requirements. 
 
 **» Projection patterns**<br/>
 
