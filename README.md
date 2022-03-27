@@ -478,7 +478,7 @@ The level of abstraction is up to the developer and is dependent on the requirem
 
 Using a single feature service for read and writes:
 
-![](src/assets/images/SingleService_CQRS.PNG)
+![](src/assets/images/SingleService_CQRS.png)
 
 **» Projection patterns**<br/>
 
