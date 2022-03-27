@@ -286,8 +286,12 @@ export class AccountService {
 
     changeBalance(id: number, amount: number): void {
         if (id > 0) {
-            const account = this.accountRepositoryService.getById(id);
-            account.updateBalance(amount);
+            this.accountRepositoryService.getById(id).pipe(
+             mergeMap((account:Account)=>{
+                account.updateBalance(amount);
+             }),
+             catchError(...)
+             );
         }
     }
 }
@@ -332,25 +336,65 @@ read(): Observable<Customer[]> {
 
 The data mapper is associated in the repository to elaborate the appropriate model schema. 
 
-**» Translator pattern (Mapping VM to DM and vice versa, XMapper.toXY)**<br/>
-
-@TODO [text]
-@TODO [image]
-
 **» Domain model**<br/>
 
-@TODO [text]
-@TODO [image]
+The domain model entity class contains data and domain-related behavior modeled around invariants (business rules).
+In terms of DDD and CQRS, the domain model entity is an aggregate that contains only write operations that result in state changes.
+
+```
+class Order {
+    #orderId: number;
+    #quantity: number; 
+    
+    contructor(){}
+    
+    set orderId(){}
+    get orderId(){}
+    
+    #privateMethod(){}
+    publicMethod(){}
+}
+```
 
 **» View model**<br/>
 
-@TODO [text]
-@TODO [image]
+View models are mere data objects and usually don't contain any domain-related behavior, hence they are not a part of the domain layer. 
+View models are supportive in providing data to the view and may also extend super view models to inherit common properties. 
+They are typically created by merging two or more existing models into a single model and are an essential part of a good frontend architecture. 
+
+```
+class OrderViewModel {
+    orderId;
+    total; 
+    featured;
+    
+    get orderId() {}
+    get total() {}
+    get featured() {}
+    
+    constructor(...){
+      calcualte(...);
+      format(...);
+      prepare(...);
+    }
+    
+    #calculate(){}
+    #format(){}
+    #prepare(){}
+}
+```
+
+Necessary transformation methods can be directly coded in the view model object. A better approach is to have a separate component that encloses all necessary 
+operations such as a mapper, translator, factory or abstract super class. In this way, we can delegate and decouple the transformation responsibilities for reusability. 
 
 **» Model declaration strategies**<br/>
 
 @TODO [text]
 @TODO [image]
+
+**» Translator pattern (Mapping VM to DM and vice versa, XMapper.toXY)**<br/>
+
+In order to transform the domain model entity to a view model...
 
 **» REST, HATEOAS & CO.**<br/>
 
@@ -433,6 +477,10 @@ in a more efficient way. Consequently, the application service may use the view 
 
 This might seem more complex than just using a single feature service for business logic and state management. 
 The level of abstraction is up to the developer and is dependent on the requirements. 
+
+Using a single feature service for read and writes:
+
+![](src/assets/images/SingleService_CQRS.PNG)
 
 **» Projection patterns**<br/>
 
