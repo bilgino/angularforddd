@@ -243,7 +243,7 @@ Neither domain state nor domain logic should be written as part of the client (U
 Furthermore, using business services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
 practice in Angular projects. Building rich domain models is a major objective in object-oriented design.
 
-A common practice in Angular projects is using feature services or the "Fat Service, Skinny Model" pattern:
+A common practice in Angular projects is to use feature services or the "Fat Service, Skinny Model" pattern:
 
 ```
 @Injectable({
@@ -261,7 +261,7 @@ export class AccountService {
 }
 ```
 
-A better approach is to move domain logic to entity classes making boundaries become more clear:
+A better approach is to enclose domain logic inside entity classes making boundaries become more clear:
 
 ```
 class Account {
@@ -286,11 +286,11 @@ export class AccountService {
 
     changeBalance(id: number, amount: number): void {
         if (id > 0) {
-            this.accountRepositoryService.getById(id).pipe(
-             mergeMap((account:Account)=>{
-                account.updateBalance(amount);
-             }),
-             catchError(...)
+             this.accountRepositoryService.getById(id).pipe(
+                mergeMap((account:Account)=>{
+                  account.updateBalance(amount);
+                }),
+                catchError(...)
              );
         }
     }
@@ -358,7 +358,7 @@ class Order {
 
 **» View model**<br/>
 
-View models are mere data objects and usually don't contain any domain-related behavior, hence they are not a part of the domain layer. 
+View models are mere data objects and usually don't contain any domain-related behavior. Hence, they are not a part of the domain layer. 
 View models are supportive in providing data to the view and may also extend super view models to inherit common properties. 
 They are typically created by merging two or more existing models into a single model and are an essential part of a good frontend architecture. 
 
@@ -373,19 +373,17 @@ class OrderViewModel {
     get featured() {}
     
     constructor(...){
-      calcualte(...);
       format(...);
       prepare(...);
     }
     
-    #calculate(){}
     #format(){}
     #prepare(){}
 }
 ```
 
-Necessary transformation methods can be directly coded in the view model object. A better approach is to have a separate component that encloses all necessary 
-operations such as a mapper, translator, factory or abstract super class. In this way, we can delegate and decouple the transformation responsibilities for reusability. 
+Necessary transformation methods can be directly coded in the view model. A better approach is to have a separate component which encloses all operations 
+such as a mapper, translator, factory or abstract super class. In this way, we can delegate and decouple the transformation responsibilities to promote code reusability.
 
 **» Model declaration strategies**<br/>
 
