@@ -343,8 +343,11 @@ In terms of DDD and CQRS, the domain model entity is an aggregate that contains 
 
 ```
 class Order {
-    #orderId: number;
-    #quantity: number; 
+    #orderId;
+    #status,
+    #total;
+    #tax; 
+    #date;
     
     contructor(){}
     
@@ -359,31 +362,29 @@ class Order {
 **» View model**<br/>
 
 View models are mere data objects and usually don't contain any domain-related behavior. Hence, they are not a part of the domain layer. 
-View models are supportive in providing data to the view and may also extend super view models to inherit common properties. 
-View models are equal to Input-, Read- or Query models. They are typically created by merging two or more existing models into a 
-single model and are an essential part of a good frontend architecture. 
+View models are supportive in providing data to the view and might extend super view model classes to inherit common properties. 
+They are typically created by merging two or more existing models into one model and are an essential part of a good frontend architecture. 
 
 ```
 class OrderViewModel {
-    orderId;
-    total; 
-    featured;
+    #orderId;
+    #customerId;
+    #total; 
+    #balance;
     
-    get orderId() {}
     get total() {}
-    get featured() {}
+    set total(data) { return this.format(data) }
+    get balance() {}
+    set balance(data) { return this.calc(data) }
     
-    constructor(...){
-      format(...);
-      prepare(...);
-    }
+    constructor(){}
     
     #format(){}
-    #prepare(){}
+    #calc(){}
 }
 ```
 
-Necessary data transformations can reside in the view model class. A better approach is to have a separate component which performs all operations 
+Necessary data transformations can reside in the view model class. A better approach is to have a separate class which performs all UI-related operations 
 such as a mapper, translator, factory or abstract super class. In this way, we can delegate and decouple the transformation responsibilities to promote code reusability.
 
 The view model should hold the data necessary to render the UI if:
@@ -396,9 +397,9 @@ View model checklist:
 - View model must contain an ID property
 - View model should be immutable and of type readonly string
 - View model behaves like a simple Value Object, also called a Data Transfer Object
-- View model class should not have dependencies
-- View model should be located in its own file, repository or UI component
-- View model naming convention ends with view suffix e.g. UserProfileView, UserListView, UserDetailsView
+- View model might or might not have dependencies
+- View model should be located in its own file, repository or UI container component
+- View model naming convention ends with suffix -View e.g. UserProfileView, UserListView, UserDetailsView
 
 **» Model declaration strategies**<br/>
 
