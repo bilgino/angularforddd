@@ -341,19 +341,14 @@ The data mapper is associated in the repository to elaborate the appropriate mod
 The domain model entity class contains data and domain-related behavior modeled around invariants (business rules).
 In terms of DDD and CQRS, the domain model entity is an aggregate that contains only write operations that result in state changes.
 
+Domain model in the EcmaScript syntax:
+
 ```
 class Order {
-    #orderId;
-    #status,
-    #total;
-    #tax; 
-    #date;
-    
+    #property
+
     contructor(){}
-    
-    set orderId(){}
-    get orderId(){}
-    
+        
     #privateMethod(){}
     publicMethod(){}
 }
@@ -395,10 +390,10 @@ The view model should hold the data necessary to render the UI if:
 View model checklist:
 
 - View model must contain an ID property
-- View model should be immutable and of type readonly string
-- View model behaves like a simple Value Object, also called a Data Transfer Object
+- View model should be immutable and its properties of type `readonly string`
+- View model behaves like a Value Object, also called a Data Transfer Object
 - View model might or might not have dependencies
-- View model should be located in its own file, repository or UI container component
+- View model should be located in its own file, repository or UI container
 - View model naming convention ends with suffix -View e.g. UserProfileView, UserListView, UserDetailsView
 
 **» Model declaration strategies**<br/>
@@ -408,7 +403,8 @@ View model checklist:
 
 **» Translator pattern (Mapping VM to DM and vice versa, XMapper.toXY)**<br/>
 
-In order to transform the domain model entity to a view model...
+@TODO [text]
+@TODO [image]
 
 **» REST, HATEOAS & CO.**<br/>
 
@@ -492,9 +488,14 @@ in a more efficient way. Consequently, the application service may use the view 
 This might seem more complex than just using a single feature service for business logic and state management. 
 The level of abstraction is up to the developer and is dependent on the requirements. 
 
-Using a single feature service for read and writes:
+Using a single feature service for reads and writes:
 
 ![](src/assets/images/SingleService_CQRS.png)
+
+**» CQRS and the Command Pattern**<br/>
+
+@TODO [text]
+@TODO [image]
 
 **» Projection patterns**<br/>
 
@@ -601,11 +602,6 @@ export class OrderComponent {
 ``` 
 
 View model objects can also be elaborated with Angular resolver services!
-
-**» CQRS and the Command Pattern**<br/>
-
-@TODO [text]
-@TODO [image]
 
 # State Management 
 
