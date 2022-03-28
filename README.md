@@ -385,6 +385,7 @@ class OrderViewModel {
 
 Necessary data transformations can reside in the view model. A better approach is to have a separate component which encloses all operations 
 such as a mapper, translator, factory or abstract super class. In this way, we can delegate and decouple the transformation responsibilities to promote code reusability.
+
 The view model should hold the data necessary to render the UI if:
 
 - View demands a subset of one or more domain model properties
