@@ -360,7 +360,7 @@ class Order {
 
 View models are mere data objects and usually don't contain any domain-related behavior. Hence, they are not a part of the domain layer. 
 View models are supportive in providing data to the view and may also extend super view models to inherit common properties. 
-View models are equal to Input-, Read- or Query model. They are typically created by merging two or more existing models into a 
+View models are equal to Input-, Read- or Query models. They are typically created by merging two or more existing models into a 
 single model and are an essential part of a good frontend architecture. 
 
 ```
@@ -383,7 +383,7 @@ class OrderViewModel {
 }
 ```
 
-Necessary data transformations can reside in the view model. A better approach is to have a separate component which encloses all operations 
+Necessary data transformations can reside in the view model class. A better approach is to have a separate component which performs all operations 
 such as a mapper, translator, factory or abstract super class. In this way, we can delegate and decouple the transformation responsibilities to promote code reusability.
 
 The view model should hold the data necessary to render the UI if:
