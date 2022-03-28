@@ -387,27 +387,26 @@ class OrderViewModel {
 }
 ```
 
-Necessary data transformations can reside in the view model class. A better approach is to have a separate class which performs all UI-related operations
-such as a mapper, translator, factory or abstract super class. In this way, we can delegate and decouple the transformation responsibilities to promote code reusability.
+Necessary transformations can reside in the view model. A better approach is to have a separate component such as a mapper, translator, factory or abstract super class
+which performs all UI-related operations. In this way, we can delegate and decouple the transformation responsibilities to promote code reusability.
 
 ```
 abstract class ViewModelMapper<T>{
     constructor(){}
-    
     protected format(){}
     protected calc(){}
 }
 
-class OrderViewModel extend ViewModelMapper<OrderViewModel>{
-    private readonly orderId:string;
-    private readonly customerId:string;
-    private readonly total:string;
-    private readonly balance:string;
+class OrderViewModel extends ViewModelMapper<OrderViewModel>{
+    private orderId:string;
+    private customerId:string;
+    private total:string;
+    private balance:string;
      
-    get total() {}
-    set total(data) { return this.format(data) }
-    get balance() {}
-    set balance(data) { return this.calc(data) }
+    get total(){}
+    set total(data){ this.total = this.format(data) }
+    get balance(){}
+    set balance(data){ this.balance = this.calc(data) }
     
     constructor(){
       this.super();
@@ -422,12 +421,12 @@ The view model should hold the data necessary to render the UI if:
 
 View model checklist:
 
-- View model must contain an ID property
-- View model should be immutable and its properties of type `readonly string`
-- View model behaves like a Value Object, also called a Data Transfer Object
-- View model might or might not have dependencies
-- View model should be located in its own file, repository or UI container
-- View model naming convention ends with suffix -View e.g. UserProfileView, UserListView, UserDetailsView
+- A view model must contain an ID property
+- A view model should be immutable and its properties of type `readonly string`
+- A view model behaves like a Value Object, also called a Data Transfer Object
+- A view model might or might not have dependencies
+- A view model should be located in its own file, repository or UI container
+- A view model naming convention ends with suffix -View e.g. UserProfileView, UserListView, UserDetailsView
 
 **» Model declaration strategies**<br/>
 
