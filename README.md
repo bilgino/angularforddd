@@ -264,6 +264,23 @@ export class AccountService {
 A better approach is to enclose domain logic inside entity classes making boundaries become more clear:
 
 ```
+@Injectable({
+  providedIn: 'root'
+})
+export class AccountService {
+
+    constructor(private accountRepository: AccountRepositoryService) { }  
+
+    public changeBalance(id: number, amount: number): void {
+       this.accountRepository.getById(id).pipe(
+          mergeMap((account:Account)=>{
+            account.updateBalance(amount);
+          }),
+          catchError(...)
+       );
+    }
+}
+
 class Account {
     id: number;
     balance: number;
@@ -271,28 +288,19 @@ class Account {
     constructor() {}
     
     updateBalance(amount: number): void {
-        if (amount < AMOUNT.MAX_VALID) {
-            this.balance += amount;
+        if (amount > AMOUNT.MAX_VALID) {
+           throw Error(...)
         }
+        this.balance += amount;
     }
 }
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AccountService {
-
-    constructor() { }  //Inject Account Repository
-
-    changeBalance(id: number, amount: number): void {
-        if (id > 0) {
-             this.accountRepositoryService.getById(id).pipe(
-                mergeMap((account:Account)=>{
-                  account.updateBalance(amount);
-                }),
-                catchError(...)
-             );
+class AccoutRepositoryService {
+    public getById(id:number) {
+        if (id <= 0) {
+            throw Error(...)
         }
+        return ...
     }
 }
 ```
@@ -341,16 +349,16 @@ The data mapper is associated in the repository to elaborate the appropriate mod
 The domain model entity class contains data and domain-related behavior modeled around invariants (business rules).
 In terms of DDD and CQRS, the domain model entity is an aggregate that contains only write operations that result in state changes.
 
-Domain model in the EcmaScript syntax:
+Domain model in the TypeScript syntax:
 
 ```
 class Order {
-    #property
+    private property;
 
     contructor(){}
         
-    #privateMethod(){}
-    publicMethod(){}
+    private method(){}
+    public method(){}
 }
 ```
 
@@ -362,10 +370,10 @@ They are typically created by merging two or more existing models into one model
 
 ```
 class OrderViewModel {
-    #orderId;
-    #customerId;
-    #total; 
-    #balance;
+    private readonly orderId:string;
+    private readonly customerId:string;
+    private readonly total:string;
+    private readonly balance:string;
     
     get total() {}
     set total(data) { return this.format(data) }
@@ -374,13 +382,38 @@ class OrderViewModel {
     
     constructor(){}
     
-    #format(){}
-    #calc(){}
+    private format(){}
+    private calc(){}
 }
 ```
 
-Necessary data transformations can reside in the view model class. A better approach is to have a separate class which performs all UI-related operations 
+Necessary data transformations can reside in the view model class. A better approach is to have a separate class which performs all UI-related operations
 such as a mapper, translator, factory or abstract super class. In this way, we can delegate and decouple the transformation responsibilities to promote code reusability.
+
+```
+abstract class ViewModelMapper<T>{
+    constructor(){}
+    
+    protected format(){}
+    protected calc(){}
+}
+
+class OrderViewModel extend ViewModelMapper<OrderViewModel>{
+    private readonly orderId:string;
+    private readonly customerId:string;
+    private readonly total:string;
+    private readonly balance:string;
+     
+    get total() {}
+    set total(data) { return this.format(data) }
+    get balance() {}
+    set balance(data) { return this.calc(data) }
+    
+    constructor(){
+      this.super();
+    }
+}
+```
 
 The view model should hold the data necessary to render the UI if:
 
@@ -585,7 +618,7 @@ class OrderViewModelProvider {
 }
 ``` 
 
-Requiring the view model provider service in the view controller class:
+Requesting the view model provider service in the view controller class:
 
 ```
 @Component({
@@ -595,8 +628,8 @@ Requiring the view model provider service in the view controller class:
 })
 export class OrderComponent {
 
-  constructor(private orderViewModelProvider: OrderViewModelProvider) {
-    this.orderViewModelProvider.getOrdersByStatus('pending').subscribe(()=>{})
+  constructor(private orderProvider: OrderViewModelProvider) {
+    this.orderProvider.getOrdersByStatus('pending').subscribe(()=>{})
   }
 }
 ``` 
@@ -680,7 +713,7 @@ It offers a simple set of properties to share state. This pattern is good for re
 
 ```
 @Injectable 
-export class UiService{
+export class UIService{
     public showPicture: boolean;
     public filterBy: string; 
 }
