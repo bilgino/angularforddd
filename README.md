@@ -251,7 +251,7 @@ A common practice in Angular projects is to use feature services or the "Fat Ser
 })
 export class AccountService {
     accounts = [{ id: 1, balance: 4500 }];
-    constructor() { }
+    constructor(){}
     
     changeBalance(id: number, amount: number): void {
         if (id > 0 && amount < AMOUNT.MAX_VALID) {
@@ -268,9 +268,7 @@ A better approach is to enclose domain logic inside entity classes making bounda
   providedIn: 'root'
 })
 export class AccountService {
-
     constructor(private accountRepository: AccountRepositoryService) { }  
-
     public changeBalance(id: number, amount: number): void {
        this.accountRepository.getById(id).pipe(
           mergeMap((account:Account)=>{
@@ -284,9 +282,7 @@ export class AccountService {
 class Account {
     id: number;
     balance: number;
-    
     constructor() {}
-    
     updateBalance(amount: number): void {
         if (amount > AMOUNT.MAX_VALID) {
            throw Error(...)
@@ -295,12 +291,17 @@ class Account {
     }
 }
 
+@Injectable({
+  providedIn: 'root'
+})
 class AccoutRepositoryService {
+    accounts = [new Account(1, 4500)];
+    constructor() {}
     public getById(id:number) {
         if (id <= 0) {
             throw Error(...)
         }
-        return ...
+        return accounts.find(...)
     }
 }
 ```
@@ -354,9 +355,8 @@ Domain model in the TypeScript syntax:
 ```
 class Order {
     private property;
-
+    public property;
     contructor(){}
-        
     private method(){}
     public method(){}
 }
@@ -370,15 +370,15 @@ They are typically created by merging two or more existing models into one model
 
 ```
 class OrderViewModel {
-    private readonly orderId:string;
-    private readonly customerId:string;
-    private readonly total:string;
-    private readonly balance:string;
+    private _orderId:string;
+    private _customerId:string;
+    private _total:string;
+    private _balance:string;
     
     get total() {}
-    set total(data) { return this.format(data) }
+    set total(data) { this._total = this.format(data) }
     get balance() {}
-    set balance(data) { return this.calc(data) }
+    set balance(data) { this._balance = this.calc(data) }
     
     constructor(){}
     
@@ -398,15 +398,15 @@ abstract class ViewModelMapper<T>{
 }
 
 class OrderViewModel extends ViewModelMapper<OrderViewModel>{
-    private orderId:string;
-    private customerId:string;
-    private total:string;
-    private balance:string;
+    private _orderId:string;
+    private _customerId:string;
+    private _total:string;
+    private _balance:string;
      
     get total(){}
-    set total(data){ this.total = this.format(data) }
+    set total(data){ this._total = this.format(data) }
     get balance(){}
-    set balance(data){ this.balance = this.calc(data) }
+    set balance(data){ this._balance = this.calc(data) }
     
     constructor(){
       this.super();
