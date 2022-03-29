@@ -350,11 +350,7 @@ Domain model in the TypeScript syntax:
 
 ```
 class Order {
-    private property;
-    public property;
     contructor(){}
-    private method(){}
-    public method(){}
 }
 ```
 
@@ -387,13 +383,13 @@ Necessary transformations can reside in the view model. A better approach is to 
 which performs all UI-related operations. In this way, we can delegate and decouple the transformation responsibilities to promote code reusability.
 
 ```
-abstract class ViewModelMapper<T>{
+abstract class ViewModel<T>{
     constructor(){}
     protected format(){}
     protected calc(){}
 }
 
-class OrderViewModel extends ViewModelMapper<OrderViewModel>{
+class OrderViewModel extends ViewModel<OrderViewModel>{
     private _orderId:string;
     private _customerId:string;
     private _total:string;
@@ -478,15 +474,15 @@ operators to implement the "projection phase" between the read and write side.
 
 With traditional CRUD-based web applications conform to the REST architectural style and the single data model approach,
 we may fall into the situation where we have to stitch together several resources to build a rich view model.
-Even in the case of RPC-like Web APIs, it's likely that we will encounter problems of this kind. Developers often use mapper methods 
-in UI controllers to elaborate view models. Which in the end leads to fat and unmanageable UI controllers:
+Even in the case of RPC-like Web APIs, it's likely that we will encounter problems of this kind. Developers often use controller methods 
+to elaborate view models. Which in the end leads to monolithic controllers:
 
 ![](src/assets/images/Up_Down_Flow.png)
 
-The domain model focuses on invariants and business rules rather than presentation needs. Introducing view model provider services to manage 
-complicated page flows and user interfaces allows us to query the appropriate view model for different UI scenarios. 
-That is, the CQRS pattern supports us in avoiding over-bloated all-in-one models. The view model provider service is a perfect fit to pre-compute 
-filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). 
+The domain model focuses on invariants and business rules rather than presentation needs. Introducing a view model provider services to manage 
+complicated page flows and user interfaces allows us to query the appropriate view model for different UI scenarios. The view model provider service is a perfect 
+fit to pre-compute filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). That is, the CQRS pattern supports us in avoiding 
+over-bloated all-in-one models.
 
 CQRS in the frontend design system has many advantages:
 
@@ -506,8 +502,8 @@ The view model provider service may appear in different forms. It may appear as 
 
 ![](src/assets/images/Reactive_Flow.png)
 
-Application services usually provide query methods for retrieving view models of domain state (CQS). However, for 
-complicated page flows and user interfaces it would be inefficient to build view models in a query method, 
+Typically, application services provide query methods for retrieving view models of domain state (CQS). However, for 
+complicated page flows and user interfaces it would be inefficient to elaborate view models in a query method, 
 due to the large number of additional dependencies. Instead, we can use view model provider services to facilitate access to view models 
 in a more efficient way. Consequently, the application service may use the view model provider service to retrieve presentation data. 
 
@@ -549,7 +545,7 @@ class Order {
 ```
 
 Elaborating view models of domain entities violates the single responsibility rule! 
-Using abstract classes, we can aggregate reusable factory methods:
+Using abstract classes, we can remove the factory methods:
 
 ```
 abstract class OrderViewModel {
