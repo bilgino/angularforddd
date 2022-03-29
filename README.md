@@ -264,9 +264,7 @@ export class AccountService {
 A better approach is to enclose domain logic inside entity classes making boundaries become more clear:
 
 ```
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class AccountService {
     constructor(private accountRepository: AccountRepositoryService) { }  
     public changeBalance(id: number, amount: number): void {
@@ -291,9 +289,7 @@ class Account {
     }
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 class AccoutRepositoryService {
     accounts = [new Account(1, 4500)];
     constructor() {}
@@ -584,8 +580,8 @@ The purpose of the view model provider service is to enclose and create view mod
 class OrderViewModelProvider {
    
     constructor(
-      private orderRepository: OrderRepository,             
-      private productRepository: ProductRepository,                         
+      private orderRepository: OrderRepositoryService,             
+      private productRepository: ProductRepositoryService,                         
       private translateService: TranslationService              
       ){}
 
