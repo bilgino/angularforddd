@@ -268,12 +268,8 @@ A better approach is to enclose domain logic inside entity classes making bounda
 export class AccountService {
     constructor(private accountRepository: AccountRepositoryService) { }  
     public changeBalance(id: number, amount: number): void {
-       this.accountRepository.getById(id).pipe(
-          mergeMap((account:Account)=>{
-            account.updateBalance(amount);
-          }),
-          catchError(...)
-       );
+      const account = this.accountRepository.getById(id)
+      account.updateBalance(amount);
     }
 }
 
@@ -339,7 +335,7 @@ read(): Observable<Customer[]> {
 };
 ```
 
-The data mapper is associated in the repository to elaborate the appropriate model schema. 
+The data mapper is used in the repository service to elaborate the appropriate model schema. 
 
 **» Domain model**<br/>
 
@@ -379,8 +375,9 @@ class OrderViewModel {
 }
 ```
 
-Necessary transformations can reside in the view model. A better approach is to have a separate component such as a mapper, translator, factory or abstract super class
-which performs all UI-related operations. In this way, we can delegate and decouple the transformation responsibilities to promote code reusability.
+Necessary transformations on data values can reside in the view model class. A better approach is to have a separate component such as a mapper, translator, 
+factory or abstract super class which performs all UI-related transformations. In this way, we can delegate and decouple the transformation responsibilities to promote 
+code reusability with subclassing (not subtyping).
 
 ```
 abstract class ViewModel<T>{
@@ -413,12 +410,12 @@ The view model should hold the data necessary to render the UI if:
 
 View model checklist:
 
-- A view model must contain an ID property
-- A view model should be immutable and its properties of type `readonly string`
-- A view model behaves like a Value Object, also called a Data Transfer Object
+- A view model should have an ID property
+- A view model should be immutable and has properties of type `readonly string`
+- A view model behaves like a value object, also called a data transfer object
 - A view model might or might not have dependencies
-- A view model should be located in its own file, repository or UI container
-- A view model naming convention ends with suffix -View e.g. UserProfileView, UserListView, UserDetailsView
+- A view model should be located in its own file, repository service or UI container component
+- A view model name ends with the suffix -View e.g. UserProfileView, UserListView, UserDetailsView
 
 **» Model declaration strategies**<br/>
 
