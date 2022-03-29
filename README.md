@@ -265,7 +265,7 @@ A better approach is to enclose domain logic inside entity classes making bounda
 
 ```
 @Injectable()
-export class AccountService {
+class AccountService {
     constructor(private accountRepository: AccountRepositoryService) { }  
     public changeBalance(id: number, amount: number): void {
       const account = this.accountRepository.getById(id)
