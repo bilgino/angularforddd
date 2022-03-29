@@ -183,7 +183,7 @@ in the default settings of the view encapsulation mode.
 ## Models 
 
 The model in the classic MVC pattern is a representation of application data. The model contains code to create, read, update and delete or 
-transform model data. It stores the domain knowledge and is very similar to the repository pattern! 
+transform model data. It stores the domain knowledge and is similar to the repository pattern! 
 
 Angular promotes two types of models:
 
