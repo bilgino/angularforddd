@@ -249,7 +249,7 @@ A common practice in Angular projects is to use feature services or the "Fat Ser
 @Injectable({
   providedIn: 'root'
 })
-export class AccountService {
+class AccountService {
     accounts = [{ id: 1, balance: 4500 }];
     constructor(){}
     
