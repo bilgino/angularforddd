@@ -813,15 +813,4 @@ Most of them are determined by the requirements at the macro-level, which includ
 - Offline vs. Online first
 - Functional vs. Object-oriented 
 
-Bibliography:
 
-- Yakov Fain; Angular with TypeScript - 2nd; Manning Publications; Mart 21, 2019. 
-- Victor Savkin; Angular Router; Packt Publishing; Mart 20, 2017. 
-- Cornelia Davis; Cloud Native Patterns; Manning Publications; May 22, 2019.
-
-- Deborah Kurata; Pluralsight; Jan 30, 2018; Accessed September 12, 2018. <br/>
-https://www.pluralsight.com/courses/angular-component-communication.
-- Deborah Kurata; Pluralsight; Aug 20, 2019; Accessed August 26, 2019. <br/>
-https://www.pluralsight.com/courses/angular-routing
-- Thomas Rundle; medium.com; Nov 4, 2016; Accessed August 12, 2018. <br/>
-https://medium.com/@ct7/angular2-module-architecture-and-example-seed-project-35b7410264f5
