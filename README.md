@@ -53,15 +53,15 @@ communication across layers and demanding business logic through services. The m
 *» Abstraction layers*<br/>
 
 - Presentation layer: Components, Widgets, User Interface Services
-- Application layer: Use Case Services, View Models, View Model Providers <br/>
-- Domain layer: Aggregates, Entities, Value Objects <br/>
-- Infrastructure layer: Repositories <br/>
+- Application layer: Use Case Services, View Models and Providers, Factories <br/>
+- Domain layer: Aggregates, Entities, Value Objects, Factories <br/>
+- Infrastructure layer: Repositories, Crosscutting Services <br/>
 
 *» Service layers* <br/>
 
 - User Interface services carry out dialog or interaction concepts
 - Application services carry out business use cases and are procedural 
-- Domain services carry out business use cases at a higher level than entities or value objects
+- Domain services carry out domain logic at a higher level than entities or value objects
 - Infrastructure services help to separate technical and business concepts <br/>
 
 *» Validation layers*<br/>
@@ -76,11 +76,11 @@ communication across layers and demanding business logic through services. The m
 - Domain layer: Classes, Interfaces <br/>
 - Infrastructure layer: Resolvers, Interceptors<br/>
 
-For example:<br/>
+Examples:<br/>
 
 Presentation layer: *ModalDialog, Popover*<br/>
 Application layer: *Authentication, Search*<br/>
-Domain layer: *Calculations*<br/>
+Domain layer: *Order, OrderItem*<br/>
 Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*
 *Logging, Error, Security, Configuration, Token, Monitoring, Date*
 
@@ -103,7 +103,7 @@ Additionally, we may want to share state and logic of that dedicated class with 
 
 It's questionable whether higher granularity distributed across several layers introduce extra complexity in the frontend design system. 
 Should we really comply with Domain-Driven Design in frontend development? As a consequence, many developers tend to lean toward weaker 
-patterns because they see it as an unnecessary practice. Often a simpler data-driven approach is sufficient. For most web applications MVC 
+patterns because they see it as an unnecessary practice. Often a simpler data-centric approach is sufficient. For most web applications MVC 
 or Flux/Redux may be more appropriate. Before starting using advanced concepts we must evaluate incoming requirements.
 
 # Angular core patterns
@@ -190,7 +190,7 @@ Angular promotes two types of models:
 - `View Model`: This object represents data required by a view. It doesn't represent a real world object
 - `Domain Model`: This object represents data and logic related to the business domain
 
-The view model and domain model should maintain different schemas to keep the domain model separate from view properties
+The view model and domain model should maintain different data structures to keep the domain model separate from view properties
 
 **» Implementation patterns**<br/>
 
@@ -302,10 +302,10 @@ In general, using rich domain models means more entities than business services.
 
 **» Mapper pattern**<br/>
 
-Implementing a domain layer in the frontend, we ensure that business behavior works. 
-With higher functional ability by using rich domain models, we must take the mapper pattern into consideration. 
+A domain layer in the frontend ensures that business behavior works. 
+With higher functional ability using rich domain models, we must take the mapper pattern into consideration. 
 A common practice for the reason of typesaftyness is to declare interfaces in support of plain JavaScript object literals. 
-In the context of data mapping, it's important to make a clear distinction between the typing system and the data structure of models.
+In the context of "mapping", it's important to make a clear distinction between the typing system and the data structure of models.
 
 Mapping JSON-encoded server data in the frontend is mandatory if:
 
@@ -339,7 +339,7 @@ The data mapper is used in the repository service to elaborate the appropriate m
 
 **» Domain model**<br/>
 
-The domain model entity class contains data and domain-related behavior modeled around invariants (business rules).
+The domain model entity class contains data and domain-related behavior designed around invariants (business rules).
 In terms of DDD and CQRS, the domain model entity is an aggregate that contains only write operations that result in state changes.
 
 Domain model in the TypeScript syntax:
@@ -353,8 +353,8 @@ class Order {
 **» View model**<br/>
 
 View models are mere data objects and usually don't contain any domain-related behavior. Hence, they are not a part of the domain layer. 
-View models are supportive in providing data to the view and might extend super view model classes to inherit common properties. 
-They are typically created by merging two or more existing models into one model and are an essential part of a good frontend architecture. 
+View models are supportive in providing data to the view and might extend super view model classes to inherit common properties and behaviour. 
+They are typically created by merging two or more existing models into one model and are an essential part of a good frontend architecture.
 
 ```
 class OrderViewModel {
@@ -403,6 +403,55 @@ class OrderViewModel extends ViewModel<OrderViewModel>{
 }
 ```
 
+View Model Object Factory Pattern:
+
+```
+abstract class ViewModel {
+  constructor() {}
+
+  protected transformPrice(price: string): string {
+    return // Do somthing with price
+  }
+}
+ 
+interface IProductViewModel = {
+  id: number;
+  name: string;
+  price: string;
+  type: string;
+  active: boolean;
+};
+
+// Due to performance issues, it's not recommended to bind getters() in templates; Use public properties instead 
+
+class ProductViewModel extends ViewModel {
+  id!: number;
+  name!: string;
+  price!: string;
+  type!: string;
+  active!: boolean;
+
+  private constructor(props: IProductViewModel) {
+    super();
+    this.price = this.transformPrice(props.price); 
+    ... // set or transform other properties
+  }
+
+  public static create(props: IProductViewModel): Readonly<ProductViewModel> {
+    return new ProductViewModel(props) as Readonly<ProductViewModel>;
+  }
+}
+
+ProductViewModel.create({
+  id: 1,
+  name: 'screw',
+  price: '28$',
+  type: 'pans',
+  active: false
+});
+
+```
+
 The view model should hold the data necessary to render the UI if:
 
 - View demands a subset of one or more domain model properties
@@ -446,8 +495,8 @@ in Angular complies with the navigational behaviour of hypermedia APIs, you shou
 ## Services
 
 Singleton services are important concepts in Angular applications. Most of the functionality that doesn't belong to UI components 
-will be written as part of the service layer in form of application-, domain- and infrastructure services. 
-We will also implement the repository pattern in favor of state management services. 
+resides in the service layer in the shape of application-, domain- and infrastructure services. And the repository pattern will be used 
+in favor of a state management service. 
 
 **» Stateful services vs. stateful repositories**<br/>
 
