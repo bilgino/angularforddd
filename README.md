@@ -449,7 +449,6 @@ ProductViewModel.create({
   type: 'pans',
   active: false
 });
-
 ```
 
 The view model should hold the data necessary to render the UI if:
@@ -501,10 +500,10 @@ in favor of a state management service.
 **» Stateful services vs. stateful repositories**<br/>
 
 Just as mentioned before, it's common for Angular projects to use feature services for business functionality and state management. 
-We use stateful services if we need to share data across components or process simple HTTP requests and responses that perform CRUD operations. 
-In order to comply with Domain-Driven Design we will use reactive repositories in favor of an active data store. 
-The repository acts as a storage place for globally accessible objects that can be used by other independent components. 
-Repositories are not just for Entities, but for all domain objects including anemic domain models ~~or view models~~.
+We typically use stateful services if we need to share data across components or process simple HTTP requests and responses that perform CRUD operations. 
+In order to comply with Domain-Driven Design we will implement reactive repositories in favor of an active data store. 
+The repository service acts as a reactive storage place for globally accessible objects that can be used by other independent components. 
+Frontend-Repositories are not just for Entities, but for all domain objects including anemic domain models or view models.
 
 Furthermore, we will introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. 
 The CQRS pattern enables us to answer different use cases with the respective data model. State changes in the repository will immediately
