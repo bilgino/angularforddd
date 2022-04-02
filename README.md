@@ -557,7 +557,7 @@ in a more efficient way. Consequently, the application service may use the view 
 This might seem more complex than just using a single feature service for business logic and state management. 
 The level of abstraction is up to the developer and is dependent on the requirements. 
 
-Using a single feature service for reads and writes:
+Using a single feature or repository service for reads and writes:
 
 ![](src/assets/images/SingleService_CQRS.png)
 
