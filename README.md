@@ -375,7 +375,7 @@ class OrderViewModel {
 }
 ```
 
-Necessary data transformations may reside in the same view model class. A much better choice is to have a dedicated artifact such as a a mapper, translator, 
+Necessary data transformations may reside in the same view model class. A much better choice is to have a dedicated component such as a mapper, translator, 
 factory or abstract super class which performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote 
 code reusability by subclassing (not subtyping).
 
@@ -469,8 +469,129 @@ View model checklist:
 
 **» Model declaration strategies**<br/>
 
-@TODO [text]
-@TODO [image]
+- Type Signature Pattern
+
+```
+type Order = {
+     orderId: string;
+     status: Orderstatus;
+     customer: Customer;
+};
+
+// or
+
+interface Order {
+     orderId: string;
+     status: Orderstatus;
+     customer: Customer;
+};
+
+const newOrder: Order = {
+     orderId = '1';
+     status = Orderstatus.Pending;
+     customer = {};
+}
+```
+
+- OOP Constructor Pattern
+
+```
+class Order {
+    public status: OrderStatus;
+    public customer: Customer
+    constructor() {}
+    public placeOrder() {}
+}
+
+const newOrder: Order = new Order();}
+```
+
+- Object Factory Pattern
+
+```
+class OrderFactory {
+    public static create() {
+      return new Order();
+    }
+}
+
+const newOrder = OrderFactory.create();
+newOrder.propertyA = ...
+newOrder.propertyB = ...
+
+```
+
+```
+interface OrderProps {
+    status: OrderStatus;
+}
+
+class Order {
+
+    public status: OrderStatus;
+
+    private constructor(props:OrderProps){
+    	this.status = props.status;
+    }
+
+    public static create(props:OrderProps) {
+      return new Order(props);
+    }
+
+    public static empty() {
+      return new Order();
+    }
+
+    toJSON(): object {
+        const serialized = Object.assign(this)
+        delete serialized.status
+        return serialized
+    }
+
+    toString(): string {
+        return "";
+    }
+}
+
+const newOrder = Order.create({status:OrderStatus.Pending});
+const emptyOrder = Order.empty();
+
+```
+
+```
+interface IOrder{
+    status: OrderStatus;
+}
+
+class Order implements IOrder {
+
+    constructor(
+        public status = OrderStatus.New
+    ){ }
+
+    public static create(json:IOrder) : Order {
+
+	  if(!json) return new Order();
+        return new Order(
+            json.status,
+        )
+    }
+	
+    toJSON(): object {
+        const serialized = Object.assign(this)
+        delete serialized.status
+        return serialized
+    }
+
+    toString(): string {
+        return "";
+    }
+}
+
+const newOrder = Order.create({status:OrderStatus.Pending});
+const jsonOrder = newOrder.toJSON()
+
+```
 
 **» Translator pattern (Mapping VM to DM and vice versa, XMapper.toXY)**<br/>
 
