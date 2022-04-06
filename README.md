@@ -375,9 +375,9 @@ class OrderViewModel {
 }
 ```
 
-Necessary transformations on data values can reside in the view model class. A better approach is to have a separate component such as a mapper, translator, 
-factory or abstract super class which performs all UI-related transformations. In this way, we can delegate and decouple the transformation responsibilities to promote 
-code reusability with subclassing (not subtyping).
+Necessary data transformations may reside in the same view model class. A much better choice is to have a dedicated artifact such as a a mapper, translator, 
+factory or abstract super class which performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote 
+code reusability by subclassing (not subtyping).
 
 ```
 abstract class ViewModel<T>{
@@ -403,7 +403,11 @@ class OrderViewModel extends ViewModel<OrderViewModel>{
 }
 ```
 
-View Model Object Factory Pattern:
+Due to performance implications, it's not recommended to embed `getters` in the view template. Instead, we will use public properties.
+Hardcoding transformation methods in the view model causes tight coupling. A much better approach is to process data transformation such as
+filtering, sorting, grouping or destructuring etc. in the reactive stream and hand over the result to the object factory.
+
+Object Factory Pattern for View Models:
 
 ```
 abstract class ViewModel {
@@ -421,8 +425,6 @@ interface IProductViewModel = {
   type: string;
   active: boolean;
 };
-
-// Due to performance issues, it's not recommended to bind getters() in templates; Use public properties instead 
 
 class ProductViewModel extends ViewModel {
   id!: number;
@@ -560,6 +562,8 @@ The level of abstraction is up to the developer and is dependent on the requirem
 Using a single feature or repository service for reads and writes:
 
 ![](src/assets/images/SingleService_CQRS.png)
+
+The single service approach makes it difficult to gather multiple sources and could lead to circular dependencies. 
 
 **» CQRS and the Command Pattern**<br/>
 
