@@ -377,7 +377,7 @@ class OrderViewModel {
 }
 ```
 
-Necessary data transformations may reside in the same view model class. A much better choice is to have a dedicated component such as a mapper, translator, 
+Necessary data transformations may reside in the same view model class. A better choice is to have a dedicated component such as a mapper, translator, 
 factory or abstract super class which performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote 
 code reusability by subclassing (not subtyping).
 
@@ -406,7 +406,7 @@ class OrderViewModel extends ViewModel<OrderViewModel>{
 ```
 
 Due to performance implications, it's not recommended to embed `getters` in the view template. Instead, we will use public properties.
-Hardcoding transformation methods in the view model causes tight coupling. A much better approach is to process data transformation such as
+Hardcoding transformation methods in the view model causes tight coupling. A better approach is to process data transformation such as
 filtering, sorting, grouping or destructuring etc. in the reactive stream and hand over the result to the object factory.
 
 **» Object Factory Pattern for View Models:**<br/>
