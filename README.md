@@ -240,7 +240,7 @@ In the second example, domain logic is decoupled from the UI controller. Encapsu
 Keeping the model as independent as possible improves usability and allows easier refactoring.
 Neither domain state nor domain logic should be written as part of the client (UI controller).
 
-*»  Feature business services* <br/>
+**» Feature business services**<br/>
 
 Furthermore, using feature services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
 practice in Angular projects. Building rich domain models is a major objective in object-oriented design.
