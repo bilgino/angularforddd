@@ -240,7 +240,9 @@ In the second example, domain logic is decoupled from the UI controller. Encapsu
 Keeping the model as independent as possible improves usability and allows easier refactoring.
 Neither domain state nor domain logic should be written as part of the client (UI controller).
 
-Furthermore, using business services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
+*»  Feature business services* <br/>
+
+Furthermore, using feature services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
 practice in Angular projects. Building rich domain models is a major objective in object-oriented design.
 
 A common practice in Angular projects is to use feature services or the "Fat Service, Skinny Model" pattern:
