@@ -407,14 +407,14 @@ Due to performance implications, it's not recommended to embed `getters` in the 
 Hardcoding transformation methods in the view model causes tight coupling. A much better approach is to process data transformation such as
 filtering, sorting, grouping or destructuring etc. in the reactive stream and hand over the result to the object factory.
 
-Object Factory Pattern for View Models:
+**» Object Factory Pattern for View Models:**<br/>
 
 ```
 abstract class ViewModel {
   constructor() {}
 
   protected transformPrice(price: string): string {
-    return // Do somthing with price
+    return // Do somthing with price value
   }
 }
  
@@ -567,14 +567,11 @@ class Order implements IOrder {
 
     constructor(
         public status = OrderStatus.New
-    ){ }
+    ){}
 
-    public static create(json:IOrder) : Order {
-
-	  if(!json) return new Order();
-        return new Order(
-            json.status,
-        )
+    public static create(json:IOrder): Order {
+	      if(!json) return new Order();
+        return new Order(json.status)
     }
 	
     toJSON(): object {
