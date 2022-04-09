@@ -55,7 +55,7 @@ communication across layers and demanding business logic through services. The m
 - Presentation layer: Components, Widgets, User Interface Services
 - Application layer: Use Case Services, View Models and Providers, Factories <br/>
 - Domain layer: Aggregates, Entities, Value Objects, Factories <br/>
-- Infrastructure layer: Repositories, Crosscutting Services <br/>
+- Infrastructure layer: Repositories <br/>
 
 *» Service layers* <br/>
 
@@ -71,16 +71,16 @@ communication across layers and demanding business logic through services. The m
 
 *» Angular adoption*<br/>
 
-- Presentation layer: Views, Templates, Directives, Pipes, Animations
-- Application layer: Components, Guards, Validator Functions, Forms <br/>
-- Domain layer: Classes, Interfaces <br/>
+- Presentation layer: Views (Templates), Directives, Pipes, Animations
+- Application layer: View Component Classes, Guards, Validator Functions, Forms <br/>
+- Domain layer: Classes, Interfaces, Factories <br/>
 - Infrastructure layer: Resolvers, Interceptors<br/>
 
 Examples:<br/>
 
-Presentation layer: *ModalDialog, Popover*<br/>
+Presentation layer: *ModalDialog, Popover, BreakpointObserver*<br/>
 Application layer: *Authentication, Search*<br/>
-Domain layer: *Order, OrderItem*<br/>
+Domain layer: *Domain Model*<br/>
 Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*
 *Logging, Error, Security, Configuration, Token, Monitoring, Date*
 
@@ -240,10 +240,10 @@ In the second example, domain logic is decoupled from the UI controller. Encapsu
 Keeping the model as independent as possible improves usability and allows easier refactoring.
 Neither domain state nor domain logic should be written as part of the client (UI controller).
 
-**» Feature business services**<br/>
+**» Feature services**<br/>
 
 Furthermore, using feature services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
-practice in Angular projects. Building rich domain models is a major objective in object-oriented design.
+practice in Angular projects. Building rich domain models is a major objective in object-oriented design to keep our code in good condition.
 
 A common practice in Angular projects is to use feature services or the "Fat Service, Skinny Model" pattern:
 
@@ -254,7 +254,6 @@ A common practice in Angular projects is to use feature services or the "Fat Ser
 class AccountService {
     accounts = [{ id: 1, balance: 4500 }];
     constructor(){}
-    
     changeBalance(id: number, amount: number): void {
         if (id > 0 && amount < AMOUNT.MAX_VALID) {
             this.accounts[id].balance += amount;
@@ -268,10 +267,11 @@ A better approach is to enclose domain logic inside entity classes making bounda
 ```
 @Injectable()
 class AccountService {
-    constructor(private accountRepository: AccountRepositoryService) { }  
+    constructor(private accountRepository: AccountRepositoryService) {}  
     public changeBalance(id: number, amount: number): void {
       const account = this.accountRepository.getById(id)
       account.updateBalance(amount);
+      return account;
     }
 }
 
@@ -379,7 +379,7 @@ class OrderViewModel {
 
 Necessary data transformations may reside in the same view model class. A better choice is to have a dedicated component such as a mapper, translator, 
 factory or abstract super class which performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote 
-code reusability by subclassing (not subtyping).
+code reusability by subclassing.
 
 ```
 abstract class ViewModel<T>{
@@ -405,16 +405,15 @@ class OrderViewModel extends ViewModel<OrderViewModel>{
 }
 ```
 
-Due to performance implications, it's not recommended to embed `getters` in the view template. Instead, we will use public properties.
-Hardcoding transformation methods in the view model causes tight coupling. A better approach is to process data transformation such as
-filtering, sorting, grouping or destructuring etc. in the reactive stream and hand over the result to the object factory.
+Due to performance implications, it's not recommended to embedding `getters` in the view's template. Instead, we will use public properties.
+Hardcoding transformation methods in the view model causes tight coupling. A better approach is to process data transformation like filtering, 
+sorting, grouping or destructuring etc. in the reactive stream pipe and hand over the result to the object factory.
 
 **» Object Factory Pattern for View Models:**<br/>
 
 ```
 abstract class ViewModel {
   constructor() {}
-
   protected transformPrice(price: string): string {
     return // Do somthing with price value
   }
@@ -510,6 +509,8 @@ const newOrder: Order = new Order();}
 
 - Object Factory Pattern
 
+Example 1:
+
 ```
 class OrderFactory {
     public static create() {
@@ -523,15 +524,16 @@ newOrder.propertyB = ...
 
 ```
 
+Example 2:
+
 ```
 interface OrderProps {
     status: OrderStatus;
 }
 
 class Order {
-
     public status: OrderStatus;
-
+    
     private constructor(props:OrderProps){
     	this.status = props.status;
     }
@@ -560,6 +562,8 @@ const emptyOrder = Order.empty();
 
 ```
 
+Example 3:
+
 ```
 interface IOrder{
     status: OrderStatus;
@@ -567,9 +571,7 @@ interface IOrder{
 
 class Order implements IOrder {
 
-    constructor(
-        public status = OrderStatus.New
-    ){}
+    constructor(public status = OrderStatus.New){}
 
     public static create(json:IOrder): Order {
 	      if(!json) return new Order();
@@ -589,7 +591,6 @@ class Order implements IOrder {
 
 const newOrder = Order.create({status:OrderStatus.Pending});
 const jsonOrder = newOrder.toJSON()
-
 ```
 
 **» Translator pattern (Mapping VM to DM and vice versa, XMapper.toXY)**<br/>
@@ -794,7 +795,7 @@ export class OrderComponent {
 }
 ``` 
 
-View model objects can also be elaborated with Angular resolver services!
+View model objects may also be elaborated with Angular resolver services!
 
 # State Management 
 
