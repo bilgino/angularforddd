@@ -524,7 +524,6 @@ class OrderFactory {
 const newOrder = OrderFactory.create();
 newOrder.propertyA = ...
 newOrder.propertyB = ...
-
 ```
 
 Example 2:
@@ -562,7 +561,6 @@ class Order {
 
 const newOrder = Order.create({status:OrderStatus.Pending});
 const emptyOrder = Order.empty();
-
 ```
 
 Example 3:
