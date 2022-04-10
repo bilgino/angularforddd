@@ -38,15 +38,15 @@ visit the following website: https://jaxenter.com/cross-cutting-concerns-angular
 Considering multilayered (4-tier) architectures, the question arises of how to organize layers in SPA applications? This question refers to code splitting,
 communication across layers and demanding business logic through services. The multilayered architecture in Domain-Driven Design embraces the following layers:
 
-**» Horizontal cut**<br/> Cutting the application into layers...
+**» Horizontal slicing**<br/> Slicing the application into layers...
 
 ![](src/assets/images/layers_hc.png)
 
-**» Vertical cut**<br/> Cutting the application into features / use cases...
+**» Vertical slicing**<br/> Slicing the application into features / use cases / bounded context...
 
 ![](src/assets/images/layers_vc.png)
 
-**» Cross cut**<br/> Cutting the application into modules...
+**» Cross slicing**<br/> Slicing the application into modules...
 
 ![](src/assets/images/layers_cc.png)
 
@@ -94,7 +94,7 @@ In addition to that, we don't want to command against the server upon every user
 good idea.
 
 Domain-oriented layering is often considered the first structuring criterion in Angular applications. However, layered architecture 
-is independent of vertical structuring. It's sufficient to comply with horizontal layers. The main reasons for modular segmentation in 
+is independent of vertical slicing. It's sufficient to comply with horizontal slicing. The main reasons for modular segmentation in 
 Angular is lazy-loading, scoping and distribution. 
 
 When application services carry out business or UI use cases, it may be a good idea to write use cases that contain less logic directly in the 
@@ -358,6 +358,22 @@ View models are mere data objects and usually don't contain any domain-related b
 View models are supportive in providing data to the view and might extend super view model classes to inherit common properties and behaviour. 
 They are typically created by merging two or more existing models into one model and are an essential part of a good frontend architecture.
 
+The view model should hold the data necessary to render the UI if:
+
+- View demands a subset of one or more domain model properties
+- View demands additional properties mixed up with UI related properties
+
+View model checklist:
+
+- A view model should have an ID property
+- A view model should be immutable and has properties of type `readonly string`
+- A view model behaves like a value object, also called a data transfer object
+- A view model might or might not have dependencies
+- A view model should be located in its own file, repository service or UI container component
+- A view model name ends with the suffix -View e.g. UserProfileView, UserListView, UserDetailsView
+
+Examples: 
+
 ```
 class OrderViewModel {
     private _orderId:string;
@@ -379,16 +395,16 @@ class OrderViewModel {
 
 Necessary data transformations may reside in the same view model class. A better choice is to have a dedicated component such as a mapper, translator, 
 factory or abstract super class which performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote 
-code reusability by subclassing.
+code re-usability by subclassing.
 
 ```
-abstract class ViewModel<T>{
+abstract class ViewModel {
     constructor(){}
     protected format(){}
     protected calc(){}
 }
 
-class OrderViewModel extends ViewModel<OrderViewModel>{
+class OrderViewModel extends ViewModel {
     private _orderId:string;
     private _customerId:string;
     private _total:string;
@@ -405,9 +421,7 @@ class OrderViewModel extends ViewModel<OrderViewModel>{
 }
 ```
 
-Due to performance implications, it's not recommended to embedding `getters` in the view's template. Instead, we will use public properties.
-Hardcoding transformation methods in the view model causes tight coupling. A better approach is to process data transformation like filtering, 
-sorting, grouping or destructuring etc. in the reactive stream pipe and hand over the result to the object factory.
+Due to performance implications, it's not recommended to embedding `getters` in the view template. Instead, we will use public properties.
 
 **» Object Factory Pattern for View Models:**<br/>
 
@@ -454,19 +468,8 @@ ProductViewModel.create({
 });
 ```
 
-The view model should hold the data necessary to render the UI if:
-
-- View demands a subset of one or more domain model properties
-- View demands additional properties mixed up with UI related properties
-
-View model checklist:
-
-- A view model should have an ID property
-- A view model should be immutable and has properties of type `readonly string`
-- A view model behaves like a value object, also called a data transfer object
-- A view model might or might not have dependencies
-- A view model should be located in its own file, repository service or UI container component
-- A view model name ends with the suffix -View e.g. UserProfileView, UserListView, UserDetailsView
+Hardcoding transformation methods in the view model causes tight coupling. A better approach is to process data transformations like filtering, sorting, grouping or destructuring etc. 
+in a reactive stream with operators and hand over the result to an object factory.
 
 **» Model declaration strategies**<br/>
 
@@ -504,7 +507,7 @@ class Order {
     public placeOrder() {}
 }
 
-const newOrder: Order = new Order();}
+const newOrder: Order = new Order();
 ```
 
 - Object Factory Pattern
