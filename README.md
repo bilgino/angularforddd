@@ -575,8 +575,8 @@ class Order implements IOrder {
     constructor(public status = OrderStatus.New){}
 
     public static create(json:IOrder): Order {
-	      if(!json) return new Order();
-        return new Order(json.status)
+        if(!json) return new Order();
+        return new Order(json.status);
     }
 	
     toJSON(): object {
@@ -603,7 +603,7 @@ const jsonOrder = newOrder.toJSON()
 
 When building multi-layered, distributed web applications, data transformation is among the major challenges that occur when data traverses 
 all layers (data flows up and down the stack). If the domain layer has been replicated to the client-side, we may need to transform the 
-server response schema to a complex domain model: 
+server response schema to a complex object graph (domain model): 
 
 ![](src/assets/images/Mapper_Response.png)
 
