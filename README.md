@@ -55,7 +55,7 @@ communication across layers and demanding business logic through services. The m
 - Presentation layer: Components, Widgets, User Interface Services
 - Application layer: Use Case Services, View Models and Providers, Factories <br/>
 - Domain layer: Aggregates, Entities, Value Objects, Factories <br/>
-- Infrastructure layer: Repositories <br/>
+- Infrastructure layer: Repositories, Cache <br/>
 
 *» Service layers* <br/>
 
@@ -72,7 +72,7 @@ communication across layers and demanding business logic through services. The m
 *» Angular adoption*<br/>
 
 - Presentation layer: Views (Templates), Directives, Pipes, Animations
-- Application layer: View Component Classes, Guards, Validator Functions, Forms <br/>
+- Application layer: View Component Classes, Guards, Validator Functions, Forms, Factories <br/>
 - Domain layer: Classes, Interfaces, Factories <br/>
 - Infrastructure layer: Resolvers, Interceptors<br/>
 
@@ -80,7 +80,7 @@ Examples:<br/>
 
 Presentation layer: *ModalDialog, Popover, BreakpointObserver*<br/>
 Application layer: *Authentication, Search*<br/>
-Domain layer: *Domain Model*<br/>
+Domain layer: * Order, Payment*<br/>
 Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*
 *Logging, Error, Security, Configuration, Token, Monitoring, Date*
 
@@ -148,11 +148,11 @@ Following checklist can help to facilitate the orchestration of ngModules:<br/>
 The bounded context pattern in Domain-Driven Design divides the domain model into related domain fragments. In a service-based environment a 
 bounded context marks the boundaries of an application service. An application service is a concretion of the bounded context pattern! 
 This is similar to **Domain Modules** where we mark the boundaries based on features. Applying the bounded context pattern to domain modules 
-allows us to structure modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
+allows us to structure modules in a domain-centric approach. A bounded context should consist of at least one aggregate and may consist of 
 several aggregates. An important aspect with regard to SPA applications is that the (client- or server-side) bounded context must integrate 
-a REST interface because the router engine in Angular complies with the navigational behaviour of hypermedia APIs. A bounded context should not only
+a RESTful interface, because the Angular router engine complies with the navigational behaviour of hypermedia APIs. A bounded context should not only
 be coupled to the URI of the entry point (root): `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
-**A bounded context can be assigned either to an entire page or to page segments**.
+A bounded context can be assigned either to an entire page or to page segments.
 
 Interaction between the bounded context pattern and domain modules:
 
@@ -300,7 +300,7 @@ class AccoutRepositoryService {
 }
 ```
 
-In general, using rich domain models means more entities than business services.
+In general, using rich domain models means more entities than feature services.
 
 **» Mapper pattern**<br/>
 
@@ -393,7 +393,7 @@ class OrderViewModel {
 }
 ```
 
-Necessary data transformations may reside in the same view model class. A better choice is to have a dedicated component such as a mapper, translator, 
+Necessary data transformations may reside in the same view model class. A better choice is to create a dedicated component such as a mapper, translator, 
 factory or abstract super class which performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote 
 code re-usability by subclassing.
 
@@ -459,7 +459,7 @@ class ProductViewModel extends ViewModel {
   }
 }
 
-ProductViewModel.create({
+cosnt productViewModel = ProductViewModel.create({
   id: 1,
   name: 'screw',
   price: '28$',
@@ -469,7 +469,7 @@ ProductViewModel.create({
 ```
 
 Hardcoding transformation methods in the view model causes tight coupling. A better approach is to process data transformations like filtering, sorting, grouping or destructuring etc. 
-in a reactive stream with operators and hand over the result to an object factory.
+in a reactive stream and hand over the result to an object factory.
 
 **» Model declaration strategies**<br/>
 
@@ -497,7 +497,7 @@ const newOrder: Order = {
 }
 ```
 
-- OOP Constructor Pattern
+- Object Constructor Pattern
 
 ```
 class Order {
@@ -973,6 +973,11 @@ Secondary (Auxiliary) routes should be addressed in any use case that requires a
 parallel at random places. The router module is therefore well suited for mobile related navigation patterns. 
 
 ![](src/assets/images/Notebook.png)
+
+# Business Rule Validation & ErrorHandling
+
+@TODO [text]
+@TODO [image]
 
 # Summary
 
