@@ -80,7 +80,7 @@ Examples:<br/>
 
 Presentation layer: *ModalDialog, Popover, BreakpointObserver*<br/>
 Application layer: *Authentication, Search*<br/>
-Domain layer: * Order, Payment*<br/>
+Domain layer: *Order, Payment*<br/>
 Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*
 *Logging, Error, Security, Configuration, Token, Monitoring, Date*
 
