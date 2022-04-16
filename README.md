@@ -340,19 +340,20 @@ The data mapper is used in the repository service to elaborate the appropriate m
 **» Domain model**<br/>
 
 The domain model entity class contains data and domain-related behavior modeled around business logic.
-In terms of DDD and CQRS, the domain model entity is an aggregate that contains only write operations that result in state changes.
+In terms of DDD and CQRS, the domain model entity class is an aggregate that contains only write operations that result in state changes.
 
-Domain model in the TypeScript syntax:
+Domain model entity class in the TypeScript syntax:
 
 ```
 class Order {
     contructor(){}
+    placeOrder(){}
 }
 ```
 
 In traditional object-oriented programming the software model lacked of explicit boundaries. Relationships between classes brought a 
-complexity that required an efficient design. The aggregate pattern takes a different approach by using clusters of domain objects which 
-are based on invariants and clear boundaries inside a software model making the system easier to reason about. 
+complexity that required an efficient design. The aggregate pattern takes a different approach by using clusters of domain objects that 
+are based on invariants and clear boundaries inside the software model making the system easier to reason about. 
 One of the most important characteristics of the aggregate pattern is to protect it from being invalid and having an inconsistent state. 
 
 Aggregate entity class checklist:
@@ -364,11 +365,10 @@ Aggregate entity class checklist:
 - An aggregate invariants must be satisfied for each state change
 - An aggregate validates all incoming actions and ensures that modifications don't contradict business rules
 - An aggregate internal state can only be mutated by its own public interface 
-- Clients of the aggregate can't make any changes to internal objects
-- Relations between aggregates are managed through an ID property 
-- Each use case should have only one aggregate, but can use other aggregates for readonly access
-- Multiple aggregates can share a value object
-- A CQRS-based aggregate has no read properties and only once that are relevant for domain invariants
+- Relations between aggregates are managed through ID properties
+- Each use case should have only one aggregate, but can use other aggregates to retrieve informations
+- Multiple aggregates can share one value object
+- A CQRS-based aggregate has no read properties and encloses properties that are only relevant for invariants
 - Don't map HATEOAS HyperLinks to object graphs, in particular not for aggregates
 
 Because the router navigation concept of Angular complies with fine-grained REST APIs, it might reveal the internal state of an aggregate through deep-linking. 
