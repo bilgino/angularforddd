@@ -364,7 +364,7 @@ Aggregate entity checklist:
 - An aggregate invariants must be satisfied for each state change
 - Each use case should have only one aggregate, but can use other aggregates for readonly access
 - Multiple aggregates can share a value object
-- A CQRS-based aggregate has no read properties for the sake of demystifying properties that are not relevant for domain invariants
+- A CQRS-based aggregate has no read properties and only once that are relevant for domain invariants
 - Don't map HATEOAS HyperLinks to object graphs, in particular not for aggregates
 - Clients of the aggregate can't make any changes to internal objects
 - Relations between aggregates are handled through ID property readonly access
@@ -708,9 +708,45 @@ in a more efficient way. Consequently, the application service may use the view 
 This might seem more complex than just using a single feature service for business logic and state management. 
 The level of abstraction is up to the developer and is dependent on the requirements. 
 
-Using a single feature or repository service for reads and writes:
+Using a single feature or repository service for reads and writes (CQS):
 
 ![](src/assets/images/SingleService_CQRS.png)
+
+```
+@Injectable()
+export class ProductsService {
+
+    private productSelected$ = new BehaviorSubject<number>(0);
+    private products$ = new BehaviorSubject<Product[]>([]);
+
+    private productListView: Observable<Readonly<ProductView>[]> = combineLatest([
+        this.products$,
+        this.productSelected$,
+    ]).pipe(
+        map(([products, selected]: [Product[], number]) => {
+            return products.map((item: Product) => {
+                return ProductView.create({
+                    ...item,
+                    active: item.id === selected,
+                });
+            });
+        }),
+        shareReplay(1)
+    );
+
+    private constructor() {
+        this.loadProducts();
+    }
+
+    private loadProducts() {
+        return this.http.get<Product[]>('/products').subscribe(products => this.products$.next(products));
+    }
+
+    public getProductListView(): Observable<Readonly<ProductView>[]> {
+        return this.productListView;
+    }
+}
+```
 
 The single service approach makes it difficult to gather multiple sources and could lead to circular dependencies. 
 
