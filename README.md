@@ -148,7 +148,7 @@ Following checklist can help to facilitate the orchestration of ngModules:<br/>
 The bounded context pattern in Domain-Driven Design divides the domain model into related domain fragments. In a service-based environment a 
 bounded context marks the boundaries of an application service. An application service is a concretion of the bounded context pattern! 
 This is similar to **Domain Modules** where we mark the boundaries based on features. Applying the bounded context pattern to domain modules 
-allows us to structure modules in a domain-centric approach. A bounded context should consist of at least one aggregate and may consist of 
+allows us to structure modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
 several aggregates. An important aspect with regard to SPA applications is that the (client- or server-side) bounded context must integrate 
 a RESTful interface, because the Angular router engine complies with the navigational behaviour of hypermedia APIs. A bounded context should not only
 be coupled to the URI of the entry point (root): `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
@@ -337,7 +337,7 @@ read(): Observable<Customer[]> {
 
 The data mapper is used in the repository service to elaborate the appropriate model schema. 
 
-- **» Domain model**<br/>
+**» Domain model**<br/>
 
 The domain model entity class contains data and domain-related behavior modeled around business logic.
 In terms of DDD and CQRS, the domain model entity is an aggregate that contains only write operations that result in state changes.
@@ -350,27 +350,29 @@ class Order {
 }
 ```
 
-In traditional object-oriented programming the software model lacks of explicit boundaries. Relationships between classes brings a 
-complexity that requires an efficient design. The aggregate pattern takes a different approach by using clusters of domain objects which 
-are based on invariants and clear boundaries inside a software model. One of the most important characteristics of the aggregate pattern 
-is to protect it from being invalid and having an inconsistent state. 
+In traditional object-oriented programming the software model lacked of explicit boundaries. Relationships between classes brought a 
+complexity that required an efficient design. The aggregate pattern takes a different approach by using clusters of domain objects which 
+are based on invariants and clear boundaries inside a software model making the system easier to reason about. 
+One of the most important characteristics of the aggregate pattern is to protect it from being invalid and having an inconsistent state. 
 
-Aggregate entity checklist:
+Aggregate entity class checklist:
 
-- An aggregate relate to a real-world concept
-- An aggregate is based on a root entity
-- An aggregate has state, identity (ID) and a life cycle and receives the name of bounded contexts
+- An aggregate is a first-class business object
+- An aggregate is based on a root entity and acts as a collection of related entities and value objects
+- An aggregate has identity, state, lifecycle and receives the name of the bounded context
 - An aggregate is modeled around use cases, protecting invariants, encapsulation and data integrity
 - An aggregate invariants must be satisfied for each state change
+- An aggregate validates all incoming actions and ensures that modifications don't contradict business rules
+- An aggregate internal state can only be mutated by its own public interface 
+- Clients of the aggregate can't make any changes to internal objects
+- Relations between aggregates are managed through an ID property 
 - Each use case should have only one aggregate, but can use other aggregates for readonly access
 - Multiple aggregates can share a value object
 - A CQRS-based aggregate has no read properties and only once that are relevant for domain invariants
 - Don't map HATEOAS HyperLinks to object graphs, in particular not for aggregates
-- Clients of the aggregate can't make any changes to internal objects
-- Relations between aggregates are handled through ID property readonly access
 
-Due to the Angular router API complies with fine-grained REST APIs that might reveal the internal state of an aggregate we are ~~not~~ facing with
-contradictory approaches. 
+Because the router navigation concept of Angular complies with fine-grained REST APIs, it might reveal the internal state of an aggregate through deep-linking. 
+We are now facing dissonant design approaches between Data-Driven Design and Domain-Driven Design.
 
 **» View model**<br/>
 
@@ -708,7 +710,7 @@ in a more efficient way. Consequently, the application service may use the view 
 This might seem more complex than just using a single feature service for business logic and state management. 
 The level of abstraction is up to the developer and is dependent on the incoming requirements. 
 
-Using a single feature or repository service for reads and writes (CQS):
+Using a single feature service for reads and writes (CQS):
 
 ![](src/assets/images/SingleService_CQRS.png)
 
@@ -1048,7 +1050,7 @@ With multi-layered applications it is clear that critical decisions have to be m
 Most of them are determined by the requirements at the macro-level, which includes decisions on the scope of:
 
 - SPA vs. MPA
-- UX vs. Domain-driven vs. Data-driven vs. API First
+- UX vs. Domain-Driven vs. Data-Driven vs. API First
 - Smart vs. Dump client
 - Public vs. Private Web API
 - Mobile vs. Desktop first
