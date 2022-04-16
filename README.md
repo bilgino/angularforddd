@@ -652,9 +652,9 @@ Just as mentioned before, it's common for Angular projects to use services for b
 We typically use stateful services if we need to share data across components or process HTTP requests and responses that perform CRUD operations. 
 In order to comply with Domain-Driven Design we will implement reactive repository services in favor of an active data store. 
 The repository service acts as a reactive storage place for globally accessible objects that can be used by other independent components. 
-Repositories in frontend architecture are not just for entities, but for all objects including anemic domain models or view models.
-Repositories also act as an anti-corruption layer allowing us to build models without its shape being affected by the underlying Web-API interface.
-This is useful when consuming a fine-grained (REST) Web-API to piece together an aggregate in the frontend.
+Repositories in frontend architectures are not just for entities, but for all objects including anemic domain models or view models.
+Repositories also act as an anti-corruption layer allowing us to build models without its structure being influenced by the underlying Web-API interface.
+This is useful when piecing together an aggregate based on a fine-grained resource-oriented Web-API. 
 
 Furthermore, we will introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. 
 The CQRS pattern enables us to answer different use cases with the respective data model. State changes in the repository will immediately
@@ -706,7 +706,7 @@ in a more efficient way. Consequently, the application service may use the view 
 ![](src/assets/images/QuerySideService.PNG)
 
 This might seem more complex than just using a single feature service for business logic and state management. 
-The level of abstraction is up to the developer and is dependent on the requirements. 
+The level of abstraction is up to the developer and is dependent on the incoming requirements. 
 
 Using a single feature or repository service for reads and writes (CQS):
 
@@ -714,7 +714,7 @@ Using a single feature or repository service for reads and writes (CQS):
 
 ```
 @Injectable()
-export class ProductsService {
+class ProductsService {
 
     private productSelected$ = new BehaviorSubject<number>(0);
     private products$ = new BehaviorSubject<Product[]>([]);
