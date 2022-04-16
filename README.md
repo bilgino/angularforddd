@@ -312,7 +312,7 @@ In the context of "mapping", it's important to make a clear distinction between 
 Mapping JSON-encoded server data in the frontend is mandatory if:
 
 - The domain model object defines any methods
-- The schema in the database is different from its representation in the application
+- The schema of the Web-API is different from its representation in the application
 - The typing system shall consist of classes instead of interfaces or type aliases
 
 The Mapper pattern transfers data between two different schemas:
@@ -339,9 +339,9 @@ read(): Observable<Customer[]> {
 
 The data mapper is used in the repository service to elaborate the appropriate model schema. 
 
-**» Domain model**<br/>
+- **» Domain model**<br/>
 
-The domain model entity class contains data and domain-related behavior designed around invariants (business rules).
+The domain model entity class contains data and domain-related behavior modeled around business logic.
 In terms of DDD and CQRS, the domain model entity is an aggregate that contains only write operations that result in state changes.
 
 Domain model in the TypeScript syntax:
@@ -352,9 +352,9 @@ class Order {
 }
 ```
 
-In traditional object-oriented programming the software model lacked of explicit boundaries. Relationships between classes brought a 
-complexity that required an efficient design. The DDD aggregate pattern takes a different approach by using clusters of domain objects which 
-are based on invariants and clear boundaries inside a complete software model. One of the most important characteristics of the aggregate pattern 
+In traditional object-oriented programming the software model lacks of explicit boundaries. Relationships between classes brings a 
+complexity that requires an efficient design. The aggregate pattern takes a different approach by using clusters of domain objects which 
+are based on invariants and clear boundaries inside a software model. One of the most important characteristics of the aggregate pattern 
 is to protect it from being invalid and having an inconsistent state. 
 
 Aggregate entity checklist:
