@@ -248,9 +248,7 @@ practice in Angular projects. Building rich domain models is a major objective i
 A common practice in Angular projects is to use feature services or the "Fat Service, Skinny Model" pattern:
 
 ```
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 class AccountService {
     accounts = [{ id: 1, balance: 4500 }];
     constructor(){}
