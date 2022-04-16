@@ -78,9 +78,9 @@ communication across layers and demanding business logic through services. The m
 
 Examples:<br/>
 
-Presentation layer: *ModalDialog, Popover, BreakpointObserver*<br/>
+Presentation layer: *ModalDialog, Popover, BreakpointObserver, LoadingSpinner*<br/>
 Application layer: *Authentication, Search*<br/>
-Domain layer: *Order, Payment*<br/>
+Domain layer: *Domain Logic, Business Logic*<br/>
 Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*
 *Logging, Error, Security, Configuration, Token, Monitoring, Date*
 
@@ -198,11 +198,11 @@ The view model and domain model should maintain different data structures to kee
 - Rich Domain Model
 - View Model 
 
-The anemic domain model is quite often used in CRUD-based web applications as value container without any behavior of its own, 
+The anemic domain model is quite often used in CRUD-based web applications as a value container without any behavior of its own, 
 conform to RESTful practices. However, it's considered an anti-pattern because it doesn't include business logic and
-can't protect its invariants. Furthermore, it introduces a tight coupling with the client. 
-Applying rich domain models, we prevent domain logic from leaking into other layers. 
-The following example shows the negative side effects of anemic domain models. 
+can't protect its invariants. Furthermore, it introduces a tight coupling with the client code. 
+Using rich domain models instead we prevent domain logic from leaking into other layers.
+The following example shows the negative side effect of anemic domain models. 
 
 Domain logic coupled to the client (UI controller): 
 
@@ -238,12 +238,12 @@ A rich domain model instead hides and encapsulates domain logic:
 
 In the second example, domain logic is decoupled from the UI controller. Encapsulation protects the integrity of the model data.
 Keeping the model as independent as possible improves usability and allows easier refactoring.
-Neither domain state nor domain logic should be written as part of the client (UI controller).
+Neither domain state nor domain logic should be written as part of the UI controller.
 
 **» Feature services**<br/>
 
-Furthermore, using feature services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
-practice in Angular projects. Building rich domain models is a major objective in object-oriented design to keep our code in good condition.
+Subsequently, using feature services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
+practice in Angular projects. Building rich domain models is a major objective in object-oriented design to keep the code base in good condition.
 
 A common practice in Angular projects is to use feature services or the "Fat Service, Skinny Model" pattern:
 
@@ -269,7 +269,7 @@ A better approach is to enclose domain logic inside entity classes making bounda
 class AccountService {
     constructor(private accountRepository: AccountRepositoryService) {}  
     public changeBalance(id: number, amount: number): void {
-      const account = this.accountRepository.getById(id)
+      const account = this.accountRepository.getById(id);
       account.updateBalance(amount);
       return account;
     }
@@ -304,7 +304,7 @@ In general, using rich domain models means more entities than feature services.
 
 **» Mapper pattern**<br/>
 
-A domain layer in the frontend ensures that business behavior works. 
+A domain layer in the frontend architecture ensures that business behavior works. 
 With higher functional ability using rich domain models, we must take the mapper pattern into consideration. 
 A common practice for the reason of typesaftyness is to declare interfaces in support of plain JavaScript object literals. 
 In the context of "mapping", it's important to make a clear distinction between the typing system and the data structure of models.
@@ -351,6 +351,28 @@ class Order {
     contructor(){}
 }
 ```
+
+In traditional object-oriented programming the software model lacked of explicit boundaries. Relationships between classes brought a 
+complexity that required an efficient design. The DDD aggregate pattern takes a different approach by using clusters of domain objects which 
+are based on invariants and clear boundaries inside a complete software model. One of the most important characteristics of the aggregate pattern 
+is to protect it from being invalid and having an inconsistent state. 
+
+Aggregate entity checklist:
+
+- An aggregate relate to a real-world concept
+- An aggregate is based on a root entity
+- An aggregate has state, identity (ID) and a life cycle and receives the name of bounded contexts
+- An aggregate is modeled around use cases, protecting invariants, encapsulation and data integrity
+- An aggregate invariants must be satisfied for each state change
+- Each use case should have only one aggregate, but can use other aggregates for readonly access
+- Multiple aggregates can share a value object
+- A CQRS-based aggregate has no read properties for the sake of demystifying properties that are not relevant for domain invariants
+- Don't map HATEOAS HyperLinks to object graphs, in particular not for aggregates
+- Clients of the aggregate can't make any changes to internal objects
+- Relations between aggregates are handled through ID property readonly access
+
+Due to the Angular router API complies with fine-grained REST APIs that might reveal the internal state of an aggregate we are ~~not~~ facing with
+contradictory approaches. 
 
 **» View model**<br/>
 
@@ -453,8 +475,13 @@ class ProductViewModel extends ViewModel {
     this.price = this.transformPrice(props.price); 
     ... // set or transform other properties
   }
-
+  
+  private static canNotCreate(props: IProductView): boolean {
+    // validate props and return validation result
+  }
+  
   public static create(props: IProductViewModel): Readonly<ProductViewModel> {
+     if(this.canNotCreate(props)) throw Error("Can not create ProductViewModel");
     return new ProductViewModel(props) as Readonly<ProductViewModel>;
   }
 }
@@ -617,17 +644,19 @@ in Angular complies with the navigational behaviour of hypermedia APIs, you shou
 
 ## Services
 
-Singleton services are important concepts in Angular applications. Most of the functionality that doesn't belong to UI components 
-resides in the service layer in the shape of application-, domain- and infrastructure services. And the repository pattern will be used 
-in favor of a state management service. 
+Singleton services are important aspects in Angular applications. Most of the functionality that doesn't belong to UI components typically
+resides in the service layer. Later, we will discuss the service layer pattern in the form of application-, domain- and infrastructure services according
+to Domain-Driven Design practices. The repository pattern will be used in favor of state management services. 
 
 **» Stateful services vs. stateful repositories**<br/>
 
-Just as mentioned before, it's common for Angular projects to use feature services for business functionality and state management. 
-We typically use stateful services if we need to share data across components or process simple HTTP requests and responses that perform CRUD operations. 
-In order to comply with Domain-Driven Design we will implement reactive repositories in favor of an active data store. 
+Just as mentioned before, it's common for Angular projects to use services for business functionality and state management. 
+We typically use stateful services if we need to share data across components or process HTTP requests and responses that perform CRUD operations. 
+In order to comply with Domain-Driven Design we will implement reactive repository services in favor of an active data store. 
 The repository service acts as a reactive storage place for globally accessible objects that can be used by other independent components. 
-Frontend-Repositories are not just for Entities, but for all domain objects including anemic domain models or view models.
+Repositories in frontend architecture are not just for entities, but for all objects including anemic domain models or view models.
+Repositories also act as an anti-corruption layer allowing us to build models without its shape being affected by the underlying Web-API interface.
+This is useful when consuming a fine-grained (REST) Web-API to piece together an aggregate in the frontend.
 
 Furthermore, we will introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. 
 The CQRS pattern enables us to answer different use cases with the respective data model. State changes in the repository will immediately
@@ -639,16 +668,16 @@ A reactive API exposes hot observables (BehaviorSubjects etc.) to manage the com
 other components, we must keep track of changes to prevent stale data and keep the UI in sync. RxJS gives us many great tools and 
 operators to implement the "projection phase" between the read and write side. 
 
-**» Why CQRS in the frontend?**<br/>
+**» CQRS in the frontend?**<br/>
 
 With traditional CRUD-based web applications conform to the REST architectural style and the single data model approach,
-we may fall into the situation where we have to stitch together several resources to build a rich view model.
+we may fall into the situation where we have to stitch together several resources to build a rich (view) model.
 Even in the case of RPC-like Web APIs, it's likely that we will encounter problems of this kind. Developers often use controller methods 
-to elaborate view models. Which in the end leads to monolithic controllers:
+to elaborate (view) models. Which in the end leads to monolithic controllers:
 
 ![](src/assets/images/Up_Down_Flow.png)
 
-The domain model focuses on invariants and business rules rather than presentation needs. Introducing a view model provider services to manage 
+The domain model focuses on business logic rather than presentation needs. Introducing a view model provider services to manage 
 complicated page flows and user interfaces allows us to query the appropriate view model for different UI scenarios. The view model provider service is a perfect 
 fit to pre-compute filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). That is, the CQRS pattern supports us in avoiding 
 over-bloated all-in-one models.
@@ -990,6 +1019,4 @@ Most of them are determined by the requirements at the macro-level, which includ
 - Public vs. Private Web API
 - Mobile vs. Desktop first
 - Offline vs. Online first
-- Functional vs. Object-oriented 
-
-
+- Functional vs. Object-oriented
