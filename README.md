@@ -415,9 +415,9 @@ class OrderViewModel {
 }
 ```
 
-Necessary data transformations may reside in the same view model class. A better choice is to create a dedicated component such as a mapper, translator, 
+Necessary data transformations may reside in the same view model class. A better choice would be to create a dedicated component such as a mapper, translator, 
 factory or abstract super class which performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote 
-code re-usability by subclassing.
+code reusability by subclassing.
 
 ```
 abstract class ViewModel {
@@ -443,7 +443,7 @@ class OrderViewModel extends ViewModel {
 }
 ```
 
-Due to performance implications, it's not recommended to embedding `getters` in the view template. Instead, we will use public properties.
+Due to performance implications, it's not recommended embedding `getters` in the view's template. Instead, we will use public properties.
 
 **» Object Factory Pattern for View Models:**<br/>
 
@@ -746,6 +746,18 @@ class ProductsService {
 
     public getProductListView(): Observable<Readonly<ProductView>[]> {
         return this.productListView;
+    }
+    
+    public createProduct(): void {
+        ...
+    }
+    
+    public updateProduct(): void {
+        ...
+    }
+    
+    public deleteProduct(): void {
+        ...
     }
 }
 ```
