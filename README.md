@@ -90,8 +90,8 @@ An important aspect of Domain-Driven Design is that the complexity of the domain
 Ideally, the domain layer is self-contained and focused on abstracting the business domain. Very often frontend applications evaluate business rules 
 that will immediately be reflected in the presentation layer, especially in SPA applications when navigating through HTML forms that have 
 cross-dependencies in terms of distributed business rules. An isolated domain layer allows us to avoid domain logic leaking into other layers. 
-In addition to that, we don't want to command against the server upon every user input; therefore, a domain layer in the frontend sounds like a 
-good idea.
+In addition, we don't want to command against the server upon every user input; therefore, the domain layer pattern in the frontend architecture 
+sounds like a good idea.
 
 Domain-oriented layering is often considered the first structuring criterion in Angular applications. However, layered architecture 
 is independent of vertical slicing. It's sufficient to comply with horizontal slicing. The main reasons for modular segmentation in 
@@ -416,7 +416,7 @@ class OrderViewModel {
 ```
 
 Necessary data transformations may reside in the same view model class. A better choice would be to create a dedicated component such as a mapper, translator, 
-factory or abstract super class which performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote 
+factory or an abstract super class which performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote 
 code reusability by subclassing.
 
 ```
@@ -539,7 +539,7 @@ const newOrder: Order = new Order();
 
 - Object Factory Pattern
 
-Example 1:
+Option 1:
 
 ```
 class OrderFactory {
@@ -553,7 +553,7 @@ newOrder.propertyA = ...
 newOrder.propertyB = ...
 ```
 
-Example 2:
+Option 2:
 
 ```
 interface OrderProps {
@@ -590,7 +590,7 @@ const newOrder = Order.create({status:OrderStatus.Pending});
 const emptyOrder = Order.empty();
 ```
 
-Example 3:
+Option 3:
 
 ```
 interface IOrder{
@@ -621,10 +621,68 @@ const newOrder = Order.create({status:OrderStatus.Pending});
 const jsonOrder = newOrder.toJSON()
 ```
 
-**» Translator pattern (Mapping VM to DM and vice versa, XMapper.toXY)**<br/>
+**» Structural mapper pattern**<br/>
 
-@TODO [text]
-@TODO [image]
+A data mapper performs a bidirectional transfer of data structures between two objects:
+
+Option 1 - Traditional assignment pattern:
+
+```
+class Order {
+    id; 
+    status; 
+    total;
+    constructor(data) {
+       this.id = data.id;
+       this.status = data.status;
+       this.total = data.total
+    }
+}
+```
+
+Option 2 - EcmaScript assignment pattern:
+
+```
+class Order {
+    id; 
+    status; 
+    total;
+    constructor({ id, status, total = 0 }) {
+        Object.defineProperty(this, 'id', { value: id, writable: false });
+        Object.assign(this, { status, total });
+    }
+}
+```
+
+Option 3 - Mapper assignment pattern:
+
+```
+class OrderMapper {
+    constructor() {}
+
+    public static mapToOrder(Order, Dto): Order {
+        Order.id = Dto.id
+        Order.status = Dto.Status
+        Order.total = Dto.total
+        return Order;
+    }
+
+    public static mapFromOrder(Order, Dto): Dto {
+        Dto.id = Order.id
+        Dto.status = Order.Status
+        Dto.total = Order.total
+        return Dto;
+    }
+}
+
+const OrderDto = OrderMapper.mapToOrder(new Order(), Dto);
+```
+
+Mapper checklist:
+
+- When working with reactive model-driven forms bidirectional mapping may be necessary
+- We can use the mapper pattern in the repository service to elaborate a pure model structures
+- When mapping data objects in the repository service, don't map to view models as view models may require multiple sources
 
 **» REST, HATEOAS & CO.**<br/>
 
