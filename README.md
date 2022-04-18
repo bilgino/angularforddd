@@ -54,20 +54,20 @@ communication across layers and demanding business logic through services. The m
 
 - Presentation layer: Components, Widgets, User Interface Services
 - Application layer: Use Case Services, View Models and Providers, Factories <br/>
-- Domain layer: Aggregates, Entities, Value Objects, Factories <br/>
-- Infrastructure layer: Repositories, Cache <br/>
+- Domain layer: Aggregates, Entities, Value Objects, Factories, Domain Services <br/>
+- Infrastructure layer: Repositories <br/>
 
 *» Service layers* <br/>
 
 - User Interface services carry out dialog or interaction concepts
 - Application services carry out business use cases and are procedural 
-- Domain services carry out domain logic at a higher level than entities or value objects
-- Infrastructure services help to separate technical and business concepts <br/>
+- Domain services carry out business concepts or processes that doesn't fit inside entities or value objects
+- Infrastructure services help to separate technical concepts from business concepts <br/>
 
 *» Validation layers*<br/>
 
 - Application layer: Data types (null, undefined), format (length, empty, whitespace), schema (email, creditcard)
-- Domain layer: Business/Domain Rules, Domain Invariants<br/>
+- Domain layer: Business/Domain Rules, Invariants<br/>
 
 *» Angular adoption*<br/>
 
@@ -214,7 +214,7 @@ Domain logic coupled to the client (UI controller):
 }) class EmployeeComponent {
     @Input() emp: Employee; 
 
-    public salaryIncreaseBy(percent:number){
+    public salaryIncreaseBy(percent:number):void {
          emp.salary = (emp.salary * percent / 100) + emp.salary;
     }
 }
@@ -230,7 +230,7 @@ A rich domain model instead hides and encapsulates domain logic:
 }) class EmployeeComponent {
     @Input() emp: Employee; 
 
-    public salaryIncreaseBy(percent:number){
+    public salaryIncreaseBy(percent:number):void {
          emp.salaryIncreaseBy(percent);
     }
 }
@@ -252,10 +252,11 @@ A common practice in Angular projects is to use feature services or the "Fat Ser
 class AccountService {
     accounts = [{ id: 1, balance: 4500 }];
     constructor(){}
-    changeBalance(id: number, amount: number): void {
+    changeBalance(id: number, amount: number):void {
         if (id > 0 && amount < AMOUNT.MAX_VALID) {
             this.accounts[id].balance += amount;
         }
+        return this.accounts[id];
     }
 }
 ```
@@ -266,7 +267,7 @@ A better approach is to enclose domain logic inside entity classes making bounda
 @Injectable()
 class AccountService {
     constructor(private accountRepository: AccountRepositoryService) {}  
-    public changeBalance(id: number, amount: number): void {
+    public changeBalance(id: number, amount: number):Account {
       const account = this.accountRepository.getById(id);
       account.updateBalance(amount);
       return account;
@@ -276,8 +277,8 @@ class AccountService {
 class Account {
     id: number;
     balance: number;
-    constructor() {}
-    updateBalance(amount: number): void {
+    constructor(){}
+    updateBalance(amount: number):void {
         if (amount > AMOUNT.MAX_VALID) {
            throw Error(...)
         }
@@ -288,8 +289,8 @@ class Account {
 @Injectable()
 class AccoutRepositoryService {
     accounts = [new Account(1, 4500)];
-    constructor() {}
-    public getById(id:number) {
+    constructor(){}
+    public getById(id:number):Account {
         if (id <= 0) {
             throw Error(...)
         }
@@ -402,7 +403,7 @@ class OrderViewModel {
     private _customerId:string;
     private _total:string;
     private _balance:string;
-    
+   
     get total() {}
     set total(data) { this._total = this.format(data) }
     get balance() {}
@@ -529,7 +530,7 @@ const newOrder: Order = {
 ```
 class Order {
     public status: OrderStatus;
-    public customer: Customer
+    public customer: Customer;
     constructor() {}
     public placeOrder() {}
 }
@@ -562,25 +563,20 @@ interface OrderProps {
 
 class Order {
     public status: OrderStatus;
-    
     private constructor(props:OrderProps){
     	this.status = props.status;
     }
-
-    public static create(props:OrderProps) {
+    public static create(props:OrderProps):Order {
       return new Order(props);
     }
-
-    public static empty() {
+    public static empty():Order {
       return new Order();
     }
-
     toJSON(): object {
         const serialized = Object.assign(this)
         delete serialized.status
         return serialized
     }
-
     toString(): string {
         return "";
     }
@@ -598,21 +594,17 @@ interface IOrder{
 }
 
 class Order implements IOrder {
-
     constructor(public status = OrderStatus.New){}
-
-    public static create(json:IOrder): Order {
+    public static create(json:IOrder):Order {
         if(!json) return new Order();
         return new Order(json.status);
     }
-	
-    toJSON(): object {
+    toJSON():object {
         const serialized = Object.assign(this)
         delete serialized.status
         return serialized
     }
-
-    toString(): string {
+    toString():string {
         return "";
     }
 }
@@ -654,19 +646,37 @@ class Order {
 }
 ```
 
-Option 3 - Mapper assignment pattern:
+Option 3 - Dynamic assignment pattern:
+
+```
+enum Status {
+    PENDING = "Pending",
+    COMPLETE = "Complete"
+}
+
+class Order {
+    [key: string]: any;
+    constructor(input: { [key: string]: any }) {
+        Object.keys(input).forEach((k: string) => {
+            this[k] = input[k];
+        });
+    }
+}
+
+const mongo = new Order({ id: 33, status: Status.PENDING })
+```
+
+Option 4 - Mapper assignment pattern:
 
 ```
 class OrderMapper {
     constructor() {}
-
     public static mapToOrder(Order, Dto): Order {
         Order.id = Dto.id
         Order.status = Dto.Status
         Order.total = Dto.total
         return Order;
     }
-
     public static mapFromOrder(Order, Dto): Dto {
         Dto.id = Order.id
         Dto.status = Order.Status
