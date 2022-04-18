@@ -680,9 +680,9 @@ const OrderDto = OrderMapper.mapToOrder(new Order(), Dto);
 
 Mapper checklist:
 
-- When working with reactive model-driven forms bidirectional mapping may be necessary
-- We can use the mapper pattern in the repository service to elaborate a pure model structures
-- When mapping data objects in the repository service, don't map to view models as view models may require multiple sources
+- When using model-driven reactive forms a bidirectional mapping may be needed
+- We can use the mapper pattern in the repository service to elaborate a pure model structure
+- Don't map to view models in the repository service as view models may require multiple sources
 
 **» REST, HATEOAS & CO.**<br/>
 
