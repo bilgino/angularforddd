@@ -120,7 +120,7 @@ overview, visit the following website https://angular.io/guide/module-types#summ
 
 Angular's modular system gives a clean design response:  
 
-**» Modular architecture**<br/>
+**» Modular Architecture**<br/>
 
 ![](src/assets/images/module_arch.png)
 
@@ -131,7 +131,7 @@ Angular's modular system gives a clean design response:
 `Domain Module`: Domain modules such as *OrderModule* (Bounded Context) or *SalesModule* (Bounded Context)<br/>
 `Widget Module`: Highly cohesive and reusable widgets e.g. *MatSidenavModule, MatSnackBarModule* <br/>
 
-**» Module guidelines**<br/>
+**» Modules Checklist**<br/>
 
 Following checklist can help to facilitate the orchestration of ngModules:<br/>
 
@@ -143,7 +143,7 @@ Following checklist can help to facilitate the orchestration of ngModules:<br/>
 - Transitive dependencies aren't visible, reexport them to make them available to other modules
 - Module content can be exported without being imported
 
-**» Bounded context pattern**<br/>
+**» Bounded Context Pattern**<br/>
 
 The bounded context pattern in Domain-Driven Design divides the domain model into related domain fragments. In a service-based environment a 
 bounded context marks the boundaries of an application service. An application service is a concretion of the bounded context pattern! 
@@ -192,7 +192,7 @@ Angular promotes two types of models:
 
 The view model and domain model should maintain different data structures to keep the domain model separate from view properties
 
-**» Implementation patterns**<br/>
+**» Implementation Patterns**<br/>
 
 - Anemic Domain Model
 - Rich Domain Model
@@ -240,7 +240,7 @@ In the second example, domain logic is decoupled from the UI controller. Encapsu
 Keeping the model as independent as possible improves usability and allows easier refactoring.
 Neither domain state nor domain logic should be written as part of the UI controller.
 
-**» Feature services**<br/>
+**» Feature Services**<br/>
 
 Subsequently, using feature services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
 practice in Angular projects. Building rich domain models is a major objective in object-oriented design to keep the code base in good condition.
@@ -301,44 +301,7 @@ class AccoutRepositoryService {
 
 In general, using rich domain models means more entities than feature services.
 
-**» Mapper pattern**<br/>
-
-A domain layer in the frontend architecture ensures that business behavior works. 
-With higher functional ability using rich domain models, we must take the mapper pattern into consideration. 
-A common practice for the reason of typesaftyness is to declare interfaces in support of plain JavaScript object literals. 
-In the context of "mapping", it's important to make a clear distinction between the typing system and the data structure of models.
-
-Mapping JSON-encoded server data in the frontend is mandatory if:
-
-- The domain model object defines any methods
-- The schema of the Web-API is different from its representation in the application
-- The typing system shall consist of classes instead of interfaces or type aliases
-
-The Mapper pattern transfers data between two different schemas:
-
-![](src/assets/images/data_mapper.png)
-
-Let's have a look at how to map the server response schema:
-
-```
-read(): Observable<Customer[]> {
-    return this.http.get<Customer[]>("/api/customers")
-        pipe(
-            map((customers: Customer[]) : Customer[] => {
-                let result: Customer[] = [];
-                customers.forEach((customer:Customer) => {
-                    result = [new Customer(customer.firstName, customer.lastName), ...result];
-                });
-                return result;
-            }),
-            catchError(()=>{})
-        );
-};
-```
-
-The data mapper is used in the repository service to elaborate the appropriate model schema. 
-
-**» Domain model**<br/>
+**» Domain Model**<br/>
 
 The domain model entity class contains data and domain-related behavior modeled around business logic.
 In terms of DDD and CQRS, the domain model entity class is an aggregate that contains only write operations that result in state changes.
@@ -352,10 +315,10 @@ class Order {
 }
 ```
 
-In traditional object-oriented programming the software model lacked of explicit boundaries. Relationships between classes brought a 
-complexity that required an efficient design. The aggregate pattern takes a different approach by using clusters of domain objects that 
-are based on invariants and clear boundaries inside the software model making the system easier to reason about. 
-One of the most important characteristics of the aggregate pattern is to protect it from being invalid and having an inconsistent state. 
+In traditional object-oriented programming the software model lacked of explicit boundaries. Relationships between classes brought a
+complexity that required an efficient design. The aggregate pattern takes a different approach by using clusters of domain objects that
+are based on invariants and clear boundaries inside the software model making the system easier to reason about.
+One of the most important characteristics of the aggregate pattern is to protect it from being invalid and having an inconsistent state.
 
 Aggregate entity class checklist:
 
@@ -365,20 +328,20 @@ Aggregate entity class checklist:
 - An aggregate is modeled around use cases, protecting invariants, encapsulation and data integrity
 - An aggregate invariants must be satisfied for each state change
 - An aggregate validates all incoming actions and ensures that modifications don't contradict business rules
-- An aggregate internal state can only be mutated by its own public interface 
+- An aggregate internal state can only be mutated by its own public interface
 - Relations between aggregates are managed through ID properties
 - Each use case should have only one aggregate, but can use other aggregates to retrieve informations
 - Multiple aggregates can share one value object
 - A CQRS-based aggregate has no read properties and encloses properties that are only relevant for invariants
 - Don't map HATEOAS HyperLinks to object graphs, in particular not for aggregates
 
-Because the router navigation concept of Angular complies with fine-grained REST APIs, it might reveal the internal state of an aggregate through deep-linking. 
+Because the router navigation concept of Angular complies with fine-grained REST APIs, it might reveal the internal state of an aggregate through deep-linking.
 We are now facing dissonant design approaches between Data-Driven Design and Domain-Driven Design.
 
-**» View model**<br/>
+**» View Model**<br/>
 
-View models are mere data objects and usually don't contain any domain-related behavior. Hence, they are not a part of the domain layer. 
-View models are supportive in providing data to the view and might extend super view model classes to inherit common properties and behaviour. 
+View models are mere data objects and usually don't contain any domain-related behavior. Hence, they are not a part of the domain layer.
+View models are supportive in providing data to the view and might extend super view model classes to inherit common properties and behaviour.
 They are typically created by merging two or more existing models into one model and are an essential part of a good frontend architecture.
 
 The view model should hold the data necessary to render the UI if:
@@ -395,7 +358,7 @@ View model checklist:
 - A view model should be located in its own file, repository service or UI container component
 - A view model name ends with the suffix -View e.g. UserProfileView, UserListView, UserDetailsView
 
-Examples: 
+Examples:
 
 ```
 class OrderViewModel {
@@ -416,8 +379,8 @@ class OrderViewModel {
 }
 ```
 
-Necessary data transformations may reside in the same view model class. A better choice would be to create a dedicated component such as a mapper, translator, 
-factory or an abstract super class which performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote 
+Necessary data transformations may reside in the same view model class. A better choice would be to create a dedicated component such as a mapper, translator,
+factory or an abstract super class which performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote
 code reusability by subclassing.
 
 ```
@@ -446,7 +409,46 @@ class OrderViewModel extends ViewModel {
 
 Due to performance implications, it's not recommended embedding `getters` in the view's template. Instead, we will use public properties.
 
-**» Object Factory Pattern for View Models:**<br/>
+**» Model Declaration Strategies**<br/>
+
+- Type Signature Pattern
+
+```
+type Order = {
+     orderId: string;
+     status: Orderstatus;
+     customer: Customer;
+};
+
+// or
+
+interface Order {
+     orderId: string;
+     status: Orderstatus;
+     customer: Customer;
+};
+
+const newOrder: Order = {
+     orderId = '1';
+     status = Orderstatus.Pending;
+     customer = {};
+}
+```
+
+- Object Constructor Pattern
+
+```
+class Order {
+    public status: OrderStatus;
+    public customer: Customer;
+    constructor() {}
+    public placeOrder() {}
+}
+
+const newOrder: Order = new Order();
+```
+
+**» Object Factory Pattern:**<br/>
 
 ```
 abstract class ViewModel {
@@ -496,49 +498,8 @@ cosnt productViewModel = ProductViewModel.create({
 });
 ```
 
-Hardcoding transformation methods in the view model causes tight coupling. A better approach is to process data transformations like filtering, sorting, grouping or destructuring etc. 
+Hardcoding transformation methods in the view model causes tight coupling. A better approach is to process data transformations like filtering, sorting, grouping or destructuring etc.
 in a reactive stream and hand over the result to an object factory.
-
-**» Model declaration strategies**<br/>
-
-- Type Signature Pattern
-
-```
-type Order = {
-     orderId: string;
-     status: Orderstatus;
-     customer: Customer;
-};
-
-// or
-
-interface Order {
-     orderId: string;
-     status: Orderstatus;
-     customer: Customer;
-};
-
-const newOrder: Order = {
-     orderId = '1';
-     status = Orderstatus.Pending;
-     customer = {};
-}
-```
-
-- Object Constructor Pattern
-
-```
-class Order {
-    public status: OrderStatus;
-    public customer: Customer;
-    constructor() {}
-    public placeOrder() {}
-}
-
-const newOrder: Order = new Order();
-```
-
-- Object Factory Pattern
 
 Option 1:
 
@@ -613,11 +574,48 @@ const newOrder = Order.create({status:OrderStatus.Pending});
 const jsonOrder = newOrder.toJSON()
 ```
 
-**» Structural mapper pattern**<br/>
+**» Mapper Pattern**<br/>
+
+A domain layer in the frontend architecture ensures that business behavior works. 
+With higher functional ability using rich domain models, we must take the mapper pattern into consideration. 
+A common practice for the reason of typesaftyness is to declare interfaces in support of plain JavaScript object literals. 
+In the context of "mapping", it's important to make a clear distinction between the typing system and the data structure of models.
+
+Mapping JSON-encoded server data in the frontend is mandatory if:
+
+- The domain model object defines any methods
+- The schema of the Web-API is different from its representation in the application
+- The typing system shall consist of classes instead of interfaces or type aliases
+
+The Mapper pattern transfers data between two different schemas:
+
+![](src/assets/images/data_mapper.png)
+
+Let's have a look at how to map the server response schema:
+
+```
+read(): Observable<Customer[]> {
+    return this.http.get<Customer[]>("/api/customers")
+        pipe(
+            map((customers: Customer[]) : Customer[] => {
+                let result: Customer[] = [];
+                customers.forEach((customer:Customer) => {
+                    result = [new Customer(customer.firstName, customer.lastName), ...result];
+                });
+                return result;
+            }),
+            catchError(()=>{})
+        );
+};
+```
+
+The data mapper is used in the repository service to elaborate the appropriate model schema. 
+
+**» Structural Mapper Pattern**<br/>
 
 A data mapper performs a bidirectional transfer of data structures between two objects:
 
-Option 1 - Traditional assignment pattern:
+Option 1 - Classic Assignment:
 
 ```
 class Order {
@@ -632,7 +630,7 @@ class Order {
 }
 ```
 
-Option 2 - EcmaScript assignment pattern:
+Option 2 - EcmaScript Assignment:
 
 ```
 class Order {
@@ -646,7 +644,7 @@ class Order {
 }
 ```
 
-Option 3 - Dynamic assignment pattern:
+Option 3 - Dynamic Assignment:
 
 ```
 enum Status {
@@ -666,7 +664,7 @@ class Order {
 const mongo = new Order({ id: 33, status: Status.PENDING })
 ```
 
-Option 4 - Mapper assignment pattern:
+Option 4 - Mapper Assignment:
 
 ```
 class OrderMapper {
@@ -716,7 +714,7 @@ Singleton services are important aspects in Angular applications. Most of the fu
 resides in the service layer. Later, we will discuss the service layer pattern in the form of application-, domain- and infrastructure services according
 to Domain-Driven Design practices. The repository pattern will be used in favor of state management services. 
 
-**» Stateful services vs. stateful repositories**<br/>
+**» Stateful Services vs. Stateful Repositories**<br/>
 
 Just as mentioned before, it's common for Angular projects to use services for business functionality and state management. 
 We typically use stateful services if we need to share data across components or process HTTP requests and responses that perform CRUD operations. 
@@ -736,7 +734,7 @@ A reactive API exposes hot observables (BehaviorSubjects etc.) to manage the com
 other components, we must keep track of changes to prevent stale data and keep the UI in sync. RxJS gives us many great tools and 
 operators to implement the "projection phase" between the read and write side. 
 
-**» CQRS in the frontend?**<br/>
+**» CQRS in the Frontend?**<br/>
 
 With traditional CRUD-based web applications conform to the REST architectural style and the single data model approach,
 we may fall into the situation where we have to stitch together several resources to build a rich (view) model.
@@ -778,13 +776,13 @@ in a more efficient way. Consequently, the application service may use the view 
 This might seem more complex than just using a single feature service for business logic and state management. 
 The level of abstraction is up to the developer and is dependent on the incoming requirements. 
 
-Using a single feature service for reads and writes (CQS):
+Using a single feature service or repository service for reads and writes (CQS):
 
 ![](src/assets/images/SingleService_CQRS.png)
 
 ```
 @Injectable()
-class ProductsService {
+class ProductsService { 
 
     private productSelected$ = new BehaviorSubject<number>(0);
     private products$ = new BehaviorSubject<Product[]>([]);
@@ -837,7 +835,7 @@ The single service approach makes it difficult to gather multiple sources and co
 @TODO [text]
 @TODO [image]
 
-**» Projection patterns**<br/>
+**» Projection Patterns**<br/>
 
 With the "projection by entity" pattern changes will be reflected almost simultaneously. 
 
@@ -999,7 +997,7 @@ export class DomainModelRepository<T> extends ... {
 }
 ```
 
-## Router state
+## Router State
 
 Angular's router service allows us to manage domain and UI state. Put simply, the router state determines which components are visible on the screen, and 
 it manages navigation through application state (HATEOAS). Any state transition results in a URL change! It's important to note, the router is a 
@@ -1013,7 +1011,7 @@ In Addition to that, we must ensure that routes are provided by the Web API laye
 like /products/:id/edit?filter='mam', if the Web API layer doesn't support query params. Always validate if API routes will be available 
 through the Web API! 
 
-## UI state
+## UI State
 
 Build a UI service anytime a component needs to stash away some property values or for communication with itself or others (action stream). 
 It offers a simple set of properties to share state. This pattern is good for retaining view state or draft state.
@@ -1032,23 +1030,23 @@ Angular's change detection provides notification of any changes to state values 
 This way, we keep the state in sync. Observables, Subjects or BehaviorSubjects can help to simplify asynchronous data-handling. 
 When sharing data that should always be in sync, reactive extensions are good solutions to this situation.
        
-## Application-, Domain- and Infrastrucutre services
+## Application-, Domain- and Infrastructure Services
 
 One downside of sharing and binding state through services is that they are coupled to the view. Delayed changes to the state must be managed 
 by asynchronous binding techniques to **keep the shared state in sync**. However, with EventEmitters, Subjects or BehaviorSubjects we share data 
 through notifications. We subscribe and react to changes using notification services. Those notifications are more than just changes to bound values. 
 
-**» Application service**<br/>
+**» Application Service**<br/>
 
 @TODO [text]
 @TODO [image]
 
-**» Domain service**<br/>
+**» Domain Service**<br/>
 
 @TODO [text]
 @TODO [image]
 
-**» Infrastrucutre service**<br/>
+**» Infrastructure Service**<br/>
 
 Let's have a look at how to build a notification service based on a Subject:
 
@@ -1089,7 +1087,7 @@ Very often service providers create RESTful Web APIs, where clients have to stit
 it is not feasible to prepare read models for every client's use case! In this context a HATEOAS approach is excellent for mobile devices and CRUD-based applications, 
 but can be crucial to smart desktop applications. For more information about REST and data aggregation visit the following website: https://phauer.com/2015/restful-api-design-best-practices/ 
 
-## Navigation patterns
+## Navigation Patterns
 
 As layout complexity increases with screen resolution, it requires careful considerations when starting from a mobile-first approach 
 and scaling up to desktop layouts. Traditional desktop layouts require more complex interaction and navigation patterns because UX engineers 
