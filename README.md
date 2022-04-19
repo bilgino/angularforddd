@@ -28,12 +28,12 @@ Inversion Principle, we ensure that layers depend on abstraction as opposed to d
 **» Applying cross-cutting concerns**<br/>
 
 The infrastructure layer includes cross-cutting concerns such as logging, caching or security. A naive approach to implement cross-cutting
-functionality usually leads to duplicated or coupled code, which violates Don't Repeat Yourself and Single Responsibility Principle.
+functionality usually leads to duplicated or coupled code, which violates Don't Repeat Yourself and the Single Responsibility Principle.
 The Aspect Oriented Programming promotes an abstraction and encapsulation of cross-cutting concerns by interlacing additional code,
 resulting in loose coupling between the actual logic and the infrastructure logic. For more information about AOP in TypeScript please
 visit the following website: https://jaxenter.com/cross-cutting-concerns-angular-2-typescript-128925.html
 
-## Layered architecture
+## Layered Architecture
 
 Considering multilayered (4-tier) architectures, the question arises of how to organize layers in SPA applications? This question refers to code splitting,
 communication through layers and demanding business logic from services. The multilayered architecture in Domain-Driven Design embraces following layers:
@@ -72,8 +72,8 @@ communication through layers and demanding business logic from services. The mul
 *» Angular adoption*<br/>
 
 - Presentation layer: Views (Templates), Directives, Pipes, Animations
-- Application layer: View Component Classes, Guards, Validator Functions, Forms, Factories <br/>
-- Domain layer: Classes, Interfaces, Factories <br/>
+- Application layer: Components, Services, Guards, Validator Functions, Forms, Factories <br/>
+- Domain layer: Classes, Interfaces, Factories, Services <br/>
 - Infrastructure layer: Resolvers, Interceptors<br/>
 
 Examples:<br/>
@@ -87,24 +87,24 @@ Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Valid
 **» Applying DDD to Angular**<br/>
 
 An important aspect of Domain-Driven Design is that the complexity of the domain model is kept isolated from other concerns of the application. 
-Ideally, the domain layer is self-contained and focused on abstracting the business domain. Very often frontend applications evaluate business rules 
-that will immediately be reflected in the presentation layer, especially in SPA applications when navigating through HTML forms that have 
+Ideally, the domain layer is self-contained and focuses on abstracting the business domain. Very often frontend applications validate business rules 
+that must immediately be reflected in the presentation layer, especially in SPA applications when navigating through HTML forms that have 
 cross-dependencies in terms of distributed business rules. An isolated domain layer allows us to avoid domain logic leaking into other layers. 
 In addition, we don't want to command against the server upon every user input; therefore, the domain layer pattern in the frontend architecture 
 sounds like a good idea.
 
 Domain-oriented layering is often considered the first structuring criterion in Angular applications. However, layered architecture 
 is independent of vertical slicing. It's sufficient to comply with horizontal slicing. The main reasons for modular segmentation in 
-Angular is lazy-loading, scoping and distribution. 
+Angular applications are lazy-loading, scoping and distribution. 
 
 When application services carry out business or UI use cases, it may be a good idea to write use cases that contain less logic directly in the 
-UI controller, like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated classes instead! 
-Additionally, we may want to share state and logic of that dedicated class with other independent components. 
+UI controller, like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use extra classes instead!
+In addition, we want to share state and logic of these dedicated class with other independent components. 
 
-It's questionable whether higher granularity distributed across several layers introduce extra complexity in the frontend design system. 
-Should we really comply with Domain-Driven Design in frontend development? As a consequence, many developers tend to lean toward weaker 
+It's questionable whether higher granularity distributed across several layers introduce extra complexity in the frontend architecture. 
+Should we really comply to Domain-Driven Design in frontend development? As a consequence, many developers tend to lean toward weaker 
 patterns because they see it as an unnecessary practice. Often a simpler data-centric approach is sufficient. For most web applications MVC 
-or Flux/Redux may be more appropriate. Before starting using advanced concepts we must evaluate incoming requirements.
+or Flux/Redux may be more appropriate. Before starting using advanced concepts we must validate incoming requirements.
 
 # Angular core patterns
 
@@ -150,7 +150,7 @@ bounded context marks the boundaries of an application service. An application s
 This is similar to **Domain Modules** where we mark the boundaries based on features. Applying the bounded context pattern to domain modules 
 allows us to structure modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
 several aggregates. An important aspect with regard to SPA applications is that the (client- or server-side) bounded context must integrate 
-a RESTful interface, because the Angular router engine complies with the navigational behaviour of hypermedia APIs. A bounded context should not only
+a RESTful interface, as the Angular router engine complies with the navigational behaviour of hypermedia APIs. A bounded context should not only
 be coupled to the URI of the entry point (root): `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
 A bounded context can be assigned either to an entire page or to page segments.
 
@@ -160,9 +160,9 @@ Interaction between the bounded context pattern and domain modules:
 
 **» Scaffolding**<br/>
 
-A common practice in Angular projects is to structure the project into `/core`, `/shared`, `/features` folders. 
-Unfortunately this approach isn't sufficient for complex projects and is mainly inspired by technical constraints. 
-When setting up a folder structure, a domain-driven layout is much better.
+A common practice in Angular projects is to structure the code base into `/core`, `/shared`, `/features` folders. 
+Unfortunately, this approach isn't sufficient for complex projects and is mainly inspired by technical constraints. 
+When setting up a folder structure, a domain-driven approach is much better.
 
 Domain-driven folder structure for Angular applications:
 
@@ -177,8 +177,8 @@ Design adjustments for reusable components to specific content areas can be impl
 
 ![](src/assets/images/Customizing.png)
 
-Unfortunately the `:host-context()` CSS pseudo-class function lacks browser support. Luckily, Angular supports an emulated version of it 
-in the default settings of the view encapsulation mode.
+Unfortunately the `:host-context()` CSS pseudo-class function lacks browser support. Luckily, Angular supports an emulated version 
+through the default settings of the view encapsulation mode.
 
 ## Models 
 
@@ -190,7 +190,7 @@ Angular promotes two types of models:
 - `View Model`: This object represents data required by a view. It doesn't represent a real world object
 - `Domain Model`: This object represents data and logic related to the business domain
 
-The view model and domain model should maintain different data structures to keep the domain model separate from view properties
+The view model and domain model should maintain different data structures to keep the domain model agnostic of view properties
 
 **» Implementation Patterns**<br/>
 
@@ -200,11 +200,11 @@ The view model and domain model should maintain different data structures to kee
 
 The anemic domain model is quite often used in CRUD-based web applications as a value container without any behavior of its own, 
 conform to RESTful practices. However, it's considered an anti-pattern because it doesn't include business logic and
-can't protect its invariants. Furthermore, it introduces a tight coupling with the client code. 
+can't protect its invariants. Furthermore, it introduces a tight coupling with the client. 
 Using rich domain models instead we prevent domain logic from leaking into other layers.
 The following example shows the negative side effect of anemic domain models. 
 
-Domain logic coupled to the client (UI controller): 
+Domain logic is coupled to the client (UI controller): 
 
 *»  Effects of anemic models* <br/> 
 ```
@@ -220,7 +220,7 @@ Domain logic coupled to the client (UI controller):
 }
 ```
 
-A rich domain model instead hides and encapsulates domain logic:
+A rich domain model hides and encapsulates domain logic:
 
 *»  Effects of rich models*<br/>
 ```
@@ -240,12 +240,8 @@ In the second example, domain logic is decoupled from the UI controller. Encapsu
 Keeping the model as independent as possible improves usability and allows easier refactoring.
 Neither domain state nor domain logic should be written as part of the UI controller.
 
-**» Feature Services**<br/>
-
 Subsequently, using feature services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
-practice in Angular projects. Building rich domain models is a major objective in object-oriented design to keep the code base in good condition.
-
-A common practice in Angular projects is to use feature services or the "Fat Service, Skinny Model" pattern:
+practice in Angular projects and known as the "Fat Service, Skinny Model" pattern: 
 
 ```
 @Injectable()
@@ -261,7 +257,7 @@ class AccountService {
 }
 ```
 
-A better approach is to enclose domain logic inside entity classes making boundaries become more clear:
+A better approach would be to enclose domain logic inside entity classes making boundaries become more clear:
 
 ```
 @Injectable()
@@ -299,6 +295,7 @@ class AccoutRepositoryService {
 }
 ```
 
+Building rich domain models is a major objective in object-oriented design.
 In general, using rich domain models means more entities than feature services.
 
 **» Domain Model**<br/>
@@ -688,8 +685,8 @@ const OrderDto = OrderMapper.mapToOrder(new Order(), Dto);
 
 Mapper checklist:
 
-- When using model-driven reactive forms a bidirectional mapping may be needed
-- We can use the mapper pattern in the repository service to elaborate a pure model structure
+- When using model-driven reactive forms a bidirectional mapping is a must
+- We can use the mapper pattern in the repository service to elaborate a pure model
 - Don't map to view models in the repository service as view models may require multiple sources
 
 **» REST, HATEOAS & CO.**<br/>
