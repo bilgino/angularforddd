@@ -415,99 +415,10 @@ newOrderViewModel.balance = -44;
 
 Due to performance implications, it's not recommended embedding `getters` in the view's template. Instead, we will use public properties.
 
-**» Model Declaration Strategies**<br/>
-
-- Type Signature Pattern
-
-```
-type Order = {
-     orderId: string;
-     status: Orderstatus;
-     customer: Customer;
-};
-
-// or
-
-interface Order {
-     orderId: string;
-     status: Orderstatus;
-     customer: Customer;
-};
-
-const newOrder: Order = {
-     orderId = '1';
-     status = Orderstatus.Pending;
-     customer = {};
-}
-```
-
-- Object Constructor Pattern
-
-```
-class Order {
-    public status: OrderStatus;
-    public customer: Customer;
-    constructor() {}
-    public placeOrder() {}
-}
-
-const newOrder: Order = new Order();
-```
-
-**» Object Factory Pattern:**<br/>
-
-```
-abstract class ViewModel {
-  constructor() {}
-  protected transformPrice(price: string): string {
-    return // Do somthing with price value
-  }
-}
- 
-interface IProductViewModel = {
-  id: number;
-  name: string;
-  price: string;
-  type: string;
-  active: boolean;
-};
-
-class ProductViewModel extends ViewModel {
-  id!: number;
-  name!: string;
-  price!: string;
-  type!: string;
-  active!: boolean;
-
-  private constructor(props: IProductViewModel) {
-    super();
-    this.price = this.transformPrice(props.price); 
-    ... // set or transform other properties
-  }
-  
-  private static canNotCreate(props: IProductView): boolean {
-    // validate props and return validation result
-  }
-  
-  public static create(props: IProductViewModel): Readonly<ProductViewModel> {
-    if (this.canNotCreate(props)) {
-      throw Error("Can not create ProductViewModel");
-    }
-    return new ProductViewModel(props) as Readonly<ProductViewModel>;
-  }
-}
-
-cosnt productViewModel = ProductViewModel.create({
-  id: 1,
-  name: 'screw',
-  price: '28$',
-  type: 'pans',
-  active: false
-});
-```
-
 Hardcoding transformation methods in the view model causes tight coupling. A better approach is to process data transformations like filtering, sorting, grouping or destructuring etc.
 in a reactive stream and hand over the result to an object factory.
+
+**» Object Factory Pattern:**<br/>
 
 Option 1:
 
@@ -580,6 +491,97 @@ class Order implements IOrder {
 
 const newOrder = Order.create({status:OrderStatus.Pending});
 const jsonOrder = newOrder.toJSON()
+```
+
+Option 4:
+
+```
+abstract class ViewModel {
+  constructor() {}
+  protected transformPrice(price: string): string {
+    return // Do somthing with price value
+  }
+}
+ 
+interface IProductViewModel = {
+  id: number;
+  name: string;
+  price: string;
+  type: string;
+  active: boolean;
+};
+
+class ProductViewModel extends ViewModel {
+  id!: number;
+  name!: string;
+  price!: string;
+  type!: string;
+  active!: boolean;
+
+  private constructor(props: IProductViewModel) {
+    super();
+    this.price = this.transformPrice(props.price); 
+    ... // set or transform other properties
+  }
+  
+  private static canNotCreate(props: IProductView): boolean {
+    // validate props and return validation result
+  }
+  
+  public static create(props: IProductViewModel): Readonly<ProductViewModel> {
+    if (this.canNotCreate(props)) {
+      throw Error("Can not create ProductViewModel");
+    }
+    return new ProductViewModel(props) as Readonly<ProductViewModel>;
+  }
+}
+
+cosnt productViewModel = ProductViewModel.create({
+  id: 1,
+  name: 'screw',
+  price: '28$',
+  type: 'pans',
+  active: false
+});
+```
+
+**» Model Declaration Strategies**<br/>
+
+- Type Signature Pattern
+
+```
+type Order = {
+     orderId: string;
+     status: Orderstatus;
+     customer: Customer;
+};
+
+// or
+
+interface Order {
+     orderId: string;
+     status: Orderstatus;
+     customer: Customer;
+};
+
+const newOrder: Order = {
+     orderId = '1';
+     status = Orderstatus.Pending;
+     customer = {};
+}
+```
+
+- Object Constructor Pattern
+
+```
+class Order {
+    public status: OrderStatus;
+    public customer: Customer;
+    constructor() {}
+    public placeOrder() {}
+}
+
+const newOrder: Order = new Order();
 ```
 
 **» Mapper Pattern**<br/>
