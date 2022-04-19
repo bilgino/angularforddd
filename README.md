@@ -98,7 +98,7 @@ is independent of vertical slicing. It's sufficient to comply with horizontal sl
 Angular applications are lazy-loading, scoping and distribution. 
 
 When application services carry out business or UI use cases, it may be a good idea to write use cases that contain less logic directly in the 
-UI controller, like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use extra classes instead!
+UI controller, like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated classes instead!
 In addition, we want to share state and logic of these dedicated class with other independent components. 
 
 It's questionable whether higher granularity distributed across several layers introduce extra complexity in the frontend architecture. 
@@ -295,8 +295,8 @@ class AccoutRepositoryService {
 }
 ```
 
-Building rich domain models is a major objective in object-oriented design.
 In general, using rich domain models means more entities than feature services.
+Building rich domain models is a major objective in object-oriented design.
 
 **» Domain Model**<br/>
 
@@ -317,7 +317,7 @@ complexity that required an efficient design. The aggregate pattern takes a diff
 are based on invariants and clear boundaries inside the software model making the system easier to reason about.
 One of the most important characteristics of the aggregate pattern is to protect it from being invalid and having an inconsistent state.
 
-Aggregate entity class checklist:
+Aggregate entity checklist:
 
 - An aggregate is a first-class business object
 - An aggregate is based on a root entity and acts as a collection of related entities and value objects
@@ -330,16 +330,17 @@ Aggregate entity class checklist:
 - Each use case should have only one aggregate, but can use other aggregates to retrieve informations
 - Multiple aggregates can share one value object
 - A CQRS-based aggregate has no read properties and encloses properties that are only relevant for invariants
-- Don't map HATEOAS HyperLinks to object graphs, in particular not for aggregates
+- Don't map HATEOAS hyperlinks to object graphs, in particular not for aggregates
 
-Because the router navigation concept of Angular complies with fine-grained REST APIs, it might reveal the internal state of an aggregate through deep-linking.
-We are now facing dissonant design approaches between Data-Driven Design and Domain-Driven Design.
+Due to the router navigation concept of Angular complies with fine-grained REST APIs, it might reveal the internal state of an aggregate through deep-linking
+also known as in-app-navigation. We are now facing dissonant design concepts between Data-Driven Design and Domain-Driven Design.
+~~For example, if we initially open the following URL order/{id}/items we are demanding the internal state of an order aggregate, which is fine...~~
 
 **» View Model**<br/>
 
 View models are mere data objects and usually don't contain any domain-related behavior. Hence, they are not a part of the domain layer.
-View models are supportive in providing data to the view and might extend super view model classes to inherit common properties and behaviour.
-They are typically created by merging two or more existing models into one model and are an essential part of a good frontend architecture.
+View models are supportive in providing data to the view and might extend super view model classes to inherit common properties or behaviour.
+They are typically created by merging two or more existing models into one model and are an essential part of every good frontend architecture.
 
 The view model should hold the data necessary to render the UI if:
 
@@ -374,6 +375,10 @@ class OrderViewModel {
     private format(){}
     private calc(){}
 }
+
+const newOrderViewModel = new OrderViewModel()
+newOrderViewModel.total = 444;
+newOrderViewModel.balance = -44;
 ```
 
 Necessary data transformations may reside in the same view model class. A better choice would be to create a dedicated component such as a mapper, translator,
@@ -402,6 +407,10 @@ class OrderViewModel extends ViewModel {
       this.super();
     }
 }
+
+const newOrderViewModel = new OrderViewModel()
+newOrderViewModel.total = 444;
+newOrderViewModel.balance = -44;
 ```
 
 Due to performance implications, it's not recommended embedding `getters` in the view's template. Instead, we will use public properties.
@@ -481,7 +490,9 @@ class ProductViewModel extends ViewModel {
   }
   
   public static create(props: IProductViewModel): Readonly<ProductViewModel> {
-     if(this.canNotCreate(props)) throw Error("Can not create ProductViewModel");
+    if (this.canNotCreate(props)) {
+      throw Error("Can not create ProductViewModel");
+    }
     return new ProductViewModel(props) as Readonly<ProductViewModel>;
   }
 }
@@ -625,6 +636,8 @@ class Order {
        this.total = data.total
     }
 }
+
+const newOrder = new Order({id=22, status:Status.Pending, total:450})
 ```
 
 Option 2 - EcmaScript Assignment:
@@ -639,6 +652,8 @@ class Order {
         Object.assign(this, { status, total });
     }
 }
+
+const newOrder = new Order({id=22, status:Status.Pending})
 ```
 
 Option 3 - Dynamic Assignment:
@@ -781,12 +796,12 @@ Using a single feature service or repository service for reads and writes (CQS):
 @Injectable()
 class ProductsService { 
 
-    private productSelected$ = new BehaviorSubject<number>(0);
+    private productsSelected$ = new BehaviorSubject<number>([0,4,9]);
     private products$ = new BehaviorSubject<Product[]>([]);
 
-    private productListView: Observable<Readonly<ProductView>[]> = combineLatest([
+    private selectedProductListView: Observable<Readonly<ProductView>[]> = combineLatest([
         this.products$,
-        this.productSelected$,
+        this.productsSelected$,
     ]).pipe(
         map(([products, selected]: [Product[], number]) => {
             return products.map((item: Product) => {
@@ -807,8 +822,8 @@ class ProductsService {
         return this.http.get<Product[]>('/products').subscribe(products => this.products$.next(products));
     }
 
-    public getProductListView(): Observable<Readonly<ProductView>[]> {
-        return this.productListView;
+    public getSelectedProductsListView(): Observable<Readonly<ProductView>[]> {
+        return this.selectedProductsListView;
     }
     
     public createProduct(): void {
