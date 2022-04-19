@@ -3,22 +3,22 @@ An introduction for building large-scale enterprise applications with Angular.
 
 # Application architecture 
 
-Applying Object-Oriented Design, Domain-Driven Design and Command-Query-Responsibility-Segregation in the frontend design system, we break down complex requirements 
+Applying Object-Oriented Design, Domain-Driven Design and Command-Query-Responsibility-Segregation in the frontend architecture, we break down complex requirements 
 into logical boundaries and divide business logic into layers with different responsibilities to keep our code in good condition.
 
 ## Frontend coupled to OOD, DDD and CQRS
 
 The building blocks of Angular already provides us with code organisation strategies. Nevertheless, to gain a better design we will bypass the 
-traditional data-centric design and consider strategies like Object-Oriented Design, Domain-Driven Design and Command-Query-Responsibility-Segregation:
+traditional data-centric approach and consider strategies like Object-Oriented Design, Domain-Driven Design and Command-Query-Responsibility-Segregation for frontend architectures:
 
 ![](src/assets/images/frontend_arch.png)
 
 ## Object-Oriented Design
 
 Although functional programming has gained a strong foothold in frontend development in recent years, a consistent object-oriented approach
-is better suited for Angular projects. Object-oriented design allows us to approach a more human-readable code base, where the UL
-(Ubiquitous language) can help to design a better taxonomy and complex data types. It's important to note, that the Angular framework embraces 
-both programming paradigms (FP & OOP).
+might be better suited for TypeScript projects. Object-Oriented design allows us to approach a more human-readable code base, where the 
+ubiquitous language can help to build a better semantic and complex data types. It's important to note, that Angular embraces 
+both programming paradigms (Functional- and Object-Oriented Programming).
 
 **» Applying SOLID principles**<br/>
 
@@ -36,7 +36,7 @@ visit the following website: https://jaxenter.com/cross-cutting-concerns-angular
 ## Layered architecture
 
 Considering multilayered (4-tier) architectures, the question arises of how to organize layers in SPA applications? This question refers to code splitting,
-communication across layers and demanding business logic through services. The multilayered architecture in Domain-Driven Design embraces the following layers:
+communication through layers and demanding business logic from services. The multilayered architecture in Domain-Driven Design embraces following layers:
 
 **» Horizontal slicing**<br/> Slicing the application into layers...
 
@@ -1133,4 +1133,4 @@ Most of them are determined by the requirements at the macro-level, which includ
 - Public vs. Private Web API
 - Mobile vs. Desktop first
 - Offline vs. Online first
-- Functional vs. Object-oriented
+- Functional vs. Object-Oriented Design
