@@ -61,7 +61,7 @@ communication through layers and demanding business logic from services. The mul
 
 - User Interface services carry out dialog or interaction concepts
 - Application services carry out business use cases and are procedural 
-- Domain services carry out business concepts or processes that doesn't fit inside entities or value objects
+- Domain services carry out business concepts or processes that don't fit inside entities or value objects
 - Infrastructure services help to separate technical concepts from business concepts <br/>
 
 *» Validation layers*<br/>
@@ -208,29 +208,44 @@ Domain logic is coupled to the client (UI controller):
 
 *»  Effects of anemic models* <br/> 
 ```
+const emp: Employee = {
+    name: 'John Connor',
+    salary: 1000,
+}
+
 @Component({
     selector: 'emp',
     templateUrl: './emp.component.html'
 }) class EmployeeComponent {
     @Input() emp: Employee; 
-
-    public salaryIncreaseBy(percent:number):void {
+    
+    public salaryIncreaseBy(percent: number): void {
          emp.salary = (emp.salary * percent / 100) + emp.salary;
     }
 }
 ```
 
-A rich domain model hides and encapsulates domain logic:
+A rich domain model hides, protects and encapsulates domain logic:
 
 *»  Effects of rich models*<br/>
 ```
+class Employee {
+    name: 'John Connor';
+    salary: 1000;
+   
+    salaryIncreaseBy(percent: number): void{
+        if(percent > 100) throw new Error(...);
+        this.salary = (salary * percent / 100) + salary;
+    }
+}
+
 @Component({
     selector: 'emp',
     templateUrl: './emp.component.html'
 }) class EmployeeComponent {
     @Input() emp: Employee; 
 
-    public salaryIncreaseBy(percent:number):void {
+    public salaryIncreaseBy(percent:number): void {
          emp.salaryIncreaseBy(percent);
     }
 }
@@ -248,7 +263,7 @@ practice in Angular projects and known as the "Fat Service, Skinny Model" patter
 class AccountService {
     accounts = [{ id: 1, balance: 4500 }];
     constructor(){}
-    changeBalance(id: number, amount: number):void {
+    changeBalance(id: number, amount: number): void {
         if (id > 0 && amount < AMOUNT.MAX_VALID) {
             this.accounts[id].balance += amount;
         }
@@ -262,11 +277,11 @@ A better approach would be to enclose domain logic inside entity classes making 
 ```
 @Injectable()
 class AccountService {
-    constructor(private accountRepository: AccountRepositoryService) {}  
-    public changeBalance(id: number, amount: number):Account {
-      const account = this.accountRepository.getById(id);
-      account.updateBalance(amount);
-      return account;
+    constructor(private accountRepository: AccountRepositoryService){}  
+    public changeBalance(id: number, amount: number): Account {
+        const account = this.accountRepository.getById(id);
+        account.updateBalance(amount);
+        return account;
     }
 }
 
@@ -274,7 +289,7 @@ class Account {
     id: number;
     balance: number;
     constructor(){}
-    updateBalance(amount: number):void {
+    updateBalance(amount: number): void {
         if (amount > AMOUNT.MAX_VALID) {
            throw Error(...)
         }
@@ -286,7 +301,7 @@ class Account {
 class AccoutRepositoryService {
     accounts = [new Account(1, 4500)];
     constructor(){}
-    public getById(id:number):Account {
+    public getById(id: number): Account {
         if (id <= 0) {
             throw Error(...)
         }
@@ -360,14 +375,14 @@ Examples:
 
 ```
 class OrderViewModel {
-    private _orderId:string;
-    private _customerId:string;
-    private _total:string;
-    private _balance:string;
+    private _orderId: string;
+    private _customerId: string;
+    private _total: string;
+    private _balance: string;
    
-    get total() {}
+    get total(){}
     set total(data) { this._total = this.format(data) }
-    get balance() {}
+    get balance(){}
     set balance(data) { this._balance = this.calc(data) }
     
     constructor(){}
@@ -393,10 +408,10 @@ abstract class ViewModel {
 }
 
 class OrderViewModel extends ViewModel {
-    private _orderId:string;
-    private _customerId:string;
-    private _total:string;
-    private _balance:string;
+    private _orderId: string;
+    private _customerId: string;
+    private _total: string;
+    private _balance: string;
      
     get total(){}
     set total(data){ this._total = this.format(data) }
@@ -443,19 +458,19 @@ interface OrderProps {
 
 class Order {
     public status: OrderStatus;
-    private constructor(props:OrderProps){
+    private constructor(props: OrderProps) {
     	this.status = props.status;
     }
-    public static create(props:OrderProps):Order {
+    public static create(props: OrderProps): Order {
       return new Order(props);
     }
-    public static empty():Order {
+    public static empty(): Order {
       return new Order();
     }
     toJSON(): object {
-        const serialized = Object.assign(this)
-        delete serialized.status
-        return serialized
+        const serialized = Object.assign(this);
+        delete serialized.status;
+        return serialized;
     }
     toString(): string {
         return "";
@@ -475,22 +490,22 @@ interface IOrder{
 
 class Order implements IOrder {
     constructor(public status = OrderStatus.New){}
-    public static create(json:IOrder):Order {
+    public static create(json: IOrder): Order {
         if(!json) return new Order();
         return new Order(json.status);
     }
-    toJSON():object {
-        const serialized = Object.assign(this)
-        delete serialized.status
-        return serialized
+    toJSON(): object {
+        const serialized = Object.assign(this);
+        delete serialized.status;
+        return serialized;
     }
-    toString():string {
+    toString(): string {
         return "";
     }
 }
 
 const newOrder = Order.create({status:OrderStatus.Pending});
-const jsonOrder = newOrder.toJSON()
+const jsonOrder = newOrder.toJSON();
 ```
 
 Option 4:
@@ -530,7 +545,7 @@ class ProductViewModel extends ViewModel {
   
   public static create(props: IProductViewModel): Readonly<ProductViewModel> {
     if (this.canNotCreate(props)) {
-      throw Error("Can not create ProductViewModel");
+        throw Error("Can not create ProductViewModel");
     }
     return new ProductViewModel(props) as Readonly<ProductViewModel>;
   }
@@ -577,8 +592,8 @@ const newOrder: Order = {
 class Order {
     public status: OrderStatus;
     public customer: Customer;
-    constructor() {}
-    public placeOrder() {}
+    constructor(){}
+    public placeOrder(){}
 }
 
 const newOrder: Order = new Order();
@@ -632,7 +647,7 @@ class Order {
     id; 
     status; 
     total;
-    constructor(data) {
+    constructor(data: Partial<IOrder>) {
        this.id = data.id;
        this.status = data.status;
        this.total = data.total
@@ -649,13 +664,13 @@ class Order {
     id; 
     status; 
     total;
-    constructor({ id, status, total = 0 }) {
+    constructor({ id, status, total = 0 }: Partial<IOrder>) {
         Object.defineProperty(this, 'id', { value: id, writable: false });
         Object.assign(this, { status, total });
     }
 }
 
-const newOrder = new Order({id=22, status:Status.Pending})
+const newOrder = new Order({id=22, status:Status.Pending});
 ```
 
 Option 3 - Dynamic Assignment:
@@ -684,15 +699,15 @@ Option 4 - Mapper Assignment:
 class OrderMapper {
     constructor() {}
     public static mapToOrder(Order, Dto): Order {
-        Order.id = Dto.id
-        Order.status = Dto.Status
-        Order.total = Dto.total
+        Order.id = Dto.id;
+        Order.status = Dto.Status;
+        Order.total = Dto.total;
         return Order;
     }
     public static mapFromOrder(Order, Dto): Dto {
-        Dto.id = Order.id
-        Dto.status = Order.Status
-        Dto.total = Order.total
+        Dto.id = Order.id;
+        Dto.status = Order.Status;
+        Dto.total = Order.total;
         return Dto;
     }
 }
@@ -798,34 +813,41 @@ Using a single feature service or repository service for reads and writes (CQS):
 @Injectable()
 class ProductsService { 
 
-    private productsSelected$ = new BehaviorSubject<number>([0,4,9]);
-    private products$ = new BehaviorSubject<Product[]>([]);
+    private productsSelectedIds: number[] = [0,4,9];
+    private products: Product[] = [];
+    private productsSelected$: Subject<number> = new BehaviorSubject<number>(selectedProducts);
+    private products$: Subject<Product[]> = new BehaviorSubject<Product[]>(products);
 
     private selectedProductListView: Observable<Readonly<ProductView>[]> = combineLatest([
         this.products$,
         this.productsSelected$,
     ]).pipe(
-        map(([products, selected]: [Product[], number]) => {
+        map(([products, selected]: [Product[], number[]]) => {
             return products.map((item: Product) => {
                 return ProductView.create({
                     ...item,
-                    active: item.id === selected,
+                    active: selected.includes(item.id),
                 });
             });
         }),
         shareReplay(1)
     );
 
-    private constructor() {
+    private constructor(): void {
         this.loadProducts();
     }
 
-    private loadProducts() {
+    private loadProducts(): void {
         return this.http.get<Product[]>('/products').subscribe(products => this.products$.next(products));
     }
 
     public getSelectedProductsListView(): Observable<Readonly<ProductView>[]> {
         return this.selectedProductsListView;
+    }
+    
+    public addSelectedProduct(id:number): void {
+        this.productsSelectedIds = [...productsSelectedIds, id];
+        this.productsSelected$.next(this.selectedProducts);
     }
     
     public createProduct(): void {
@@ -877,8 +899,8 @@ Using abstract classes, we can remove the factory methods:
 
 ```
 abstract class OrderViewModel {
-    abstract orderId:number;
-    abstract quantity:number;
+    abstract orderId: number;
+    abstract quantity: number;
 
     public getOrderForSalesView(): OrderForSalesView {
         return new OrderForSalesView(this.quantity);
