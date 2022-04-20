@@ -208,9 +208,9 @@ Domain logic is coupled to the client (UI controller):
 
 *»  Effects of anemic models* <br/> 
 ```
-const emp: Employee = {
-    name: 'John Connor',
-    salary: 1000,
+class Employee {
+    name: 'John Connor';
+    salary: 1000;
 }
 
 @Component({
@@ -232,7 +232,6 @@ A rich domain model hides, protects and encapsulates domain logic:
 class Employee {
     name: 'John Connor';
     salary: 1000;
-   
     salaryIncreaseBy(percent: number): void{
         if(percent > 100) throw new Error(...);
         this.salary = (salary * percent / 100) + salary;
@@ -337,19 +336,25 @@ Aggregate entity checklist:
 - An aggregate is a first-class business object
 - An aggregate is based on a root entity and acts as a collection of related entities and value objects
 - An aggregate has identity, state, lifecycle and receives the name of the bounded context
-- An aggregate is modeled around use cases, protecting invariants, encapsulation and data integrity
+- An aggregate is modelled around use cases, protecting domain invariants, encapsulation and data integrity
+- An aggregate is bounded from the viewpoint of a business use cases
 - An aggregate invariants must be satisfied for each state change
 - An aggregate validates all incoming actions and ensures that modifications don't contradict business rules
 - An aggregate internal state can only be mutated by its own public interface
 - Relations between aggregates are managed through ID properties
-- Each use case should have only one aggregate, but can use other aggregates to retrieve informations
+- Each use case should have only one aggregate, but can use other aggregates to retrieve data
 - Multiple aggregates can share one value object
-- A CQRS-based aggregate has no read properties and encloses properties that are only relevant for invariants
-- Don't map HATEOAS hyperlinks to object graphs, in particular not for aggregates
 
-Due to the router navigation concept of Angular complies with fine-grained REST APIs, it might reveal the internal state of an aggregate through deep-linking
-also known as in-app-navigation. We are now facing dissonant design concepts between Data-Driven Design and Domain-Driven Design.
-~~For example, if we initially open the following URL order/{id}/items we are demanding the internal state of an order aggregate, which is fine...~~
+**» Router Navigation and Aggregates**<br/>
+
+Because the navigation concept of the Angular router engine complies with fine-grained REST APIs where URIs represent arbitrary 
+resources rather than first-class business objects modelled around business use cases, we must reexamine the idea of building client-side 
+aggregate models. Typically, we register URIs in the router configuration that enables deep-linking (app-in-navigation) through the application state. However, as aggregates build clusters of domain-related entities, we would
+have to cluster resources. With this in mind, the question arises of how to map URIs like `/orders`, `/orders/:id`, `/orders/:id/items`
+to an client-side aggregate model. We can't map hyperlinks to an aggregate, especially when invoking a deep-link we need to 
+call an REST URI of `/orders/:id` as an example.
+
+![](src/assets/images/Aggregate_ACL.PNG)
 
 **» View Model**<br/>
 
