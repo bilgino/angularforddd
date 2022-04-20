@@ -336,7 +336,7 @@ Aggregate entity checklist:
 - An aggregate is a first-class business object
 - An aggregate is based on a root entity and acts as a collection of related entities and value objects
 - An aggregate has identity, state, lifecycle and receives the name of the bounded context
-- An aggregate is modelled around use cases, protecting domain invariants, encapsulation and data integrity
+- An aggregate is modeled around use cases, protecting domain invariants, encapsulation and data integrity
 - An aggregate is bounded from the viewpoint of a business use cases
 - An aggregate invariants must be satisfied for each state change
 - An aggregate validates all incoming actions and ensures that modifications don't contradict business rules
@@ -348,11 +348,13 @@ Aggregate entity checklist:
 **» Router Navigation and Aggregates**<br/>
 
 Because the navigation concept of the Angular router engine complies with fine-grained REST APIs where URIs represent arbitrary 
-resources rather than first-class business objects modelled around business use cases, we must reexamine the idea of building client-side 
-aggregate models. Typically, we register URIs in the router configuration that enables deep-linking (app-in-navigation) through the application state. However, as aggregates build clusters of domain-related entities, we would
-have to cluster resources. With this in mind, the question arises of how to map URIs like `/orders`, `/orders/:id`, `/orders/:id/items`
-to an client-side aggregate model. We can't map hyperlinks to an aggregate, especially when invoking a deep-link we need to 
-call an REST URI of `/orders/:id` as an example.
+resources rather than first-class business objects modeled around business use cases, we must reexamine the idea of building client-side 
+aggregate models. Typically, we register URIs in the router configuration that enables deep-linking (in-app-nav) through the application state. 
+However, as aggregates build clusters of domain-related entities, we would have to cluster resources. With this in mind, the question arises 
+of how to map URIs like `/orders`, `/orders/:id`, `/orders/:id/items` to an client-side aggregate model. We can't map hyperlinks to an 
+aggregate, especially when invoking a deep-link we need to call an REST URI of `/orders/:id` as an example. According to this, the 
+aggregate would have to provide a query method for each endpoint model. As a result, the entire aggregate will always be composed as a whole for each 
+URI navigation. This way we can continue to focus on the use case specific aggregates and comply with the navigation concept of SPA architectures.
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
