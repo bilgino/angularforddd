@@ -348,13 +348,13 @@ Aggregate entity checklist:
 **» Router Navigation and Aggregates**<br/>
 
 Because the navigation concept of the Angular router engine complies with fine-grained REST APIs where URIs represent arbitrary 
-resources rather than first-class business objects modeled around business use cases, we must reexamine the idea of building client-side 
-aggregate models. Typically, we register URIs in the router configuration that enables deep-linking (in-app-nav) through the application state. 
-However, as aggregates build clusters of domain-related entities, we would have to cluster resources. With this in mind, the question arises 
-of how to map URIs like `/orders`, `/orders/:id`, `/orders/:id/items` to an client-side aggregate model. We can't map hyperlinks to an 
-aggregate, especially when invoking a deep-link we need to call an REST URI of `/orders/:id` as an example. According to this, the 
-aggregate would have to provide a query method for each endpoint model. As a result, the entire aggregate will always be composed as a whole for each 
-URI navigation. This way we can continue to focus on the use case specific aggregates and comply with the navigation concept of SPA architectures.
+resources rather than high-level business objects, modeled around business use cases, we must reexamine the idea of building client-side 
+aggregate models. Typically, we register URIs in the router configuration to enable deep-linking (in-app-navigation) through the application state. 
+However, as aggregates build clusters of domain-related entities, we would have to cluster resources to comply with RESTful APIs. With this in mind, 
+the question arises of how to map URIs such as `/orders`, `/orders/:id`, `/orders/:id/items` to a client-side aggregate. We can't map hyperlinks to an 
+aggregate, especially when invoking a deep-link we need to call an REST URI like `/orders/:id`. According to this, the aggregate would have to 
+provide a query method for each endpoint model. As a result, the entire aggregate will always be composed as a whole for each URI navigation. 
+This way we can continue to focus on the use case specific aggregates and comply with the navigation concept of SPA architectures.
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
