@@ -693,6 +693,29 @@ class Order {
 const mongo = new Order({ id: 33, status: Status.PENDING })
 ```
 
+Using an abstract super class to decouple the constructor assignment:
+
+```
+enum Status {
+    PENDING = "Pending",
+    COMPLETE = "Complete"
+}
+
+abstract class IOrder {
+    [key: string]: any;
+
+    constructor(input: { [key: string]: any }) {
+        Object.keys(input).forEach((k: string) => {
+            this[k] = input[k];
+        });
+    }
+}
+
+class Order extends IOrder {}
+
+const mongo = new Order({ id: 33, status: Status.PENDING })
+```
+
 Option 4 - Mapper Assignment:
 
 ```
