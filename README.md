@@ -347,15 +347,16 @@ Aggregate entity checklist:
 
 **» Router Navigation and Aggregates**<br/>
 
-Because the navigation concept of the Angular router engine complies with fine-grained REST APIs where URIs represent arbitrary 
+Due to the navigation concept of the Angular router engine complies with fine-grained REST APIs where URIs represent arbitrary 
 resources rather than high-level business objects that are modeled around business use cases, we must reexamine the idea of building client-side 
-aggregates. Typically, we register URIs in the router configuration to enable "deep-linking" the application state. However, as aggregates build 
-clusters of related entities and value objects, we would have to cluster resources instead to comply with RESTful practices. 
-With this in mind, the question arises of how to map URIs such as `/orders`, `/orders/:id`, `/orders/:id/items` to client-side aggregates. 
-We can't map hyperlinks to aggregate models! Especially when invoking a deep-link, we need to invoke REST URIs like `/orders/:id` etc. 
-According to this, the aggregate would have to provide a query method to the internal state for each URI endpoint. As a result, the entire aggregate will always be 
-composed as a whole unit for each navigation event. In this way, we can continue to focus on the business use case specific aggregates and comply with the navigation 
-concept of SPA architectures:
+aggregates. Typically, we register URIs in the router configuration to enable "deep-linking" the application state. However, as an aggregate builds 
+a cluster of related entities and value objects, we would have to cluster resources to comply with RESTful practices instead.
+With that in mind, the question arises of how to map URIs such as `/orders`, `/orders/:id`, `/orders/:id/items` to a client-side aggregate. 
+
+We can't project a single resource URL to an entire aggregate, especially when running a deep-link like `/orders/:id/items`! 
+The aggregate need to provide a query method to the internal state for each URI endpoint. As a consequence, the aggregate will always be composed 
+as a whole unit for each navigation event. In this way, we can continue to focus on use case specific aggregates and comply with the navigational 
+behavior of SPA architectures:
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
@@ -675,6 +676,19 @@ class Order {
     constructor({ id, status, total = 0 }: Partial<IOrder>) {
         Object.defineProperty(this, 'id', { value: id, writable: false });
         Object.assign(this, { status, total });
+    }
+}
+
+class Order {
+    id; 
+    status; 
+    total;
+    constructor({ id, status, total }: Partial<IOrder>) {
+        Object.defineProperties(this, {
+            id: { value: id, writable: false },
+            status: { value: status },
+            total: { value: total },
+        });
     }
 }
 
