@@ -370,8 +370,8 @@ the question arises of how to map URIs such as `/orders`, `/orders/:id`, `/order
 we project one URL to one single resource type, especially when invoking a "deep-link" like `/orders/:id/items`. 
 
 As a consequence, the aggregate (cluster) must be composed for each initial navigation event and provide query methods to the internal state. Subsequently, 
-an application service provides the public interface to cover all requests to the internal state of an aggregate. In this way, we can continue to focus on use case specific aggregates and comply with the navigational 
-behavior of router-based SPA architectures:
+an application service provides the public interface to cover all requests to the internal state of an aggregate. The repository services acts as kind of anti-corruption layer.
+In this way, we can continue to focus on use case specific aggregates and comply with the navigational behavior of router-based SPA architectures:
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
