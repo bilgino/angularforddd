@@ -362,16 +362,16 @@ Aggregate entity checklist:
 
 **» Router Navigation and Aggregates**<br/>
 
-Due to the navigation concept of the Angular router engine complies with fine-grained REST APIs where URIs represent arbitrary 
-resources rather than high-level business objects that are modeled around business use cases, we must reexamine the idea of building client-side 
-aggregates. Typically, we register URIs in the router configuration to enable "deep-linking" the application state. However, as an aggregate builds 
-a cluster of related entities and value objects, we would have to cluster resources to comply with RESTful practices instead.
-With that in mind, the question arises of how to map URIs such as `/orders`, `/orders/:id`, `/orders/:id/items` to a client-side aggregate. 
+Because the navigation concept of the Angular router engine complies with fine-grained REST APIs where URIs represent arbitrary 
+resources rather than high-level business objects, that are modeled around business use cases, we must reexamine the idea of building client-side 
+aggregates. Typically, we declare URLs in the Angular router configuration to enable "deep-linking" the application and UI state. However, as an aggregate builds 
+a cluster of domain-related entities and value objects, we would have to cluster resources instead to conform to REST APIs. With that in mind, 
+the question arises of how to map URIs such as `/orders`, `/orders/:id`, `/orders/:id/items` to a client-side aggregate. Normally, 
+we project one URL to one single resource type, especially when invoking a "deep-link" like `/orders/:id/items`. 
 
-We can't project a single resource URL to an entire aggregate, especially when running a deep-link like `/orders/:id/items`! 
-The aggregate need to provide a query method to the internal state for each URI endpoint. As a consequence, the aggregate will always be composed 
-as a whole unit for each navigation event. In this way, we can continue to focus on use case specific aggregates and comply with the navigational 
-behavior of SPA architectures:
+As a consequence, the aggregate (cluster) must be composed for each initial navigation event and provide query methods to the internal state. Subsequently, 
+an application service provides the public interface to cover all requests to the internal state of an aggregate. In this way, we can continue to focus on use case specific aggregates and comply with the navigational 
+behavior of router-based SPA architectures:
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
@@ -835,7 +835,7 @@ to elaborate (view) models. Which in the end leads to monolithic controllers:
 The domain model focuses on business logic rather than presentation needs. Introducing a view model provider services to manage 
 complicated page flows and user interfaces allows us to query the appropriate view model for different UI scenarios. The view model provider service is a perfect 
 fit to pre-compute filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). That is, the CQRS pattern supports us in avoiding 
-over-bloated all-in-one models.
+over-bloated all-in-one models. The CQRS pattern may overcomplicate the system design, instead of simplifying it. Use it with care! 
 
 CQRS in the frontend design system has many advantages:
 
