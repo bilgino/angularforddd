@@ -209,8 +209,8 @@ Domain logic is coupled to the client (UI controller):
 *»  Effects of anemic models* <br/> 
 ```
 class Employee {
-    name: 'John Connor';
-    salary: 1000;
+    public name: 'John Connor';
+    public salary: 1000;
 }
 
 @Component({
@@ -230,9 +230,9 @@ A rich domain model hides, protects and encapsulates domain logic:
 *»  Effects of rich models*<br/>
 ```
 class Employee {
-    name: 'John Connor';
-    salary: 1000;
-    salaryIncreaseBy(percent: number): void{
+    private name: 'John Connor';
+    private salary: 1000;
+    public salaryIncreaseBy(percent: number): void{
         if(percent > 100) throw new Error(...);
         this.salary = (salary * percent / 100) + salary;
     }
@@ -260,18 +260,20 @@ practice in Angular projects and known as the "Fat Service, Skinny Model" patter
 ```
 @Injectable()
 class AccountService {
-    accounts = [{ id: 1, balance: 4500 }];
+    private accounts = [{ id: 1, balance: 4500 }, { id: 2, balance: 2340 }];
     constructor(){}
-    changeBalance(id: number, amount: number): void {
+    public changeBalance(id: number, amount: number): void {
         if (id > 0 && amount < AMOUNT.MAX_VALID) {
             this.accounts[id].balance += amount;
         }
         return this.accounts[id];
     }
+    public deposit(){...}
+    public widthDraw(){...}
 }
 ```
 
-A better approach would be to enclose domain logic inside entity classes making boundaries become more clear:
+A better approach would be to place domain logic in entity classes making boundaries become more clear:
 
 ```
 @Injectable()
@@ -282,23 +284,27 @@ class AccountService {
         account.updateBalance(amount);
         return account;
     }
+    public deposit(){}
+    public widthDraw(){}
 }
 
 class Account {
-    id: number;
-    balance: number;
+    private id: number;
+    private balance: number;
     constructor(){}
-    updateBalance(amount: number): void {
+    public updateBalance(amount: number): void {
         if (amount > AMOUNT.MAX_VALID) {
            throw Error(...)
         }
         this.balance += amount;
     }
+    public deposit(){}
+    public widthDraw(){}
 }
 
 @Injectable()
 class AccoutRepositoryService {
-    accounts = [new Account(1, 4500)];
+    private accounts = [new Account(1, 4500), new Account(2, 2340)];
     constructor(){}
     public getById(id: number): Account {
         if (id <= 0) {
@@ -321,8 +327,17 @@ Domain model entity class in the TypeScript syntax:
 
 ```
 class Order {
+    private quantity;
+    private custId;
+    private deliveryAddress;
+    
     contructor(){}
-    placeOrder(){}
+    
+    public placeOrder(){}
+    public getOrderItems(){}
+    public totalQuantity(){}
+    public changeDeliveryAddress(){}
+    public getCustomerId(){}
 }
 ```
 
@@ -476,12 +491,12 @@ class Order {
     public static empty(): Order {
       return new Order();
     }
-    toJSON(): object {
+    public toJSON(): object {
         const serialized = Object.assign(this);
         delete serialized.status;
         return serialized;
     }
-    toString(): string {
+    public toString(): string {
         return "";
     }
 }
@@ -503,12 +518,12 @@ class Order implements IOrder {
         if(!json) return new Order();
         return new Order(json.status);
     }
-    toJSON(): object {
+    public toJSON(): object {
         const serialized = Object.assign(this);
         delete serialized.status;
         return serialized;
     }
-    toString(): string {
+    public toString(): string {
         return "";
     }
 }
@@ -536,11 +551,11 @@ interface IProductViewModel = {
 };
 
 class ProductViewModel extends ViewModel {
-  id!: number;
-  name!: string;
-  price!: string;
-  type!: string;
-  active!: boolean;
+  public id!: number;
+  public name!: string;
+  public price!: string;
+  public type!: string;
+  public active!: boolean;
 
   private constructor(props: IProductViewModel) {
     super();
@@ -643,7 +658,7 @@ read(): Observable<Customer[]> {
 };
 ```
 
-The data mapper is used in the repository service to elaborate the appropriate model schema. 
+The data mapper pattern is used in the repository service to elaborate the appropriate model schema. 
 
 **» Structural Mapper Pattern**<br/>
 
@@ -653,9 +668,9 @@ Option 1 - Classic Assignment:
 
 ```
 class Order {
-    id; 
-    status; 
-    total;
+    public id; 
+    public status; 
+    public total;
     constructor(data: Partial<IOrder>) {
        this.id = data.id;
        this.status = data.status;
@@ -670,9 +685,9 @@ Option 2 - EcmaScript Assignment:
 
 ```
 class Order {
-    id; 
-    status; 
-    total;
+    public id; 
+    public status; 
+    public total;
     constructor({ id, status, total = 0 }: Partial<IOrder>) {
         Object.defineProperty(this, 'id', { value: id, writable: false });
         Object.assign(this, { status, total });
@@ -680,9 +695,9 @@ class Order {
 }
 
 class Order {
-    id; 
-    status; 
-    total;
+    public id; 
+    public status; 
+    public total;
     constructor({ id, status, total }: Partial<IOrder>) {
         Object.defineProperties(this, {
             id: { value: id, writable: false },
@@ -695,7 +710,7 @@ class Order {
 const newOrder = new Order({id=22, status:Status.Pending});
 ```
 
-Option 3 - Dynamic Assignment:
+Option 3 - Index Signature Assignment:
 
 ```
 enum Status {
@@ -737,7 +752,7 @@ class Order extends IOrder {}
 
 const mongo = new Order({ id: 33, status: Status.PENDING })
 ```
-
+Unfortunately, index signature assignments don't support access modifier (public, private, protected).
 Option 4 - Mapper Assignment:
 
 ```
@@ -885,7 +900,7 @@ class ProductsService {
     private loadProducts(): void {
         return this.http.get<Product[]>('/products').subscribe(products => this.products$.next(products));
     }
-
+    // Read
     public getSelectedProductsListView(): Observable<Readonly<ProductView>[]> {
         return this.selectedProductsListView;
     }
@@ -894,15 +909,15 @@ class ProductsService {
         this.productsSelectedIds = [...productsSelectedIds, id];
         this.productsSelected$.next(this.selectedProducts);
     }
-    
+    // Create
     public createProduct(): void {
         ...
     }
-    
+    // Update
     public updateProduct(): void {
         ...
     }
-    
+    // Delete
     public deleteProduct(): void {
         ...
     }
@@ -994,6 +1009,7 @@ class OrderViewModelProvider {
         return combineLatest([this._orderRepository.getOrders(), this._productRepository.getProducts()])
         .pipe(
           filter(id),
+          groupBy(),
           mergeMap([...]) => {
             return of([new ProductViewModel(data)...]);           
           }),
@@ -1089,7 +1105,7 @@ The UI project should comply with User-Centered Design (UCD), where user actions
 ![](src/assets/images/Router.png)
 
 In Addition to that, we must ensure that routes are provided by the Web API layer. For example, don't use routes 
-like /products/:id/edit?filter='mam', if the Web API layer doesn't support query params. Always validate if API routes will be available 
+like /products/:id/edit?filter='mam', if the Web API layer doesn't support query parameters. Always validate if API routes will be available 
 through the Web API! 
 
 ## UI State
@@ -1162,7 +1178,7 @@ we are able to identify full business use cases. The following phase model will 
 ![](src/assets/images/component_tree.png)
 
 Almost conform to REST and HATEOAS, we notice a clear navigation path which makes it considerable to map wireframes to the component tree. 
-It is obvious that this approach does not comply with a DDD task-based UI projection because the router configuration is tide coupled to HATEOAS.
+It is obvious that this approach doesn't comply with a DDD task-based UI projection because the router configuration is tide coupled to HATEOAS.
 Moreover, while with task-based UI components we expect appropriate view models, the HATEOAS approach provides us with CRUD-based resource models. 
 Very often service providers create RESTful Web APIs, where clients have to stitch data together by themselves. In order to satisfy UX requirements 
 it is not feasible to prepare read models for every client's use case! In this context a HATEOAS approach is excellent for mobile devices and CRUD-based applications, 
@@ -1180,7 +1196,7 @@ The most commonly used navigation patterns are:
 
 With the master-master and master-details patterns we comply with RESTful resource association and resource aggregation 
 with reference to one and only one component. Indeed secondary (Auxiliary) and pathless (Master-Children) routes allows us 
-to initiate several components in parallel, but bringing limitations and sacrifices to a special syntax that does not comply 
+to initiate several components in parallel, but bringing limitations and sacrifices to a special syntax that doesn't comply 
 with RESTful practices. 
 
 ![](src/assets/images/Master2Aux.png)
