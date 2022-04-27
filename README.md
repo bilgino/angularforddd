@@ -249,7 +249,7 @@ class Employee {
 ```
 
 In the second example, domain logic is decoupled from the UI controller. Encapsulation protects the integrity of the model data.
-Keeping the model as independent as possible improves usability and allows easier refactoring.
+Keeping the model as independent as possible improves reusability and allows easier refactoring.
 Neither domain state nor domain logic should be written as part of the UI controller.
 
 Subsequently, using feature services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
@@ -361,14 +361,15 @@ Aggregate entity checklist:
 
 Because the navigation mechanism of the Angular router engine complies with hypermedia APIs, where URIs represent arbitrary resources rather than high-level business objects, 
 we must reexamine the idea of building client-side aggregates. Typically, we declare URIs in the Angular router configuration to enable "deep-linking" the application and UI state. 
-However, as aggregates build a clusters of related entities and value objects, we would have to cluster resources instead. With that in mind, the question arises of how to map URIs 
-such as `/orders`, `/orders/:id`, `/orders/:id/items` to a client-side aggregate when the Web API is RESTful. Normally, we assign one URL to one single resource type, especially when 
-invoking a "deep-link" like `/orders/:id/items` for the first time, we consume a REST endpoint that returns all items from an specific order.
+However, as an aggregate builds a cluster of related entities and value objects, we would have to cluster resources instead. With that in mind, the question arises of how to map URIs 
+such as `/orders`, `/orders/:id`, `/orders/:id/items` to a client-side aggregate if the consumed Web API is RESTfully designed. Normally, we assign one URL to one single resource type, especially when 
+invoking a "deep-link" like `/orders/:id/items` for the first time, we expect a payload of items from a specific order. But is this common and always true? It depends on how we define
+a RESTful resource type! A resource may be a representation of a single data model or a composition of data models! 
 
 As a consequence, the aggregate must be composed for each initial route event and must provide query methods to the internal state. Subsequently, 
-an application service provides the public interface to cover all queries to the internal state of an aggregate. The repository services in this scenario acts 
-as an anti-corruption layer to the underlying data model. In this way, we can continue to focus on use case specific aggregates and comply with the navigational 
-behavior of router-based SPA architectures:
+an application service provides the public interface to cover all queries to the internal state of this aggregate. If necessary, the repository services acts 
+as an anti-corruption layer to the underlying data model. In this way, we can continue to focus on context-specific aggregates and comply with the navigational 
+behavior of SPA architectures:
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
