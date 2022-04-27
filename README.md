@@ -84,22 +84,21 @@ Domain layer: *Domain Logic, Business Logic*<br/>
 Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*
 *Logging, Error, Security, Configuration, Token, Monitoring, Date*
 
-**» Applying DDD to Angular**<br/>
+**» Applying Domain-Driven Design to Angular**<br/>
 
-An important aspect of Domain-Driven Design is that the complexity of the domain model is kept isolated from other concerns of the application. 
-Ideally, the domain layer is self-contained and focuses on abstracting the business domain. Very often frontend applications validate business rules 
-that must immediately be reflected in the presentation layer, especially in SPA applications when navigating through HTML forms that have 
-cross-dependencies in terms of distributed business rules. An isolated domain layer allows us to avoid domain logic leaking into other layers. 
-In addition, we don't want to command against the server upon every user input; therefore, the domain layer pattern in the frontend architecture 
-sounds like a good idea.
+An important aspect of Domain-Driven Design is that the domain model is kept isolated from other concerns of the application. Ideally, the domain layer 
+is self-contained and focused on abstracting the business domain. Very often frontend applications validate business rules that are immediately reflected 
+in the presentation layer, particularly in SPA applications when navigating through HTML forms that have cross-dependencies in terms of distributed business rules. 
+An isolated domain layer allows us to avoid domain logic leaking into other layers. In addition, we don't want to command against the server upon every user input. 
+Therefore, the domain layer pattern in the frontend architecture sounds like a very good idea.
 
 Domain-oriented layering is often considered the first structuring criterion in Angular applications. However, layered architecture 
 is independent of vertical slicing. It's sufficient to comply with horizontal slicing. The main reasons for modular segmentation in 
 Angular applications are lazy-loading, scoping and distribution. 
 
-When application services carry out business or UI use cases, it may be a good idea to write use cases that contain less logic directly in the 
-UI controller, like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated classes instead!
-In addition, we want to share state and logic of these dedicated class with other independent components. 
+When application services carry out business or UI use cases, it may be a good idea to keep use cases that contain less logic in the UI controller, 
+like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use specialized components instead!
+In addition, we want to share state and logic of these specialized components with other independent components. 
 
 It's questionable whether higher granularity distributed across several layers introduce extra complexity in the frontend architecture. 
 Should we really comply to Domain-Driven Design in frontend development? As a consequence, many developers tend to lean toward weaker 
@@ -108,7 +107,7 @@ or Flux/Redux may be more appropriate. Before starting using advanced concepts w
 
 # Angular core patterns
 
-Angular's core patterns such as modules, services, entities, factories affords us to comply with domain-focused principles.
+Angular's core patterns such as modules, services, factories etc. affords us to comply with domain-driven principles.
 
 ## Modules
 
@@ -149,9 +148,9 @@ The bounded context pattern in Domain-Driven Design divides the domain model int
 bounded context marks the boundaries of an application service. An application service is a concretion of the bounded context pattern! 
 This is similar to **Domain Modules** where we mark the boundaries based on features. Applying the bounded context pattern to domain modules 
 allows us to structure modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
-several aggregates. An important aspect with regard to SPA applications is that the (client- or server-side) bounded context must integrate 
-a RESTful interface, as the Angular router engine complies with the navigational behaviour of hypermedia APIs. A bounded context should not only
-be coupled to the URI of the entry point (root): `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
+several aggregates. An important consideration with Angular applications is that the client- or server-side bounded context should integrate 
+with REST-based interfaces, as the Angular router engine complies with the navigational behaviour of hypermedia APIs. A bounded context may be 
+coupled to the entry point (root URL) like in HATEOAS.: `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
 A bounded context can be assigned either to an entire page or to page segments.
 
 Interaction between the bounded context pattern and domain modules:
@@ -161,10 +160,10 @@ Interaction between the bounded context pattern and domain modules:
 **» Scaffolding**<br/>
 
 A common practice in Angular projects is to structure the code base into `/core`, `/shared`, `/features` folders. 
-Unfortunately, this approach isn't sufficient for complex projects and is mainly inspired by technical constraints. 
-When setting up a folder structure, a domain-driven approach is much better.
+Unfortunately, this approach isn't sufficient for a good project layout and is mainly inspired by technical constraints. 
+When setting up a folder structure, a domain-driven approach may better suited for complex applications.
 
-Domain-driven folder structure for Angular applications:
+Domain-driven scaffolding:
 
 ![](src/assets/images/scaffolding.png)
 
@@ -198,11 +197,10 @@ The view model and domain model should maintain different data structures to kee
 - Rich Domain Model
 - View Model 
 
-The anemic domain model is quite often used in CRUD-based web applications as a value container without any behavior of its own, 
-conform to RESTful practices. However, it's considered an anti-pattern because it doesn't include business logic and
-can't protect its invariants. Furthermore, it introduces a tight coupling with the client. 
-Using rich domain models instead we prevent domain logic from leaking into other layers.
-The following example shows the negative side effect of anemic domain models. 
+The anemic domain model is quite often used in CRUD-based web applications as  value container without any behavior of its own, 
+conform to RESTful practices. However, it's considered an anti-pattern because it doesn't include business logic and can't protect its invariants. 
+Furthermore, it introduces a tight coupling with the client. Using rich domain models instead, we prevent domain logic from leaking into other layers.
+The following example shows the negative effects of anemic domain models. 
 
 Domain logic is coupled to the client (UI controller): 
 
@@ -315,15 +313,14 @@ class AccoutRepositoryService {
 }
 ```
 
-In general, using rich domain models means more entities than feature services.
-Building rich domain models is a major objective in object-oriented design.
+In general, using rich domain models means more entities than services. Building rich domain models is a major objective in object-oriented design.
 
 **» Domain Model**<br/>
 
 The domain model entity class contains data and domain-related behavior modeled around business logic.
 In terms of DDD and CQRS, the domain model entity class is an aggregate that contains only write operations that result in state changes.
 
-Domain model entity class in the TypeScript syntax:
+Domain model entity class in the TypeScript syntax (CQS):
 
 ```
 class Order {
@@ -342,8 +339,8 @@ class Order {
 ```
 
 In traditional object-oriented programming the software model lacked of explicit boundaries. Relationships between classes brought a
-complexity that required an efficient design. The aggregate pattern takes a different approach by using clusters of domain objects that
-are based on invariants and clear boundaries inside the software model making the system easier to reason about.
+complexity that required an efficient design. The aggregate pattern takes a different approach by using clusters of entities and value objects 
+that are modeled around invariants and clear boundaries inside the software model making the system easier to reason about.
 One of the most important characteristics of the aggregate pattern is to protect it from being invalid and having an inconsistent state.
 
 Aggregate entity checklist:
@@ -360,18 +357,18 @@ Aggregate entity checklist:
 - Each use case should have only one aggregate, but can use other aggregates to retrieve data
 - Multiple aggregates can share one value object
 
-**» Router Navigation and Aggregates**<br/>
+**» Router Navigation and Aggregate Resources**<br/>
 
-Because the navigation concept of the Angular router engine complies with fine-grained REST APIs where URIs represent arbitrary 
-resources rather than high-level business objects, that are modeled around business use cases, we must reexamine the idea of building client-side 
-aggregates. Typically, we declare URLs in the Angular router configuration to enable "deep-linking" the application and UI state. However, as an aggregate builds 
-a cluster of domain-related entities and value objects, we would have to cluster resources instead to conform to REST APIs. With that in mind, 
-the question arises of how to map URIs such as `/orders`, `/orders/:id`, `/orders/:id/items` to a client-side aggregate. Normally, 
-we project one URL to one single resource type, especially when invoking a "deep-link" like `/orders/:id/items`. 
+Because the navigation mechanism of the Angular router engine complies with hypermedia APIs, where URIs represent arbitrary resources rather than high-level business objects, 
+we must reexamine the idea of building client-side aggregates. Typically, we declare URIs in the Angular router configuration to enable "deep-linking" the application and UI state. 
+However, as aggregates build a clusters of related entities and value objects, we would have to cluster resources instead. With that in mind, the question arises of how to map URIs 
+such as `/orders`, `/orders/:id`, `/orders/:id/items` to a client-side aggregate when the Web API is RESTful. Normally, we assign one URL to one single resource type, especially when 
+invoking a "deep-link" like `/orders/:id/items` for the first time, we consume a REST endpoint that returns all items from an specific order.
 
-As a consequence, the aggregate (cluster) must be composed for each initial navigation event and provide query methods to the internal state. Subsequently, 
-an application service provides the public interface to cover all requests to the internal state of an aggregate. The repository services acts as kind of anti-corruption layer.
-In this way, we can continue to focus on use case specific aggregates and comply with the navigational behavior of router-based SPA architectures:
+As a consequence, the aggregate must be composed for each initial route event and must provide query methods to the internal state. Subsequently, 
+an application service provides the public interface to cover all queries to the internal state of an aggregate. The repository services in this scenario acts 
+as an anti-corruption layer to the underlying data model. In this way, we can continue to focus on use case specific aggregates and comply with the navigational 
+behavior of router-based SPA architectures:
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
@@ -421,7 +418,7 @@ newOrderViewModel.balance = -44;
 ```
 
 Necessary data transformations may reside in the same view model class. A better choice would be to create a dedicated component such as a mapper, translator,
-factory or an abstract super class which performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote
+factory or an abstract super class that performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote
 code reusability by subclassing.
 
 ```
@@ -455,7 +452,7 @@ newOrderViewModel.balance = -44;
 Due to performance implications, it's not recommended embedding `getters` in the view's template. Instead, we will use public properties.
 
 Hardcoding transformation methods in the view model causes tight coupling. A better approach is to process data transformations like filtering, sorting, grouping or destructuring etc.
-in a reactive stream and hand over the result to an object factory.
+in reactive streams and hand over the result to an object factory.
 
 **» Object Factory Pattern:**<br/>
 
@@ -513,7 +510,7 @@ interface IOrder{
 }
 
 class Order implements IOrder {
-    constructor(public status = OrderStatus.New){}
+    private constructor(public status = OrderStatus.New){}
     public static create(json: IOrder): Order {
         if(!json) return new Order();
         return new Order(json.status);
@@ -753,6 +750,7 @@ class Order extends IOrder {}
 const mongo = new Order({ id: 33, status: Status.PENDING })
 ```
 Unfortunately, index signature assignments don't support access modifier (public, private, protected).
+
 Option 4 - Mapper Assignment:
 
 ```
