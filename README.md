@@ -370,8 +370,7 @@ In case resources don't represent aggregates already, the aggregate must be stit
 an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository services acts 
 as an anti-corruption layer to the underlying resource model. 
 
-Unfortunately this approach isn't the recommended way, as the creation process of client-side aggregates could result in the dreaded N + 1 problem and further additional requests, as every aggregate would require an arbitrary
-amound of additional HTTP Requests. That is, the aggregate must be provided by the REST API in the backend!
+Unfortunately, this approach doesn't work at all! As the creation process of client-side aggregates may require hundreds of additional HTTP requests (N + 1), the aggregate must be provided by the REST API in the backend!
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
