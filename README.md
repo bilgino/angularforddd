@@ -357,21 +357,23 @@ Aggregate entity checklist:
 - Each use case should have only one aggregate, but can use other aggregates to retrieve data
 - Multiple aggregates can share one value object
 
-**» Router Navigation and Aggregate Resources**<br/>
+**» Routing with Aggregates or Resources**<br/>
 
-Because the navigation mechanism of the Angular router engine complies with hypermedia APIs, where URIs represent arbitrary resources rather than high-level business objects, 
-we must reexamine the idea of building client-side aggregates. Typically, we declare URIs in the Angular router configuration to enable "deep-linking" the application and UI state. 
-However, as an aggregate builds a cluster of related entities and value objects, we would have to cluster resources instead. With that in mind, the question arises of how to map URIs 
-such as `/orders`, `/orders/:id`, `/orders/:id/items` to a client-side aggregate if the consumed Web API is RESTfully designed. Normally, we assign one URL to one single resource type, especially when 
-invoking a "deep-link" like `/orders/:id/items` for the first time, we expect a payload of items from a specific order. But is this common and always true? It depends on how we define
-a RESTful resource type! A resource may be a representation of a single data model or a composition of data models! 
+Because the navigation mechanism of the Angular router engine complies with the navigational behavior of hypermedia APIs where URIs represent resources, conform to RESTful practices, we must reexamine the idea of building 
+client-side aggregates. Typically, we declare URLs in the Angular router configuration to enable "deep-linking" the application and UI state. However, as an aggregate builds a cluster of domain-related 
+entities and value objects, we would have to cluster resources instead! With that in mind, the question arises of how to map URLs such as `/orders`, `/customers`, `/addresses` etc. to a client-side 
+aggregate, if the provided Web API is RESTfully designed. Normally, we assign one URL to one single resource type! When invoking a "deep-link" like `/orders/55/items` for the first time, we 
+expect a payload of items from a specific order. But is this common and always true? It depends on how we define a RESTful resource type! A resource may be a representation of a single data model or a 
+composition of several data models that are modelled around business use cases / business processes or GUI models.
 
-As a consequence, the aggregate must be composed for each initial route event and must provide query methods to the internal state. Subsequently, 
-an application service provides the public interface to cover all queries to the internal state of this aggregate. If necessary, the repository services acts 
-as an anti-corruption layer to the underlying data model. In this way, we can continue to focus on context-specific aggregates and comply with the navigational 
-behavior of SPA architectures:
+As a consequence, the aggregate must be composed for each initial routing event and must provide query methods to the internal state. Subsequently, 
+an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository services acts 
+as an anti-corruption layer to the underlying data model. In this way, we can continue to focus on use case specific aggregates and at the same time comply with the navigational 
+behavior of the Angular router engine:
 
 ![](src/assets/images/Aggregate_ACL.PNG)
+
+The picture on the right side shows the common approach...
 
 **» View Model**<br/>
 
@@ -625,7 +627,7 @@ const newOrder: Order = new Order();
 
 A domain layer in the frontend architecture ensures that business behavior works. 
 With higher functional ability using rich domain models, we must take the mapper pattern into consideration. 
-A common practice for the reason of typesaftyness is to declare interfaces in support of plain JavaScript object literals. 
+A common practice for preserving type safety is to declare interfaces in support of plain JavaScript object literals. 
 In the context of "mapping", it's important to make a clear distinction between the typing system and the data structure of models.
 
 Mapping JSON-encoded server data in the frontend is mandatory if:
