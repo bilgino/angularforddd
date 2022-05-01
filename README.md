@@ -364,7 +364,9 @@ client-side aggregates. Typically, we declare URIs in the Angular router configu
 entities and value objects, wouldn't we have to cluster resources instead? With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/addresses` etc. to a client-side 
 aggregate, if the resources don't represent a composition already? In the traditional world of database-centric architecture, database tables and their relations were directly identified as resources or as a resource model.
 But is this common and always true? Well, it depends on how we define our resources! A resource may be a representation of a single object or a 
-composition of several objects that are modeled around business use cases / business processes, database tables or GUI models.
+composition of several objects that are modeled around business use cases / business processes, database tables or GUI models. 
+
+That is, UX-Driven, Domain-Driven or Data-Driven!
 
 In case resources don't represent aggregates already, the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
 an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository services acts 
