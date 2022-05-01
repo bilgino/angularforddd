@@ -230,6 +230,7 @@ A rich domain model hides, protects and encapsulates domain logic:
 class Employee {
     private name: 'John Connor';
     private salary: 1000;
+    
     public salaryIncreaseBy(percent: number): void{
         if(percent > 100) throw new Error(...);
         this.salary = (salary * percent / 100) + salary;
@@ -259,7 +260,9 @@ practice in Angular projects and known as the "Fat Service, Skinny Model" patter
 @Injectable()
 class AccountService {
     private accounts = [{ id: 1, balance: 4500 }, { id: 2, balance: 2340 }];
+    
     constructor(){}
+    
     public changeBalance(id: number, amount: number): void {
         if (id > 0 && amount < AMOUNT.MAX_VALID) {
             this.accounts[id].balance += amount;
@@ -277,6 +280,7 @@ A better approach would be to place domain logic in entity classes making bounda
 @Injectable()
 class AccountService {
     constructor(private accountRepository: AccountRepositoryService){}  
+    
     public changeBalance(id: number, amount: number): Account {
         const account = this.accountRepository.getById(id);
         account.updateBalance(amount);
@@ -289,7 +293,9 @@ class AccountService {
 class Account {
     private id: number;
     private balance: number;
+    
     constructor(){}
+    
     public updateBalance(amount: number): void {
         if (amount > AMOUNT.MAX_VALID) {
            throw Error(...)
@@ -303,7 +309,9 @@ class Account {
 @Injectable()
 class AccoutRepositoryService {
     private accounts = [new Account(1, 4500), new Account(2, 2340)];
+    
     constructor(){}
+    
     public getById(id: number): Account {
         if (id <= 0) {
             throw Error(...)
@@ -484,9 +492,11 @@ interface OrderProps {
 
 class Order {
     public status: OrderStatus;
+    
     private constructor(props: OrderProps) {
     	this.status = props.status;
     }
+    
     public static create(props: OrderProps): Order {
       return new Order(props);
     }
@@ -515,7 +525,9 @@ interface IOrder{
 }
 
 class Order implements IOrder {
+
     private constructor(public status = OrderStatus.New){}
+    
     public static create(json: IOrder): Order {
         if(!json) return new Order();
         return new Order(json.status);
@@ -538,7 +550,9 @@ Option 4:
 
 ```
 abstract class ViewModel {
+
   constructor() {}
+  
   protected transformPrice(price: string): string {
     return // Do somthing with price value
   }
@@ -618,7 +632,9 @@ const newOrder: Order = {
 class Order {
     public status: OrderStatus;
     public customer: Customer;
+    
     constructor(){}
+    
     public placeOrder(){}
 }
 
@@ -673,6 +689,7 @@ class Order {
     public id; 
     public status; 
     public total;
+    
     constructor(data: Partial<IOrder>) {
        this.id = data.id;
        this.status = data.status;
@@ -690,6 +707,7 @@ class Order {
     public id; 
     public status; 
     public total;
+    
     constructor({ id, status, total = 0 }: Partial<IOrder>) {
         Object.defineProperty(this, 'id', { value: id, writable: false });
         Object.assign(this, { status, total });
@@ -700,6 +718,7 @@ class Order {
     public id; 
     public status; 
     public total;
+    
     constructor({ id, status, total }: Partial<IOrder>) {
         Object.defineProperties(this, {
             id: { value: id, writable: false },
@@ -722,6 +741,7 @@ enum Status {
 
 class Order {
     [key: string]: any;
+    
     constructor(input: { [key: string]: any }) {
         Object.keys(input).forEach((k: string) => {
             this[k] = input[k];
@@ -761,12 +781,14 @@ Option 4 - Mapper Assignment:
 ```
 class OrderMapper {
     constructor() {}
+    
     public static mapToOrder(Order, Dto): Order {
         Order.id = Dto.id;
         Order.status = Dto.Status;
         Order.total = Dto.total;
         return Order;
     }
+    
     public static mapFromOrder(Order, Dto): Dto {
         Dto.id = Order.id;
         Dto.status = Order.Status;
@@ -792,13 +814,13 @@ server response schema to a complex object graph (domain model):
 
 ![](src/assets/images/Mapper_Response.png)
 
-For example, HATEOAS forms hyperlinks between external resources to make transitions through the application state by navigating hyperlinks. 
+~~For example, HATEOAS forms hyperlinks between external resources to make transitions through the application state by navigating hyperlinks. 
 However, mapping hyperlinks to a client-side domain model is not desirable! In addition, consuming REST APIs very often multiple HTTP request 
 need to be sent asynchronously to assemble a model for a specific use case in the presentation layer. If the applied HATEOAS implementation pattern
 forms hyperlinks in a response schema, it would limit the user interface to incorporate with REST APIs synchronously. 
 UX designers usually don't model their interaction, navigation and screen patterns around HATEOAS. Furthermore, the Angular router engine doesn't 
 comply well with the URI templates of HATEOAS  implementation patterns. HATEOAS has its advantages as well as disadvantages. Even though the router 
-in Angular complies with the navigational behaviour of hypermedia APIs, you should avoid HATEOAS for Angular SPA applications!
+in Angular complies with the navigational behaviour of hypermedia APIs, you should avoid HATEOAS for Angular SPA applications!~~
 
 ## Services
 
