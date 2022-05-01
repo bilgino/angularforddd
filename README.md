@@ -345,23 +345,25 @@ One of the most important characteristics of the aggregate pattern is to protect
 
 Aggregate entity checklist:
 
-- An aggregate is a first-class business object
-- An aggregate is based on a root entity and acts as a collection of related entities and value objects
-- An aggregate has identity, state, lifecycle and receives the name of the bounded context
-- An aggregate is modeled around use cases, protecting domain invariants, encapsulation and data integrity
-- An aggregate is bounded from the viewpoint of a business use cases
-- An aggregate invariants must be satisfied for each state change
-- An aggregate validates all incoming actions and ensures that modifications don't contradict business rules
-- An aggregate internal state can only be mutated by its own public interface
-- Relations between aggregates are managed through ID properties
-- Each use case should have only one aggregate, but can use other aggregates to retrieve data
-- Multiple aggregates can share one value object
+- Is a top-level business object
+- Is based on a root entity and acts as a collection of domain-related entities and value objects
+- Has identity, state, lifecycle and receives the name of a bounded context
+- It is modeled around use cases, protecting domain invariants, encapsulation and data integrity
+- Is bounded from the viewpoint of a business use cases
+- Invariants must be satisfied for each state change
+- Validates all incoming actions and ensures that modifications don't contradict business rules
+- The internal state can only be mutated by its own public interface
+- Relations between aggregates are managed by ID properties
+- Each use case should have only one aggregate, but can use other aggregates to retrieve information
+- Multiple aggregates can reuse one single value object
 
 **» Routing and Aggregates**<br/>
 
-Because the navigation mechanism of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources, conform to RESTful practices, we must reexamine the idea of building 
+Because the navigation mechanism of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must reexamine the idea of building 
 client-side aggregates. Because an aggregate builds a cluster of domain-related entities and value objects, wouldn't we then have to cluster resources instead? With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/addresses` etc. to a client-side 
-aggregate, if the resources weren't already an aggregation? In the traditional database-centric approach, database tables and their relations are directly identified as resources or as a resource model.
+aggregate, if the provided resources weren't already an aggregation? 
+
+In the traditional database-centric approach, database tables and their relations were identified as resources or as a resource model.
 But is this common and always true? Well, it all depends on the requirements of the project and how we define a resource! A resource may be a representation of a single entity or a 
 composition of several entities modeled around business use cases / business processes, database tables or GUI models. 
 
@@ -371,7 +373,7 @@ Unless a resource doesn't already represent an aggregate, the aggregate must be 
 an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository service acts 
 as an anti-corruption layer to the underlying data model. 
 
-Unfortunately, this approach will not work, as the creation process of client-side aggregation may require hundreds of additional HTTP requests (N + 1 Problem). Hence, the DDD aggregate must be provided as a resource by the REST API!
+Unfortunately, this approach will not work, because the creation process of a client-side aggregate may require hundreds of additional HTTP requests (N + 1). Hence, the DDD aggregate must be provided as a resource by the REST API!
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
