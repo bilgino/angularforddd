@@ -361,7 +361,7 @@ Aggregate entity checklist:
 
 Because the navigation mechanism of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must reexamine the idea of building 
 client-side aggregates. Because an aggregate builds a cluster of domain-related entities and value objects, wouldn't we then have to cluster resources instead? With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/addresses` etc. to a client-side 
-aggregate, if the provided resources weren't already an aggregation? 
+aggregate, if the provided resources weren't already an aggregation of related resources? 
 
 In the traditional database-centric approach, database tables and their relations were identified as resources or as a resource model.
 But is this common and always true? Well, it all depends on the requirements of the project and how we define a resource! A resource may be a representation of a single entity or a 
@@ -373,7 +373,7 @@ Unless a resource doesn't already represent an aggregate, the aggregate must be 
 an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository service acts 
 as an anti-corruption layer to the underlying data model. 
 
-Unfortunately, this approach will not work, because the creation process of a client-side aggregate may require hundreds of additional HTTP requests (N + 1). Hence, the DDD aggregate must be provided as a resource by the REST API!
+Unfortunately, this approach won't work, because the creation process of a client-side aggregate may require hundreds of additional HTTP requests (N + 1). Hence, the DDD aggregate must be provided as a resource!
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
