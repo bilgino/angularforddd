@@ -390,12 +390,12 @@ The view model should hold the data necessary to render the UI if:
 
 View model checklist:
 
-- A view model should have an ID property
-- A view model should be immutable and has properties of type `readonly string`
-- A view model behaves like a value object, also called a data transfer object
-- A view model might or might not have dependencies
-- A view model should be located in its own file, repository service or UI container component
-- A view model name ends with the suffix -View e.g. UserProfileView, UserListView, UserDetailsView
+- Should have an ID property
+- Should be immutable and has properties of type `readonly string`
+- Behaves like a value object, also called a data transfer object
+- Might or might not have dependencies
+- Should be located in its own file, repository service or UI container component
+- The name ends with the suffix -View e.g. UserProfileView, UserListView, UserDetailsView
 
 Examples:
 
