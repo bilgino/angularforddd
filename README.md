@@ -363,16 +363,16 @@ Because the navigation mechanism of the Angular router engine complies with the 
 client-side aggregates. As an aggregate builds a cluster of domain-related 
 entities and value objects, wouldn't we then have to cluster resources instead? With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/addresses` etc. to a client-side 
 aggregate, if the resources weren't already an aggregation? In the traditional database-centric approach, database tables and their relations are directly identified as resources or as a resource model.
-But is this common and always true? Well, it depends on the requirements and how define our resources! A resource may be a representation of a single entity or a 
-composition of several entities modeled around business use cases / business processes, database tables or even GUI models. 
+But is this common and always true? Well, it all depends on the requirements of the project and how we define a resource! A resource may be a representation of a single entity or a 
+composition of several entities modeled around business use cases / business processes, database tables or GUI models. 
 
 That is, UX-Driven, Domain-Driven or Data-Driven!
 
-In case resources don't comply with aggregates already, the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
+Unless a resource doesn't already represent an aggregate, the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
 an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository service acts 
-as an anti-corruption layer to the underlying model. 
+as an anti-corruption layer to the underlying data model. 
 
-Unfortunately, this approach will not work, as the creation process of client-side aggregates may require hundreds of additional HTTP requests (N + 1). Hence, the DDD aggregate must be provided as resource by the REST API!
+Unfortunately, this approach will not work, as the creation process of client-side aggregation may require hundreds of additional HTTP requests (N + 1). Hence, the DDD aggregate must be provided as a resource by the REST API!
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
