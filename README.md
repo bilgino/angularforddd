@@ -357,23 +357,21 @@ Aggregate entity checklist:
 - Each use case should have only one aggregate, but can use other aggregates to retrieve data
 - Multiple aggregates can share one value object
 
-**» Routing with Aggregates or Resources**<br/>
+**» Routing and Aggregates**<br/>
 
-Because the navigation mechanism of the Angular router engine complies with the navigational behavior of hypermedia APIs where URIs represent resources, conform to RESTful practices, we must reexamine the idea of building 
-client-side aggregates. Typically, we declare URLs in the Angular router configuration to enable "deep-linking" the application and UI state. However, as an aggregate builds a cluster of domain-related 
-entities and value objects, we would have to cluster resources instead! With that in mind, the question arises of how to map URLs such as `/orders`, `/customers`, `/addresses` etc. to a client-side 
-aggregate, if the provided Web API is RESTfully designed. Normally, we assign one URL to one single resource type! When invoking a "deep-link" like `/orders/55/items` for the first time, we 
-expect a payload of items from a specific order. But is this common and always true? It depends on how we define a RESTful resource type! A resource may be a representation of a single data model or a 
-composition of several data models that are modelled around business use cases / business processes or GUI models.
+Because the navigation mechanism of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources, conform to RESTful practices, we must reexamine the idea of building 
+client-side aggregates. Typically, we declare URIs in the Angular router configuration to enable "deep-linking" the application and UI state. However, as an aggregate builds a cluster of domain-related 
+entities and value objects, wouldn't we have to cluster resources instead? With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/addresses` etc. to a client-side 
+aggregate, if the resources don't represent a composition already? In the traditional world of database-centric architecture, database tables and their relations were directly identified as resources or as a resource model.
+But is this common and always true? Well, it depends on how we define our resources! A resource may be a representation of a single object or a 
+composition of several objects that are modeled around business use cases / business processes, database tables or GUI models.
 
-As a consequence, the aggregate must be composed for each initial routing event and must provide query methods to the internal state. Subsequently, 
+In case resources don't represent aggregates already, the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
 an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository services acts 
-as an anti-corruption layer to the underlying data model. In this way, we can continue to focus on use case specific aggregates and at the same time comply with the navigational 
+as an anti-corruption layer to the underlying resource model. In this way, we can continue to focus on use case specific aggregates that are modeled around invariants and at the same time comply with the navigational 
 behavior of the Angular router engine:
 
 ![](src/assets/images/Aggregate_ACL.PNG)
-
-The picture on the right side shows the common approach...
 
 **» View Model**<br/>
 
@@ -791,7 +789,7 @@ server response schema to a complex object graph (domain model):
 ![](src/assets/images/Mapper_Response.png)
 
 For example, HATEOAS forms hyperlinks between external resources to make transitions through the application state by navigating hyperlinks. 
-However, mapping hyperlinks to a client-side domain model is not desirable! In addition to consuming REST APIs, very often multiple HTTP request 
+However, mapping hyperlinks to a client-side domain model is not desirable! In addition, consuming REST APIs very often multiple HTTP request 
 need to be sent asynchronously to assemble a model for a specific use case in the presentation layer. If the applied HATEOAS implementation pattern
 forms hyperlinks in a response schema, it would limit the user interface to incorporate with REST APIs synchronously. 
 UX designers usually don't model their interaction, navigation and screen patterns around HATEOAS. Furthermore, the Angular router engine doesn't 
