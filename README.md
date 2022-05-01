@@ -360,19 +360,19 @@ Aggregate entity checklist:
 **» Routing and Aggregates**<br/>
 
 Because the navigation mechanism of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources, conform to RESTful practices, we must reexamine the idea of building 
-client-side aggregates. Typically, we declare URIs in the Angular router configuration to enable "deep-linking" the application and UI state. However, as an aggregate builds a cluster of domain-related 
-entities and value objects, wouldn't we have to cluster resources instead? With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/addresses` etc. to a client-side 
-aggregate, if the resources don't represent a composition already? In the traditional world of database-centric architecture, database tables and their relations were directly identified as resources or as a resource model.
-But is this common and always true? Well, it depends on how we define our resources! A resource may be a representation of a single object or a 
-composition of several objects that are modeled around business use cases / business processes, database tables or GUI models. 
+client-side aggregates. As an aggregate builds a cluster of domain-related 
+entities and value objects, wouldn't we then have to cluster resources instead? With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/addresses` etc. to a client-side 
+aggregate, if the resources weren't already an aggregation? In the traditional database-centric approach, database tables and their relations are directly identified as resources or as a resource model.
+But is this common and always true? Well, it depends on the requirements and how define our resources! A resource may be a representation of a single entity or a 
+composition of several entities modeled around business use cases / business processes, database tables or even GUI models. 
 
 That is, UX-Driven, Domain-Driven or Data-Driven!
 
-In case resources don't represent aggregates already, the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
-an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository services acts 
-as an anti-corruption layer to the underlying resource model. 
+In case resources don't comply with aggregates already, the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
+an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository service acts 
+as an anti-corruption layer to the underlying model. 
 
-Unfortunately, this approach doesn't work at all! As the creation process of client-side aggregates may require hundreds of additional HTTP requests (N + 1), the aggregate must be provided by the REST API in the backend!
+Unfortunately, this approach will not work, as the creation process of client-side aggregates may require hundreds of additional HTTP requests (N + 1). Hence, the DDD aggregate must be provided as resource by the REST API!
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
