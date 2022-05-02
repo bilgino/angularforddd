@@ -384,7 +384,7 @@ as an anti-corruption layer to the underlying data model.
 Unfortunately, this approach won't work, because the creation process of a client-side aggregate may require hundreds of additional HTTP requests (N + 1 Problem). Hence, the aggregate must be provided by the backend!
 Even in the case of server-side generated aggregates, something seems to be wrong! If the requested order aggregate through the URI `/orders` also encloses related resources such as customers, products or addresses, 
 the question arises of how to update the address of an order? Either we use a method of the aggregate like `Order.updateDeliveryAddress(address)` and process `PUT /orders/id` or we break out and use a dedicated URI like `PUT /orders/id/address`. 
-The second approach may contradict the concepts of for building an aggregate in behalf of Domain-Driven Design as it reveals its internal state through a external API! 
+The second approach may contradict the concepts of building aggregates in behalf of Domain-Driven Design where an aggregate shouldn't reveal its internal state! 
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
