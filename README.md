@@ -436,7 +436,9 @@ code reusability by subclassing.
 
 ```
 abstract class ViewModel {
+
     constructor(){}
+    
     protected format(){}
     protected calc(){}
 }
@@ -468,6 +470,8 @@ Hardcoding transformation methods in the view model causes tight coupling. A bet
 in reactive streams and hand over the result to an object factory.
 
 **» Object Factory Pattern:**<br/>
+
+The object factory pattern assists in type safety when constructing dynamic objects (spread, rest, destructuring, merge).
 
 Option 1:
 
@@ -780,6 +784,7 @@ Option 4 - Mapper Assignment:
 
 ```
 class OrderMapper {
+
     constructor() {}
     
     public static mapToOrder(Order, Dto): Order {
