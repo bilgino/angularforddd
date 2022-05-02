@@ -148,9 +148,9 @@ The bounded context pattern in Domain-Driven Design divides the domain model int
 bounded context marks the boundaries of an application service. An application service is a concretion of the bounded context pattern! 
 This is similar to **Domain Modules** where we mark the boundaries based on features. Applying the bounded context pattern to domain modules 
 allows us to structure modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
-several aggregates. An important consideration with Angular applications is that the client- or server-side bounded context should integrate 
-with REST-based interfaces, as the Angular router engine complies with the navigational behaviour of hypermedia APIs. A bounded context may be 
-coupled to the entry point (root URL) like in HATEOAS.: `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
+several aggregates. An important consideration for Angular applications is that the client- or server-side bounded context should integrate 
+a RESTful interface, because the Angular router engine complies with the navigational behaviour of hypermedia APIs. A bounded context may be 
+coupled to the entry point (root URL) matching the HATEOAS practices: `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
 A bounded context can be assigned either to an entire page or to page segments.
 
 Interaction between the bounded context pattern and domain modules:
@@ -368,8 +368,8 @@ Aggregate entity checklist:
 **» Routing and Aggregates**<br/>
 
 Because the navigation mechanism of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must reexamine the idea of building 
-client-side aggregates. Because an aggregate builds a cluster of domain-related entities and value objects, wouldn't we then have to cluster resources instead? With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/addresses` etc. to a client-side 
-aggregate, if the provided resources weren't already an aggregation of related resources? 
+client-side aggregates. Because an aggregate builds a cluster of domain-related entities and value objects, wouldn't we then have to cluster resources instead? With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` etc. to a client-side 
+aggregate, if the requested resource isn't already an aggregation of related resources? 
 
 In the traditional database-centric approach, database tables and their relations were identified as resources or as a resource model.
 But is this common and always true? Well, it all depends on the requirements of the project and how we define a resource! A resource may be a representation of a single entity or a 
@@ -381,7 +381,10 @@ Unless a resource doesn't already represent an aggregate, the aggregate must be 
 an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository service acts 
 as an anti-corruption layer to the underlying data model. 
 
-Unfortunately, this approach won't work, because the creation process of a client-side aggregate may require hundreds of additional HTTP requests (N + 1). Hence, the DDD aggregate must be provided as a resource!
+Unfortunately, this approach won't work, because the creation process of a client-side aggregate may require hundreds of additional HTTP requests (N + 1 Problem). Hence, the aggregate must be provided by the backend!
+Even in the case of server-side generated aggregates, something seems to be wrong! If the requested order aggregate through the URI `/orders` also encloses related resources such as customers, products or addresses, 
+the question arises of how to update the address of an order? Either we use a method of the aggregate like `Order.updateDeliveryAddress(address)` and process `PUT /orders/id` or we break out and use a dedicated URI like `PUT /orders/id/address`. 
+The second approach may contradict the concepts of for building an aggregate in behalf of Domain-Driven Design as it reveals its internal state through a external API! 
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
