@@ -149,8 +149,8 @@ bounded context marks the boundaries of an application service. An application s
 This is similar to **Domain Modules** where we mark the boundaries based on features. Applying the bounded context pattern to domain modules 
 allows us to structure modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
 several aggregates. An important consideration for Angular applications is that the client- or server-side bounded context should integrate 
-a RESTful interface, because the Angular router engine complies with the navigational behaviour of hypermedia APIs. A bounded context may be 
-coupled to the entry point (root URL) matching the HATEOAS practices: `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
+a RESTful interface, because the Angular router engine complies with the navigational behaviour of hypermedia APIs. A bounded context can be 
+coupled to the root URL (entry point) matching HATEOAS practices: `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
 A bounded context can be assigned either to an entire page or to page segments.
 
 Interaction between the bounded context pattern and domain modules:
@@ -323,12 +323,12 @@ class AccoutRepositoryService {
 
 In general, using rich domain models means more entities than services. Building rich domain models is a major objective in object-oriented design.
 
-**» Domain Model**<br/>
+**» Domain Model (Aggregates)**<br/>
 
-The domain model entity class contains data and domain-related behavior modeled around business logic.
-In terms of DDD and CQRS, the domain model entity class is an aggregate that contains only write operations that result in state changes.
+The domain model entities contain data and domain-related behavior modeled around business logic.
+In terms of DDD and CQRS, the domain model entity is an aggregate that contains only write operations that result in state changes.
 
-Domain model entity class in the TypeScript syntax (CQS):
+TypeScript domain model entity (CQS):
 
 ```
 class Order {
@@ -354,37 +354,37 @@ One of the most important characteristics of the aggregate pattern is to protect
 Aggregate entity checklist:
 
 - Is a top-level business object
+- Is bounded from the viewpoint of a business use cases
 - Is based on a root entity and acts as a collection of domain-related entities and value objects
 - Has identity, state, lifecycle and receives the name of a bounded context
-- It is modeled around use cases, protecting domain invariants, encapsulation and data integrity
-- Is bounded from the viewpoint of a business use cases
+- It is modeled around protecting domain invariants, encapsulation and data integrity
 - Invariants must be satisfied for each state change
 - Validates all incoming actions and ensures that modifications don't contradict business rules
 - The internal state can only be mutated by its own public interface
-- Relations between aggregates are managed by ID properties
+- Relations between aggregates should be handled through ID properties
 - Each use case should have only one aggregate, but can use other aggregates to retrieve information
 - Multiple aggregates can reuse one single value object
 
 **» Routing and Aggregates**<br/>
 
-Because the navigation mechanism of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must reexamine the idea of building 
+Because the navigation workflow of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must reexamine the idea of building 
 client-side aggregates. Because an aggregate builds a cluster of domain-related entities and value objects, wouldn't we then have to cluster resources instead? With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` etc. to a client-side 
-aggregate, if the requested resource isn't already an aggregation of related resources? 
+aggregate, presuming that the requested resource isn't already an aggregation of related resources? 
 
-In the traditional database-centric approach, database tables and their relations were identified as resources or as a resource model.
-But is this common and always true? Well, it all depends on the requirements of the project and how we define a resource! A resource may be a representation of a single entity or a 
-composition of several entities modeled around business use cases / business processes, database tables or GUI models. 
+In the database-centric approach, database tables and their relations are identified as the foundation of resources or resource models.
+But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A RESET resource may be a representation of a single entity or a 
+composition of several entities modeled around business use cases / business processes, database tables or GUI models. That is, Domain-Driven, Data-Driven or UX-Driven!
 
-That is, Domain-Driven, Data-Driven or UX-Driven!
-
-Unless a resource doesn't already represent an aggregate, the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
+Unless a REST resource doesn't already represent an aggregate, the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
 an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository service acts 
 as an anti-corruption layer to the underlying data model. 
 
-Unfortunately, this approach won't work, because the creation process of a client-side aggregate may require hundreds of additional HTTP requests (N + 1 Problem). Hence, the aggregate must be provided by the backend!
-Even in the case of server-side generated aggregates, something seems to be wrong! If the requested order aggregate through the URI `/orders` also encloses related resources such as customers, products or addresses, 
-the question arises of how to update the address of an order? Either we use a method of the aggregate like `Order.updateDeliveryAddress(address)` and process `PUT /orders/id` or we break out and use a dedicated URI like `PUT /orders/id/address`. 
-The second approach may contradict the concepts of building aggregates in behalf of Domain-Driven Design where an aggregate shouldn't reveal its internal state! 
+Unfortunately, this approach won't work, because the creation process of an aggregate on the client-side may require hundreds of additional HTTP requests (N + 1 Problem). Hence, the aggregate must be provided by the backend!
+Even in the case of server-side generated aggregates, something seems to be wrong! 
+
+If the requested aggregate e.g. order aggregate (`/orders/22`) encloses related data such as customers, products or addresses, 
+the question arises of how to update the address of an order? Either we use a public interface of an aggregate like `Order.updateDeliveryAddress(address)` and process `PUT /orders/id`, 
+or we break out and use a dedicated URI like `PUT /orders/id/address`. The second approach may contradict the ideas of aggregate encapsulation as an aggregate shouldn't reveal its internal state! 
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
