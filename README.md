@@ -372,7 +372,7 @@ client-side aggregates. Because an aggregate builds a cluster of domain-related 
 aggregate, presuming that the requested resource isn't already an aggregation of related resources? 
 
 In the database-centric approach, database tables and their relations are identified as the foundation of resources or resource models.
-But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A RESET resource may be a representation of a single entity or a 
+But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A REST resource may be a representation of a single entity or a 
 composition of several entities modeled around business use cases / business processes, database tables or GUI models. That is, Domain-Driven, Data-Driven or UX-Driven!
 
 Unless a REST resource doesn't already represent an aggregate, the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
@@ -382,9 +382,9 @@ as an anti-corruption layer to the underlying data model.
 Unfortunately, this approach won't work, because the creation process of an aggregate on the client-side may require hundreds of additional HTTP requests (N + 1 Problem). Hence, the aggregate must be provided by the backend!
 Even in the case of server-side generated aggregates, something seems to be wrong! 
 
-If the requested aggregate e.g. order aggregate (`/orders/22`) encloses related data such as customers, products or addresses, 
-the question arises of how to update the address of an order? Either we use a public interface of an aggregate like `Order.updateDeliveryAddress(address)` and process `PUT /orders/id`, 
-or we break out and use a dedicated URI like `PUT /orders/id/address`. The second approach may contradict the ideas of aggregate encapsulation as an aggregate shouldn't reveal its internal state! 
+If the requested aggregate e.g. order aggregate (`GET: /orders/22`) encloses related data such as customers, products or addresses, 
+the question arises of how to update the address of an order? Either we use the public interface of an order aggregate like `Order.updateDeliveryAddress(address)` and process an HTTP update `PUT: /orders/id body { order:{} }` , 
+or we break out and use a dedicated REST URI like `PUT: /orders/id/address {address:{}}`. The second approach may contradict the fundamental ideas (encapsulation, data integrity etc.) of building aggregates as an aggregate shouldn't reveal its internal state! 
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
