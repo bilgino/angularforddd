@@ -365,26 +365,27 @@ Aggregate entity checklist:
 - Each use case should have only one aggregate, but can use other aggregates to retrieve information
 - Multiple aggregates can reuse one single value object
 
-**» Routing and Aggregates**<br/>
+**» Routing, REST and DDD Aggregates**<br/>
 
-Because the navigation workflow of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must reexamine the idea of building 
-client-side aggregates. Because an aggregate builds a cluster of domain-related entities and value objects, wouldn't we then have to cluster resources instead? With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` etc. to a client-side 
-aggregate, presuming that the requested resource isn't already an aggregation of related resources? 
+Because the navigation flow of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must reexamine the idea of building 
+client-side aggregates. Because an aggregate builds a cluster of domain-related entities and value objects, wouldn't we then have to cluster resources instead? 
+With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` etc. to a client-side 
+aggregate? Presuming that the requested resource isn't already an aggregation of related resources! 
 
 In the database-centric approach, database tables and their relations are identified as the foundation of resources or resource models.
 But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A REST resource may be a representation of a single entity or a 
-composition of several entities modeled around business use cases / business processes, database tables or GUI models. That is, Domain-Driven, Data-Driven or UX-Driven!
+composition of several entities designed around business use cases, database tables or GUI models. That is, Domain-Driven, Data-Driven or UX-Driven!
 
-Unless a REST resource doesn't already represent an aggregate, the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
+Unless a REST resource doesn't already represent an aggregate, then the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
 an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository service acts 
 as an anti-corruption layer to the underlying data model. 
 
 Unfortunately, this approach won't work, because the creation process of an aggregate on the client-side may require hundreds of additional HTTP requests (N + 1 Problem). Hence, the aggregate must be provided by the backend!
 Even in the case of server-side generated aggregates, something seems to be wrong! 
 
-If the requested aggregate e.g. order aggregate (`GET: /orders/22`) encloses related data such as customers, products or addresses, 
-the question arises of how to update the address of an order? Either we use the public interface of an order aggregate like `Order.updateDeliveryAddress(address)` and process an HTTP update `PUT: /orders/id body { order:{} }` , 
-or we break out and use a dedicated REST URI like `PUT: /orders/id/address {address:{}}`. The second approach may contradict the fundamental ideas (encapsulation, data integrity etc.) of building aggregates as an aggregate shouldn't reveal its internal state! 
+If the requested aggregate e.g. order aggregate (`GET: /orders/22`) contains related data such as customers, products or addresses, 
+the question arises of how to update the address of an order? Either we use a business method of an order aggregate like `Order.updateDeliveryAddress(address)` in the application service and process an HTTP update `PUT: /orders/id body { order:{ ... } }` , 
+or we break out and use a REST call like `PUT: order/id/address/ {address:{}}`. The second approach may contradict the fundamental idea of an aggregate to avoid revealing its internal state!<br/> 
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
