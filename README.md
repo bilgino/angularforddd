@@ -384,9 +384,11 @@ Unfortunately, this approach won't work, because the creation process of an aggr
 Even in the case of server-side generated aggregates, something seems to be wrong! 
 
 If the requested aggregate e.g. order aggregate (`GET: /orders/22`) contains related data such as customers, products or addresses, 
-the question arises of how to update the address of an order? Either we use a business method of an order aggregate like `Order.updateDeliveryAddress(address)` in the application service and process an HTTP update `PUT: /orders/id : { order:{ ... } }`, 
-or we break out and use a simple REST call like `PUT: order/id/address/ : {address:{}}`. The second approach may contradict the fundamental idea of an aggregate to avoid revealing its internal state!
-<br/> 
+then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateDeliveryAddress(newAddress)` in the application service and consequently process an HTTP update: `PUT: /orders/id : { order:{ ... } }`, 
+or we break out and use a dedicated REST call: `PUT: order/id/address/ : {address:{}}`. The second approach may contradict the fundamental idea of an aggregate to avoid revealing its internal state!
+Navigating a resource model and its relationships or complying to use case specific aggregations of resources can have a big impact on the frontend design system!
+<br/>
+<br/>
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
