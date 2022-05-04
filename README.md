@@ -388,7 +388,6 @@ then how do we update the address of the order? Either we invoke a business meth
 or we break out and use a dedicated REST call: `PUT: order/id/address/ : {address:{}}`. The second approach may contradict the fundamental idea of an aggregate to avoid revealing its internal state!
 Navigating a resource model and its relationships or complying to use case specific aggregations of resources can have a big impact on the frontend design system!
 <br/>
-<br/>
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
