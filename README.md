@@ -148,10 +148,13 @@ The bounded context pattern in Domain-Driven Design divides the domain model int
 bounded context marks the boundaries of an application service. An application service is a concretion of the bounded context pattern! 
 This is similar to **Domain Modules** where we mark the boundaries based on features. Applying the bounded context pattern to domain modules 
 allows us to structure modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
-several aggregates. An important consideration for Angular applications is that the client- or server-side bounded context should integrate 
-a RESTful interface, because the Angular router engine complies with the navigational behaviour of hypermedia APIs. A bounded context can be 
-coupled to the root URL (entry point) matching HATEOAS practices: `/BoundedContextA/*API`; `/BoundedContextB/*API`. 
-A bounded context can be assigned either to an entire page or to page segments.
+several aggregates. 
+
+An important consideration when defining a client- or server-side bounded context is that the bounded context doesn't require a fully
+integrated REST API. As a bounded context represents an aggregation, it's sufficient to couple the bounded context to the root URL (entry point):
+`/BoundedContextA/*API`; `/BoundedContextB/*API`. We still can use arbitrary REST URIs such as `/order/{id}/items/{id}` in the router 
+configuration to enable "In-App-Navigation", as the presentation layer is agnostic of other layers. A bounded context can be assigned either 
+to an entire page or to page segments.
 
 Interaction between the bounded context pattern and domain modules:
 
@@ -372,9 +375,9 @@ client-side aggregates. Because an aggregate builds a cluster of domain-related 
 With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` etc. to a client-side 
 aggregate? Presuming that the requested resource isn't already an aggregation of related resources! 
 
-In the database-centric approach, database tables and their relations are identified as the foundation of resources or resource models.
+In the classic database-centric approach, database tables and their relations are identified as the foundation of resources or as a resource model.
 But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A REST resource may be a representation of a single entity or a 
-composition of several entities designed around business use cases, database tables or GUI models. That is, Domain-Driven, Data-Driven or UX-Driven!
+aggregation of several entities built around business use cases, database tables or GUI models. That is, Domain-Driven, Data-Driven or UX-Driven!
 
 Unless a REST resource doesn't already represent an aggregate, then the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
 an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository service acts 
@@ -385,7 +388,9 @@ Even in the case of server-side generated aggregates, something seems to be wron
 
 If the requested aggregate e.g. order aggregate (`GET: /orders/22`) contains related data such as customers, products or addresses, 
 then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateDeliveryAddress(newAddress)` in the application service and consequently process an HTTP update: `PUT: /orders/id : { order:{ ... } }`, 
-or we break out and use a dedicated REST call: `PUT: order/id/address/ : {address:{}}`. The second approach may contradict the fundamental idea of an aggregate to avoid revealing its internal state!
+or we break out and use a dedicated REST call: `PUT: order/id/address/ : {address:{}}`. The second approach may contradict the fundamental idea of an aggregate to avoid revealing its internal state! 
+It's not necessary anymore to the server-side to provide REST URIs to related sub resources like `order/id/addresses/` etc.
+
 Navigating a resource model and its relationships or complying to use case specific aggregations of resources can have a big impact on the frontend design system!
 <br/>
 
