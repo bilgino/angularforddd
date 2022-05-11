@@ -272,8 +272,10 @@ class AccountService {
         }
         return this.accounts[id];
     }
-    public deposit(){...}
-    public widthDraw(){...}
+    
+    public deposit(){}
+    
+    public widthDraw(){}
 }
 ```
 
@@ -289,6 +291,7 @@ class AccountService {
         account.updateBalance(amount);
         return account;
     }
+    
     public deposit(){}
     public widthDraw(){}
 }
@@ -305,6 +308,7 @@ class Account {
         }
         this.balance += amount;
     }
+    
     public deposit(){}
     public widthDraw(){}
 }
@@ -516,14 +520,17 @@ class Order {
     public static create(props: OrderProps): Order {
       return new Order(props);
     }
+    
     public static empty(): Order {
       return new Order();
     }
+    
     public toJSON(): object {
         const serialized = Object.assign(this);
         delete serialized.status;
         return serialized;
     }
+    
     public toString(): string {
         return "";
     }
@@ -548,11 +555,13 @@ class Order implements IOrder {
         if(!json) return new Order();
         return new Order(json.status);
     }
+    
     public toJSON(): object {
         const serialized = Object.assign(this);
         delete serialized.status;
         return serialized;
     }
+    
     public toString(): string {
         return "";
     }
@@ -831,13 +840,13 @@ server response schema to a complex object graph (domain model):
 
 ![](src/assets/images/Mapper_Response.png)
 
-~~For example, HATEOAS forms hyperlinks between external resources to make transitions through the application state by navigating hyperlinks. 
-However, mapping hyperlinks to a client-side domain model is not desirable! In addition, consuming REST APIs very often multiple HTTP request 
-need to be sent asynchronously to assemble a model for a specific use case in the presentation layer. If the applied HATEOAS implementation pattern
-forms hyperlinks in a response schema, it would limit the user interface to incorporate with REST APIs synchronously. 
-UX designers usually don't model their interaction, navigation and screen patterns around HATEOAS. Furthermore, the Angular router engine doesn't 
-comply well with the URI templates of HATEOAS  implementation patterns. HATEOAS has its advantages as well as disadvantages. Even though the router 
-in Angular complies with the navigational behaviour of hypermedia APIs, you should avoid HATEOAS for Angular SPA applications!~~
+For example, HATEOAS forms hyperlinks between external resources to make transitions through the application state by navigating hyperlinks. 
+However, mapping hyperlinks to a client-side domain model isn't possible! In addition, when consuming REST APIs very often multiple HTTP request 
+must to be sent asynchronously to create a model for a specific use case in the presentation layer. If the applied HATEOAS implementation pattern
+forms hyperlinks in a response schema it would limit the user interface to incorporate with REST APIs synchronously. 
+UX designers usually don't model their interaction, navigation or screen patterns around HATEOAS. Furthermore, the Angular router engine doesn't 
+comply well with the URI templates of HATEOAS implementation patterns. HATEOAS has its advantages as well as disadvantages. Even though the router 
+in Angular complies with the navigational behaviour of hypermedia APIs, you should avoid HATEOAS for Angular SPA applications!
 
 ## Services
 
