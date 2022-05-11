@@ -349,7 +349,7 @@ class Order {
 }
 ```
 
-In traditional object-oriented programming the software model lacked of explicit boundaries. Relationships between classes brought a
+In the classic object-oriented programming the software model lacked of explicit boundaries. Relationships between classes brought a
 complexity that required an efficient design. The aggregate pattern takes a different approach by using clusters of entities and value objects 
 that are modeled around invariants and clear boundaries inside the software model making the system easier to reason about.
 One of the most important characteristics of the aggregate pattern is to protect it from being invalid and having an inconsistent state.
@@ -375,21 +375,21 @@ client-side aggregates. Because an aggregate builds a cluster of domain-related 
 With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` etc. to a client-side 
 aggregate? Presuming that the requested resource isn't already an aggregation of related resources! 
 
-In the classic database-centric approach, database tables and their relations are identified as the foundation of resources or as a resource model.
+In the classic database-centric approach, database tables and their relations were identified as the foundation of resources or as a resource model.
 But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A REST resource may be a representation of a single entity or a 
 aggregation of several entities built around business use cases, database tables or GUI models. That is, Domain-Driven, Data-Driven or UX-Driven!
 
 Unless a REST resource doesn't already represent an aggregate, then the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
 an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository service acts 
-as an anti-corruption layer to the underlying data model. 
+as an anti-corruption layer to the underlying data model. Unfortunately, this approach won't work, because the creation process of an aggregate on 
+the client-side may require hundreds of additional HTTP requests (N + 1 Problem). Hence, the aggregate must be provided by the backend!
 
-Unfortunately, this approach won't work, because the creation process of an aggregate on the client-side may require hundreds of additional HTTP requests (N + 1 Problem). Hence, the aggregate must be provided by the backend!
-Even in the case of server-side generated aggregates, something seems to be wrong! 
-
-If the requested aggregate e.g. order aggregate (`GET: /orders/22`) contains related data such as customers, products or addresses, 
+Even in the case of server-side generated aggregates, something seems to be wrong! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) contains related data such as customers, products or addresses, 
 then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateDeliveryAddress(newAddress)` in the application service and consequently process an HTTP update: `PUT: /orders/id : { order:{ ... } }`, 
 or we break out and use a dedicated REST call: `PUT: order/id/address/ : {address:{}}`. The second approach may contradict the fundamental idea of an aggregate to avoid revealing its internal state! 
-It's not necessary anymore to the server-side to provide REST URIs to related sub resources like `order/id/addresses/` etc.
+It's not necessary anymore to provide REST URIs to related sub resources like `order/id/addresses/` on the server-side. In addition, we should continue to offer no more URIs like `/addresses/{id}`, as the address resource 
+has no context and isn't bound to a use case! What will be the side effect of calling a `DELETE: /addresses/22 : {address:{ id: 22}}`? We just can't delete address data of an ongoing order process!
+This is one on the main ideas behind the domain-related clustering in aggregates!
 
 Navigating a resource model and its relationships or complying to use case specific aggregations of resources can have a big impact on the frontend design system!
 <br/>
