@@ -170,18 +170,6 @@ Domain-driven scaffolding:
 
 ![](src/assets/images/scaffolding.png)
 
-**» Customizing**<br/>
-
-When deciding on a design, customizing the look of default components can quickly become challenging.
-Creating frontends that feature modular and reusable CSS without overriding existing CSS rules is an important part of
-every frontend project. Usually every component in an Angular project appears in the default style and serves a singular purpose.
-Design adjustments for reusable components to specific content areas can be implemented with the `:host()` and `:host-context()` selectors.
-
-![](src/assets/images/Customizing.png)
-
-Unfortunately the `:host-context()` CSS pseudo-class function lacks browser support. Luckily, Angular supports an emulated version 
-through the default settings of the view encapsulation mode.
-
 ## Models 
 
 The model in the classic MVC pattern is a representation of application data. The model contains code to create, read, update and delete or 
@@ -330,7 +318,7 @@ class AccoutRepositoryService {
 
 In general, using rich domain models means more entities than services. Building rich domain models is a major objective in object-oriented design.
 
-**» Domain Model (Aggregates)**<br/>
+**» Domain Model (DDD Aggregates)**<br/>
 
 The domain model entities contain data and domain-related behavior modeled around business logic.
 In terms of DDD and CQRS, the domain model entity is an aggregate that contains only write operations that result in state changes.
@@ -1089,6 +1077,45 @@ export class OrderComponent {
 
 View model objects may also be elaborated with Angular resolver services!
 
+## Application-, Domain- and Infrastructure Services
+
+One downside of sharing and binding state through services is that they are coupled to the view. Delayed changes to the state must be managed
+by asynchronous binding techniques to **keep the shared state in sync**. However, with EventEmitters, Subjects or BehaviorSubjects we share data
+through notifications. We subscribe and react to changes using notification services. Those notifications are more than just changes to bound values.
+
+**» Application Service**<br/>
+
+@TODO [text]
+@TODO [image]
+
+**» Domain Service**<br/>
+
+@TODO [text]
+@TODO [image]
+
+**» Infrastructure Service**<br/>
+
+Let's have a look at how to build a notification service based on a Subject:
+
+```
+@Injectable()
+export class NotificationService {
+    private _subject = new Subject<any>();
+ 
+    public notify(news: string): void {
+        this._subject.next({ news: news });
+    }
+ 
+    public listen(): Observable<any> {
+        return this._subject.asObservable();
+    }
+
+    public complete(): void {
+        return this._subject.complete();
+    }
+}
+```
+
 # State Management 
 
 With Single Page Applications (SPA), we get the flexibility and cross-platform functionality of a web application as well as the 
@@ -1177,45 +1204,6 @@ export class UIService{
 Angular's change detection provides notification of any changes to state values by `getter` accessor methods, if the values are bound in the template. 
 This way, we keep the state in sync. Observables, Subjects or BehaviorSubjects can help to simplify asynchronous data-handling. 
 When sharing data that should always be in sync, reactive extensions are good solutions to this situation.
-       
-## Application-, Domain- and Infrastructure Services
-
-One downside of sharing and binding state through services is that they are coupled to the view. Delayed changes to the state must be managed 
-by asynchronous binding techniques to **keep the shared state in sync**. However, with EventEmitters, Subjects or BehaviorSubjects we share data 
-through notifications. We subscribe and react to changes using notification services. Those notifications are more than just changes to bound values. 
-
-**» Application Service**<br/>
-
-@TODO [text]
-@TODO [image]
-
-**» Domain Service**<br/>
-
-@TODO [text]
-@TODO [image]
-
-**» Infrastructure Service**<br/>
-
-Let's have a look at how to build a notification service based on a Subject:
-
-```
-@Injectable()
-export class NotificationService {
-    private _subject = new Subject<any>();
- 
-    public notify(news: string): void {
-        this._subject.next({ news: news });
-    }
- 
-    public listen(): Observable<any> {
-        return this._subject.asObservable();
-    }
-
-    public complete(): void {
-        return this._subject.complete();
-    }
-}
-```
 
 # Component Tree Design
 
@@ -1264,6 +1252,18 @@ Secondary (Auxiliary) routes should be addressed in any use case that requires a
 parallel at random places. The router module is therefore well suited for mobile related navigation patterns. 
 
 ![](src/assets/images/Notebook.png)
+
+# Customizing
+
+When deciding on a design, customizing the look of default components can quickly become challenging.
+Creating frontends that feature modular and reusable CSS without overriding existing CSS rules is an important part of
+every frontend project. Usually every component in an Angular project appears in the default style and serves a singular purpose.
+Design adjustments for reusable components to specific content areas can be implemented with the `:host()` and `:host-context()` selectors.
+
+![](src/assets/images/Customizing.png)
+
+Unfortunately the `:host-context()` CSS pseudo-class function lacks browser support. Luckily, Angular supports an emulated version
+through the default settings of the view encapsulation mode.
 
 # Business Rule Validation & ErrorHandling
 
