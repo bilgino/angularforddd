@@ -370,26 +370,27 @@ Aggregate entity checklist:
 
 **» Routing, REST and DDD Aggregates**<br/>
 
-Because the navigation flow of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must reexamine the idea of building 
-client-side aggregates. Because an aggregate builds a cluster of domain-related entities and value objects, wouldn't we then have to cluster resources instead? 
-With that in mind, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` etc. to a client-side 
-aggregate? Presuming that the requested resource isn't already an aggregation of related resources! 
+Because the navigation pattern of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must 
+reexamine the idea of building client-side aggregates. Because an aggregate builds a cluster of domain-related entities and value objects, wouldn't we then have to cluster REST resources instead? 
+Presuming that the requested resource isn't already an aggregation of related REST resources, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` etc. 
+to a client-side aggregate? 
 
-In the classic database-centric approach, database tables and their relations were identified as the foundation of resources or as a resource model.
-But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A REST resource may be a representation of a single entity or a 
+In the classic database-centric approach, database tables and their relations were identified as the foundation of resources or a resource model.
+But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A REST resource may be a representation of a single entity or an 
 aggregation of several entities built around business use cases, database tables or GUI models. That is, Domain-Driven, Data-Driven or UX-Driven!
 
-Unless a REST resource doesn't already represent an aggregate, then the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
-an application service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository service acts 
-as an anti-corruption layer to the underlying data model. Unfortunately, this approach won't work, because the creation process of an aggregate on 
+Unless a REST resource doesn't already represent an aggregate, the aggregate must be stitched together for each initial routing event and must provide a query API to its internal state. Subsequently, 
+an application or repository service provides the public interface to cover all queries to the internal state of an aggregate. In this scenario, the repository service acts 
+as an anti-corruption layer to the underlying resource model. Unfortunately, this approach won't work, because the creation process of an aggregate on 
 the client-side may require hundreds of additional HTTP requests (N + 1 Problem). Hence, the aggregate must be provided by the backend!
 
 Even in the case of server-side generated aggregates, something seems to be wrong! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) contains related data such as customers, products or addresses, 
-then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateDeliveryAddress(newAddress)` in the application service and consequently process an HTTP update: `PUT: /orders/id : { order:{ ... } }`, 
+then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and consequently process an HTTP update: `PUT: /orders/id : { order:{ ... } }`, 
 or we break out and use a dedicated REST call: `PUT: order/id/address/ : {address:{}}`. The second approach may contradict the fundamental idea of an aggregate to avoid revealing its internal state! 
-It's not necessary anymore to provide REST URIs to related sub resources like `order/id/addresses/` on the server-side. In addition, we should continue to offer no more URIs like `/addresses/{id}`, as the address resource 
-has no context and isn't bound to a use case! What will be the side effect of calling a `DELETE: /addresses/22 : {address:{ id: 22}}`? We just can't delete address data of an ongoing order process!
-This is one on the main ideas behind the domain-related clustering in aggregates!
+
+It's not necessary anymore to provide REST URIs to related sub resources like `order/id/addresses/` on the server-side, because all related data have already been included in the payload! In addition, we should continue to offer no more URIs like `/addresses/{id}`, 
+as the address resource has no context and isn't bound to a specific use case! As an example: calling `DELETE: /addresses/22 : {address:{ id: 22}}` might delete the address data of an ongoing order process! Hence, we have no
+chance to validate the order status without the respective order data. This is one on the main ideas behind domain-related clustering of entities and value objects!
 
 Navigating a resource model and its relationships or complying to use case specific aggregations of resources can have a big impact on the frontend design system!
 <br/>
