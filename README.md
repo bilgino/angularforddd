@@ -473,7 +473,7 @@ Due to performance implications, it's not recommended embedding `getters` in the
 Hardcoding transformation methods in the view model causes tight coupling. A better approach is to process data transformations like filtering, sorting, grouping or destructuring etc.
 in reactive streams and hand over the result to an object factory.
 
-**» Object Factory Pattern:**<br/>
+**» Model Factory Pattern:**<br/>
 
 The object factory pattern assists in type safety when constructing dynamic objects (spread, rest, destructuring, merge).
 
@@ -820,7 +820,7 @@ Mapper checklist:
 - The mapper pattern in the repository service assists to elaborate a pure model
 - Don't map view models in the repository service because view models may require multiple sources
 
-**» REST, HATEOAS & CO.**<br/>
+**» REST, HATEOAS & Mapping.**<br/>
 
 When building multi-layered, distributed web applications, data transformation is among the major challenges that occur when data traverses 
 all layers (data flows up and down the stack). If the domain layer has been replicated to the client-side, we may need to transform the 
@@ -1253,7 +1253,7 @@ parallel at random places. The router module is therefore well suited for mobile
 
 ![](src/assets/images/Notebook.png)
 
-# Customizing
+## Customizing
 
 When deciding on a design, customizing the look of default components can quickly become challenging.
 Creating frontends that feature modular and reusable CSS without overriding existing CSS rules is an important part of
