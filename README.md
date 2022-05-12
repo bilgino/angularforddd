@@ -377,12 +377,11 @@ as an anti-corruption layer to the underlying resource model. Unfortunately, thi
 the client-side may require hundreds of additional HTTP requests (N + 1 Problem). Hence, the aggregate must be provided by the backend!
 
 Even in the case of server-side generated aggregates, something seems to be wrong! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) contains related data such as customers, products or addresses, 
-then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and consequently process an HTTP update: `PUT: /orders/id : { order:{ ... } }`, 
+then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and consequently process an HTTP update: `PUT: /orders/id : {order:{ addresses... }}`, 
 or we break out and use a dedicated REST call: `PUT: order/id/address/ : {address:{}}`. The second approach may contradict the fundamental idea of an aggregate to avoid revealing its internal state! 
 
-It's not necessary anymore to provide REST URIs to related sub resources like `order/id/addresses/` on the server-side, because all related data have already been included in the payload! In addition, we should continue to offer no more URIs like `/addresses/{id}`, 
-as the address resource has no context and isn't bound to a specific use case! As an example: calling `DELETE: /addresses/22 : {address:{ id: 22}}` might delete the address data of an ongoing order process! Hence, we have no
-chance to validate the order status without the respective order data. This is one on the main ideas behind domain-related clustering of entities and value objects!
+Providing REST URIs to related sub resources like `order/22/addresses/` is not mandatory anymore, because all related data have already been included in the payload! In addition, we should continue to offer no more URIs like `/addresses/{id}`, 
+because the address resource has no context and isn't bound to top-level business use case! As an example: calling `DELETE: /addresses/22 : {address:{id:22}}` might delete the address data of an ongoing order process! This is one on the main ideas behind domain-related clustering of entities and value objects!
 
 Navigating a resource model and its relationships or complying to use case specific aggregations of resources can have a big impact on the frontend design system!
 <br/>
@@ -1081,7 +1080,7 @@ View model objects may also be elaborated with Angular resolver services!
 
 One downside of sharing and binding state through services is that they are coupled to the view. Delayed changes to the state must be managed
 by asynchronous binding techniques to **keep the shared state in sync**. However, with EventEmitters, Subjects or BehaviorSubjects we share data
-through notifications. We subscribe and react to changes using notification services. Those notifications are more than just changes to bound values.
+through notifications. We subscribe and react to state changes using notification services. Those notifications are more than just changes to bound values.
 
 **» Application Service**<br/>
 
