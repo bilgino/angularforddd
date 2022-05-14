@@ -377,11 +377,11 @@ as an anti-corruption layer to the underlying resource model. Unfortunately, thi
 the client-side would result in countless additional HTTP requests (N + 1 Problem). Hence, the aggregate has to be provided by the backend!
 
 Even in the case of server-side generated aggregates, something seems to be wrong here! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data about customers, products or addresses, 
-then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and consequently process an HTTP update: `PUT: /orders/id : {order:{ addresses... }}`, 
-or we break out and use a dedicated REST call: `PUT: order/id/address/ : {address:{}}`. The second approach seems to contradict the basic idea of an aggregate to avoid revealing its internal state! 
+then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and consequently process an HTTP update: `PUT: /orders/22 : {order:{ address... }}`, 
+or we break out and use a dedicated REST call: `PUT: orders/22/addresses/5 : {address:{}}`. The second approach seems to contradict the basic idea of an aggregate to avoid revealing its internal state! 
 
-Providing REST URIs to related sub resources like `order/22/addresses/` is not mandatory anymore, because all related data have already been included in the payload! We should continue to offer no more URIs like `/addresses/{id}`, 
-because the address resource has no context and isn't bound to specific business use cases! As an example, calling `DELETE: /addresses/22 : {address:{id:22}}` may delete the address of an ongoing order process! 
+Providing REST URIs to related sub resources like `orders/22/addresses/5` is not mandatory anymore, because all related data have already been included in the payload! We should continue to offer no more URIs like `/addresses/5`, 
+because the address resource has no context and isn't bound to specific business use cases! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address of an ongoing order process! 
 
 Navigating a resource model and its relationships or complying to use case specific aggregates can have a big impact on the frontend design system!
 <br/>
