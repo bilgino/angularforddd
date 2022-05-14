@@ -195,7 +195,7 @@ The following example shows the negative effects of anemic domain models.
 
 Domain logic is coupled to the client (UI controller): 
 
-*»  Effects of anemic models* <br/> 
+**»  Effects of anemic domain models** <br/> 
 ```
 class Employee {
     public name: 'John Connor';
@@ -216,7 +216,7 @@ class Employee {
 
 A rich domain model hides, protects and encapsulates domain logic:
 
-*»  Effects of rich models*<br/>
+**»  Effects of rich domain models**<br/>
 ```
 class Employee {
     private name: 'John Connor';
@@ -342,11 +342,11 @@ class Order {
 ```
 
 In the classic object-oriented programming the software model lacked of explicit boundaries. Relationships between classes brought a
-complexity that required an efficient design. The aggregate pattern takes a different approach by using clusters of entities and value objects 
+complexity that required an efficient design. The aggregate pattern takes a contextual approach by using groupings of entities and value objects 
 that are modeled around invariants and clear boundaries inside the software model making the system easier to reason about.
 One of the most important characteristics of the aggregate pattern is to protect it from being invalid and having an inconsistent state.
 
-Aggregate entity checklist:
+» Aggregate entity checklist:
 
 - Is a top-level business object
 - Is bounded from the viewpoint of a business use cases
@@ -364,31 +364,46 @@ Aggregate entity checklist:
 **» Routing, REST and DDD Aggregates**<br/>
 
 Because the navigation pattern of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must 
-reexamine the idea of building client-side aggregates. As an aggregate builds a cluster of domain-related entities and value objects, wouldn't we then have to cluster REST resources instead? 
-Presuming that the requested REST resource isn't already an aggregate, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses`, `/contactinfo` etc. 
-to a client-side e.g. order aggregate? 
+reexamine the idea of building client-side aggregates. As an aggregate builds a group of domain-related entities and value objects, wouldn't we then have to group REST resources instead? 
+Presuming that a requested REST resource isn't already an aggregate, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses`, `/contactinfo` etc. 
+to a client-side aggregate? 
 
-In the classic database-centric approach, database tables and their relations were identified as the foundation of resources or a resource model.
+In the classic database-centric approach database tables and their relations were identified as the foundation of resources or a resource model.
 But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A REST resource may be a representation of a single entity or a 
-composition of several entities built around business use cases, database tables or GUI models. That is, Domain-Driven, Data-Driven or UX-Driven!
+composition of several entities built around business use cases, database tables, GUI models or any special-purpose of the client. That is, Domain-Driven-, Data-Driven- or UX-Driven Design!
 
-Unless a REST resource is already an aggregate, we would need to stitch the aggregate together for each initial routing event and would need to provide a query API to its internal state. Consequently, 
+Unless a REST resource is already an aggregate, we would need to stitch the aggregate together for each initial routing event and would need to provide a query API to the internal state of the aggregate. Consequently, 
 an application or repository service would provide the public interface to cover all queries to the aggregate. In this scenario, the repository service acts 
-as an anti-corruption layer to the underlying resource model. Unfortunately, this approach wouldn't work, since the creation process of an aggregate on 
-the client-side would result in countless additional HTTP requests (N + 1 Problem). Hence, the aggregate has to be provided by the backend!
+as an anti-corruption layer to the underlying resource model. Unfortunately, this approach wouldn't work well, since the creation process of an aggregate on 
+the client-side would result in countless additional HTTP requests (N + 1 Problem). Hence, the aggregate should be provided by the backend!
 
-Even in the case of server-side generated aggregates, something seems to be wrong here! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data about customers, products or addresses, 
+Even in the case of server-side created aggregates, something seems to be wrong here! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data about customers, products or addresses, 
 then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and consequently process an HTTP update: `PUT: /orders/22 : {order:{ address... }}`, 
-or we break out and use a dedicated REST call: `PUT: orders/22/addresses/5 : {address:{}}`. The second approach seems to contradict the basic idea of an aggregate to avoid revealing its internal state! 
+or we break out and use a dedicated REST call: `PUT: orders/22/addresses/5 : {address:{}}`. The second approach seems to contradict the basic idea of an aggregate to avoid revealing its internal state to the outside world! 
 
 Providing REST URIs to related sub resources like `orders/22/addresses/5` is not mandatory anymore, because all related data have already been included in the payload! We should continue to offer no more URIs like `/addresses/5`, 
-because the address resource has no context and isn't bound to specific business use cases! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address of an ongoing order process! 
+because the address resource has no context and isn't bound to a specific business use case! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address of an ongoing order process! 
 The question is, can an address exists outside an order or customer context?
 
 Navigating a resource model and its relationships or complying to use case specific aggregates can have a big impact on the frontend design system!
 <br/>
 
 ![](src/assets/images/Aggregate_ACL.PNG)
+
+» Further considerations when building aggregates:
+
+**Q**: Is building aggregates a poor choice, if requests for aggregates are rare?<br>
+**A**: It all depends on the complexity of the application, particularly of the GUI layer!
+
+**Q**: Are network cost between the client and the server critical when retrieving large amounts of data?<br>
+**A**: The trend is toward higher bandwidth, HTTP/2 and faster computer systems. Retrieving large amounts of data is quite normal nowadays!
+Instead, focusing on reducing round-trips is still valid.
+
+**Q**: Is building purpose-specific aggregates for the sake of every client burdening the backend?<br>
+**A**: Patterns such as Backend-For-Frontend (BFF), API-Gateway etc. can help to address client-specific requests!
+
+**Q**: How can the GUI designer help, to reduce the need for aggregates?<br>
+**A**: By defining GUI patterns that don't require aggregations and comply with the navigational behaviour of hypermedia APIs!
 
 **» View Model**<br/>
 
