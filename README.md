@@ -363,7 +363,7 @@ Aggregate entity checklist:
 **» Routing, REST and DDD Aggregates**<br/>
 
 Because the navigation pattern of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must 
-reexamine the idea of building client-side aggregates. Because an aggregate builds a cluster of domain-related entities and value objects, wouldn't we then have to cluster REST resources instead? 
+reexamine the idea of building client-side aggregates. As an aggregate builds a cluster of domain-related entities and value objects, wouldn't we then have to cluster REST resources instead? 
 Presuming that the requested REST resource isn't already an aggregate, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` etc. 
 to a client-side e.g. order aggregate? 
 
