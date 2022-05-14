@@ -356,6 +356,7 @@ Aggregate entity checklist:
 - Invariants must be satisfied for each state change
 - Validates all incoming actions and ensures that modifications don't contradict business rules
 - The internal state can only be mutated by its own public interface
+- Objects from outside can't make changes to inside objects they can only change the root object
 - Relations between aggregates should be handled through ID properties
 - Each use case should have only one aggregate, but can use other aggregates to retrieve information
 - Multiple aggregates can reuse one single value object
@@ -364,7 +365,7 @@ Aggregate entity checklist:
 
 Because the navigation pattern of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must 
 reexamine the idea of building client-side aggregates. As an aggregate builds a cluster of domain-related entities and value objects, wouldn't we then have to cluster REST resources instead? 
-Presuming that the requested REST resource isn't already an aggregate, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` etc. 
+Presuming that the requested REST resource isn't already an aggregate, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses`, `/contactinfo` etc. 
 to a client-side e.g. order aggregate? 
 
 In the classic database-centric approach, database tables and their relations were identified as the foundation of resources or a resource model.
@@ -373,7 +374,7 @@ composition of several entities built around business use cases, database tables
 
 Unless a REST resource is already an aggregate, we would need to stitch the aggregate together for each initial routing event and would need to provide a query API to its internal state. Consequently, 
 an application or repository service would provide the public interface to cover all queries to the aggregate. In this scenario, the repository service acts 
-as an anti-corruption layer to the underlying resource model. Unfortunately, this approach would not work, since the creation process of an aggregate on 
+as an anti-corruption layer to the underlying resource model. Unfortunately, this approach wouldn't work, since the creation process of an aggregate on 
 the client-side would result in countless additional HTTP requests (N + 1 Problem). Hence, the aggregate has to be provided by the backend!
 
 Even in the case of server-side generated aggregates, something seems to be wrong here! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data about customers, products or addresses, 
@@ -382,6 +383,7 @@ or we break out and use a dedicated REST call: `PUT: orders/22/addresses/5 : {ad
 
 Providing REST URIs to related sub resources like `orders/22/addresses/5` is not mandatory anymore, because all related data have already been included in the payload! We should continue to offer no more URIs like `/addresses/5`, 
 because the address resource has no context and isn't bound to specific business use cases! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address of an ongoing order process! 
+The question is, can an address exists outside an order or customer context?
 
 Navigating a resource model and its relationships or complying to use case specific aggregates can have a big impact on the frontend design system!
 <br/>
@@ -433,7 +435,7 @@ newOrderViewModel.total = 444;
 newOrderViewModel.balance = -44;
 ```
 
-Necessary data transformations may reside in the same view model class. A better choice would be to create a dedicated component such as a mapper, translator,
+Necessary data transformations can reside in the same view model class. A better approach would be to create a dedicated artifact such as a mapper, translator,
 factory or an abstract super class that performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote
 code reusability by subclassing.
 
@@ -467,14 +469,15 @@ newOrderViewModel.total = 444;
 newOrderViewModel.balance = -44;
 ```
 
-Due to performance implications, it's not recommended embedding `getters` in the view's template. Instead, we will use public properties.
+Due to performance implications, it's not recommended binding `getters` in the view's template. Instead, we will use public properties.
 
 Hardcoding transformation methods in the view model causes tight coupling. A better approach is to process data transformations like filtering, sorting, grouping or destructuring etc.
 in reactive streams and hand over the result to an object factory.
 
-**» Model Factory Pattern:**<br/>
+**» Object Factory Pattern:**<br/>
 
-The object factory pattern assists in type safety when constructing dynamic objects (spread, rest, destructuring, merge).
+The object factory pattern helps to create complex objects like aggregates that involve the creation of other related objects and
+more importantly assists in type safety when constructing dynamic objects with ES6 spread, rest, destructuring and merging of JavaScript object literals.
 
 Option 1:
 
@@ -829,7 +832,7 @@ server response schema to a complex object graph (domain model):
 
 For example, HATEOAS forms hyperlinks between external resources to make transitions through the application state by navigating hyperlinks. 
 However, mapping hyperlinks to a client-side domain model isn't possible! In addition, when consuming REST APIs very often multiple HTTP request 
-must to be sent asynchronously to create a model for a specific use case in the presentation layer. If the applied HATEOAS implementation pattern
+need to be sent asynchronously to create a model for a specific use case in the presentation layer. If the applied HATEOAS implementation pattern
 forms hyperlinks in a response schema it would limit the user interface to incorporate with REST APIs synchronously. 
 UX designers usually don't model their interaction, navigation or screen patterns around HATEOAS. Furthermore, the Angular router engine doesn't 
 comply well with the URI templates of HATEOAS implementation patterns. HATEOAS has its advantages as well as disadvantages. Even though the router 
