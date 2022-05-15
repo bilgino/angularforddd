@@ -117,7 +117,7 @@ makes **Domain Modules** a good candidate for the bounded context pattern. The *
 wide as singletons. The **Root Module** includes several domain modules. That is, the entry point is the root module. For a more complete 
 overview, visit the following website https://angular.io/guide/module-types#summary-of-ngmodule-categories
 
-Angular's modular system gives a clean design response:  
+Angular's module system gives a clean design response:  
 
 **» Modular Architecture**<br/>
 
@@ -162,9 +162,10 @@ Interaction between the bounded context pattern and domain modules:
 
 **» Scaffolding**<br/>
 
-A common practice in Angular projects is to structure the code base into `/core`, `/shared`, `/features` folders. 
-Unfortunately, this approach isn't sufficient for a good project layout and is mainly inspired by technical constraints. 
-When setting up a folder structure, a domain-driven approach may better suited for complex applications.
+A common practice in Angular projects is to structure the code base into `/core`, `/shared`, `/features` folders according
+to the angular.io styleguide: https://angular.io/guide/styleguide#overall-structural-guidelines. 
+Unfortunately, this approach isn't sufficient for a complex project and is mainly inspired by technical constraints. 
+If setting up a folder structure, a domain-driven approach is better suited for complex applications.
 
 Domain-driven scaffolding:
 
