@@ -357,7 +357,7 @@ One of the most important characteristics of the aggregate pattern is to protect
 - It's modeled around protecting domain invariants, encapsulation and data integrity
 - All possible invariants must be satisfied for each state change, when one part is updated, other parts might also need to be updated
 - It validates all incoming actions and ensures that modifications don't contradict domain rules 
-- The internal state can only be mutated by the public interface of the root aggregate to ensure a consistency enforcement boundary
+- The internal state can only be mutated by the public interface of the root aggregate 
 - Objects from outside can't make changes to inside objects they can only change the root object
 - Each use case should have only one aggregate, but can use other aggregates to retrieve information
 - Multiple aggregates can reuse one value object
@@ -367,13 +367,13 @@ One of the most important characteristics of the aggregate pattern is to protect
 
 - Aggregates are immutable datastructures per default
 - Aggregates don't publish domain events
-- Inter-Aggregate references hold by global ID properties (primary keys) rather than by object references is optional
+- Inter-Aggregate references established by global IDs (primary keys) rather than by object references is optional
 
 **» Routing, REST and DDD Aggregates**<br/>
 
-Because the navigation pattern of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must 
-reexamine the idea of building client-side aggregates. As an aggregate builds a group of domain-related entities and value objects, wouldn't we then have to group resources? 
-Presuming that a requested resource isn't already an aggregate, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses`, `/contactinfo` to a client-side e.g. order aggregate? 
+Since the navigation pattern of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must 
+reexamine the idea of building client-side aggregates. As an aggregate builds a group of domain-related entities and value objects, wouldn't we then have to group resources instead? 
+Presuming that a requested resource isn't already an aggregate, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` to a client-side e.g. order aggregate? 
 
 In the classic data-centric approach database tables and their relations were identified as the foundation of resources or a resource model.
 But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A REST resource may be a representation of a single entity or a 
@@ -388,7 +388,7 @@ Even in the case of server-side generated aggregates, something seems to be wron
 then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and consequently process an HTTP update: `PUT: /orders/22 : {order:{ address... }}`, 
 or we break out and use a dedicated REST call: `PUT: orders/22/addresses/5 : {address:{}}`. The second approach seems to contradict the basic idea of an aggregate to avoid revealing its internal state to the outside world! 
 
-Providing REST URIs to related sub resources like `orders/22/addresses/5` is not mandatory anymore, because all related data have already been included in the payload! We should continue to offer no more URIs like `/addresses/5`, 
+Providing REST URIs to related sub resources like `orders/22/addresses/5` isn't mandatory anymore. Since all related data have already been included in the payload, we should continue to offer no more URIs like `/addresses/5`, 
 because the address resource has no context and isn't bound to a specific business use case! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address of an ongoing order process!
 But now here's a question: can an address exists outside an order or customer context and how can we synchronize state changes between the order and the customer context?
 
@@ -887,7 +887,7 @@ A reactive API exposes hot observables (BehaviorSubjects etc.) to manage the com
 other components, we must keep track of changes to prevent stale data and keep the UI in sync. RxJS gives us many great tools and 
 operators to implement the "projection phase" between the read and write side. 
 
-**» CQRS in the Frontend?**<br/>
+**» CQRS in the frontend?**<br/>
 
 With traditional CRUD-based web applications conform to the REST architectural style and the single data model approach,
 we may fall into the situation where we have to stitch together several resources to build a rich (view) model.
@@ -915,14 +915,14 @@ The view model provider service may appear in different forms. It may appear as 
 
 ![](src/assets/images/Service_CQRS.png)
 
-**» CQRS in compliance with DDD**<br/>
+**» CQRS in compliance with DDD tactical patterns**<br/>
 
 ![](src/assets/images/Reactive_Flow.png)
 
 Typically, application services provide query methods for retrieving view models of domain state (CQS). However, for 
 complicated page flows and user interfaces it would be inefficient to elaborate view models in a query method, 
 due to the large number of additional dependencies. Instead, we can use view model provider services to facilitate access to view models 
-in a more efficient way. Consequently, the application service may use the view model provider service to retrieve presentation data. 
+in a more efficient way. Consequently, the application service as well as any other component can use the view model provider service to retrieve presentation data. 
 
 ![](src/assets/images/QuerySideService.PNG)
 
