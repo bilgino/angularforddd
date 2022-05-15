@@ -189,10 +189,9 @@ The view model and domain model should maintain different data structures to kee
 - Rich Domain Model
 - View Model 
 
-The anemic domain model is quite often used in CRUD-based web applications as  value container without any behavior of its own, 
-conform to RESTful practices. However, it's considered an anti-pattern because it doesn't include business logic and can't protect its invariants. 
-Furthermore, it introduces a tight coupling with the client. Using rich domain models instead, we prevent domain logic from leaking into other layers or surrounding services.
-The following example shows the negative effects of anemic domain models. 
+The anemic domain model is quite often used in CRUD-based web applications as  value container without any behavior of its own. However, it's considered an anti-pattern 
+because it doesn't include business logic and can't protect its invariants. Furthermore, it introduces a tight coupling with the client. Using rich domain models instead, 
+we prevent domain logic from leaking into other layers or surrounding services. The following example shows the negative effects of anemic domain models. 
 
 Domain logic is coupled to the client (UI controller): 
 
@@ -246,7 +245,7 @@ In the second example, domain logic is decoupled from the UI controller. Encapsu
 Keeping the model as independent as possible improves reusability and allows easier refactoring.
 Neither domain state nor domain logic should be written as part of the UI controller.
 
-Subsequently, using feature services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
+Consequently, using feature services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
 practice in Angular projects and known as the "Fat Service, Skinny Model" pattern: 
 
 ```
@@ -269,7 +268,7 @@ class AccountService {
 }
 ```
 
-A better approach would be to place domain logic in entity classes making boundaries become more clear:
+We should strive to push domain logic into entities making boundaries become more clear:
 
 ```
 @Injectable()
@@ -318,11 +317,11 @@ class AccoutRepositoryService {
 }
 ```
 
-In general, using rich domain models means more entities than services. Building rich domain models is a major objective in object-oriented design.
+Put simply, using rich domain models means more entities than services. Building rich domain models is a major objective in object-oriented design.
 
-**» Domain Model (DDD Aggregates)**<br/>
+**» Domain Model (DDD Aggregate Pattern)**<br/>
 
-The domain model entities contain data and domain-related behavior modeled around business logic.
+The domain model entities contain data and domain-related behavior modeled around the business domain.
 In terms of DDD and CQRS, the domain model entity is an aggregate that contains only write operations that result in state changes.
 
 TypeScript domain model entity (CQS):
@@ -330,9 +329,10 @@ TypeScript domain model entity (CQS):
 ```
 class Order {
     private quantity;
+    private totalCost;
     private custId;
     private deliveryAddress;
-    
+
     contructor(){}
     
     public placeOrder(){}
@@ -343,12 +343,12 @@ class Order {
 }
 ```
 
-In the classic object-oriented programming the software model lacked of explicit boundaries. Relationships between classes brought a
+In classic object-oriented programming the software model lacked of explicit boundaries. Relationships between classes brought a
 complexity that required an efficient design. The aggregate pattern takes a contextual approach by using groupings of entities and value objects 
-that are modeled around invariants and clear boundaries inside the software model making the system easier to reason about.
+that are modeled around business rules and clear boundaries inside the software model making the system easier to reason about.
 One of the most important characteristics of the aggregate pattern is to protect it from being invalid and having an inconsistent state.
 
-» Aggregate entity checklist:
+**» Aggregate entity checklist:**
 
 - Is a top-level/core business object
 - Is bounded from the viewpoint of a business use cases
@@ -363,11 +363,11 @@ One of the most important characteristics of the aggregate pattern is to protect
 - Multiple aggregates can reuse one value object
 - Each aggregate root gets its own repository service
 
-» From the viewpoint of frontend development:
+**» From the viewpoint of frontend development:**
 
 - Aggregates are immutable datastructures per default
 - Aggregates don't publish domain events
-- Inter-Aggregate references held by global ID properties (primary keys) rather than by object references is optional
+- Inter-Aggregate references hold by global ID properties (primary keys) rather than by object references is optional
 
 **» Routing, REST and DDD Aggregates**<br/>
 
@@ -397,7 +397,7 @@ Navigating a resource model and its relationships or complying to use case speci
 
 ![](src/assets/images/Aggregate_ACL.PNG)
 
-» Further considerations when building aggregates:
+**» Further considerations when building aggregates:**
 
 **Q**: Is building aggregates a poor choice, if requests for aggregates are rare?<br>
 **A**: It all depends on the complexity of the application, particularly of the GUI layer!
@@ -410,7 +410,7 @@ Instead, focusing on reducing round-trips is still valid.
 **A**: Patterns such as Backend-For-Frontend (BFF), API-Gateway etc. can help to address client-specific requests!
 
 **Q**: How can a GUI designer help to reduce the requests for aggregates?<br>
-**A**: By defining GUI patterns that don't require aggregations and comply with the navigational behaviour of hypermedia APIs!
+**A**: By defining GUI patterns that don't require compositions and comply with the navigational behaviour of hypermedia APIs!
 
 **» View Model**<br/>
 
