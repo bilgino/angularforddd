@@ -150,10 +150,10 @@ This is similar to **Domain Modules** where we mark the boundaries based on feat
 allows us to structure modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
 several aggregates. 
 
-An important consideration when defining a client- or server-side bounded context is that the bounded context doesn't require a fully
-integrated REST API. As a bounded context represents an aggregation, it's sufficient to couple the bounded context to the root URL (entry point):
+An important consideration when modeling a server-side bounded context is that it doesn't require a fully integrated uniform interface. 
+Since a bounded context represents a composition of objects, it's sufficient to couple the bounded context to the root URL (entry point):
 `/BoundedContextA/*API`; `/BoundedContextB/*API`. We still can use arbitrary REST URIs such as `/order/{id}/items/{id}` in the router 
-configuration to enable "In-App-Navigation", as the presentation layer is agnostic of other layers. A bounded context can be assigned either 
+configuration to allow "In-App-Navigation" as the presentation layer is agnostic of other layers. A bounded context can be assigned either 
 to an entire page or to page segments.
 
 Interaction between the bounded context pattern and domain modules:
