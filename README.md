@@ -8,7 +8,7 @@ into logical boundaries and divide business logic into layers with different res
 
 ## Frontend coupled to OOD, DDD and CQRS
 
-The building blocks of Angular already provides us with code organisation strategies. Nevertheless, to gain a better design we will bypass the 
+The building blocks of Angular already encompasses code organisation strategies. Nevertheless, to gain a better design we will bypass the 
 traditional data-centric approach and consider strategies like Object-Oriented Design, Domain-Driven Design and Command-Query-Responsibility-Segregation for frontend architectures:
 
 ![](src/assets/images/frontend_arch.png)
@@ -89,7 +89,7 @@ Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Valid
 An important aspect of Domain-Driven Design is that the domain model is kept isolated from other concerns of the application. Ideally, the domain layer 
 is self-contained and focused on abstracting the business domain. Very often frontend applications validate business rules that are immediately reflected 
 in the presentation layer, particularly in SPA applications when navigating through HTML forms that have cross-dependencies in terms of distributed business rules. 
-An isolated domain layer allows us to avoid domain logic leaking into other layers. In addition, we don't want to command against the server upon every user input. 
+An isolated domain layer allows us to avoid domain logic leaking into other layers or surrounding services. In addition, we don't want to command against the server upon every user input. 
 Therefore, the domain layer pattern in the frontend architecture sounds like a very good idea.
 
 Domain-oriented layering is often considered the first structuring criterion in Angular applications. However, layered architecture 
@@ -153,7 +153,7 @@ several aggregates.
 An important consideration when modeling a server-side bounded context is that it doesn't require a fully integrated uniform interface according
 to RESTful practices. Since a bounded context represents a collection of associated aggregates, it's sufficient to couple the bounded context to the root URL (entry point):
 `/BoundedContextA/*API`; `/BoundedContextB/*API`. We still can use arbitrary REST URIs such as `/order/{id}/items/{id}` in the router 
-configuration to allow "In-App-Navigation" as the presentation layer is agnostic of other layers. A bounded context can be assigned either 
+configuration to allow "In-App-Navigation" as the presentation layer is agnostic of other layers underneath. A bounded context can be assigned either 
 to an entire page or to page segments.
 
 Interaction between the bounded context pattern and domain modules:
@@ -191,7 +191,7 @@ The view model and domain model should maintain different data structures to kee
 
 The anemic domain model is quite often used in CRUD-based web applications as  value container without any behavior of its own, 
 conform to RESTful practices. However, it's considered an anti-pattern because it doesn't include business logic and can't protect its invariants. 
-Furthermore, it introduces a tight coupling with the client. Using rich domain models instead, we prevent domain logic from leaking into other layers.
+Furthermore, it introduces a tight coupling with the client. Using rich domain models instead, we prevent domain logic from leaking into other layers or surrounding services.
 The following example shows the negative effects of anemic domain models. 
 
 Domain logic is coupled to the client (UI controller): 
@@ -215,7 +215,8 @@ class Employee {
 }
 ```
 
-A rich domain model hides, protects and encapsulates domain logic:
+In this scenario, domain logic tends to be duplicated in distant components and therefore will go out of sync and lead to data corruption.
+A rich domain model hides, protects and encapsulates domain logic to ensure data consistency:
 
 **»  Effects of rich domain models**<br/>
 ```
@@ -349,18 +350,24 @@ One of the most important characteristics of the aggregate pattern is to protect
 
 » Aggregate entity checklist:
 
-- Is a top-level business object
+- Is a top-level/core business object
 - Is bounded from the viewpoint of a business use cases
-- Is based on a root entity and acts as a collection of domain-related entities and value objects
-- Has identity, state, lifecycle and receives the name of a bounded context
-- It is modeled around protecting domain invariants, encapsulation and data integrity
-- Invariants must be satisfied for each state change
-- Validates all incoming actions and ensures that modifications don't contradict business rules
-- The internal state can only be mutated by its own public interface
+- Is based on a root entity and typically acts as a cluster of domain-related entities and value objects
+- Has global identity, state, lifecycle and receives the name of a bounded context
+- It's modeled around protecting domain invariants, encapsulation and data integrity
+- All possible invariants must be satisfied for each state change, when one part is updated, other parts might also need to be updated
+- It validates all incoming actions and ensures that modifications don't contradict domain rules 
+- The internal state can only be mutated by the public interface of the root aggregate to ensure a consistency enforcement boundary
 - Objects from outside can't make changes to inside objects they can only change the root object
-- Relations between aggregates should be handled through ID properties
 - Each use case should have only one aggregate, but can use other aggregates to retrieve information
-- Multiple aggregates can reuse one single value object
+- Multiple aggregates can reuse one value object
+- Each aggregate root gets its own repository service
+
+» From the viewpoint of frontend development:
+
+- Aggregates are immutable datastructures per default
+- Aggregates don't publish domain events
+- Inter-Aggregate references held by global ID properties (primary keys) rather than by object references is optional
 
 **» Routing, REST and DDD Aggregates**<br/>
 
@@ -368,7 +375,7 @@ Because the navigation pattern of the Angular router engine complies with the na
 reexamine the idea of building client-side aggregates. As an aggregate builds a group of domain-related entities and value objects, wouldn't we then have to group resources? 
 Presuming that a requested resource isn't already an aggregate, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses`, `/contactinfo` to a client-side e.g. order aggregate? 
 
-In the classic database-centric approach database tables and their relations were identified as the foundation of resources or a resource model.
+In the classic data-centric approach database tables and their relations were identified as the foundation of resources or a resource model.
 But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A REST resource may be a representation of a single entity or a 
 composition of several entities built around business use cases, database tables, GUI models or any special-purpose of the client. That is, Domain-Driven-, Data-Driven- or UX-Driven Design!
 
@@ -382,8 +389,8 @@ then how do we update the address of the order? Either we invoke a business meth
 or we break out and use a dedicated REST call: `PUT: orders/22/addresses/5 : {address:{}}`. The second approach seems to contradict the basic idea of an aggregate to avoid revealing its internal state to the outside world! 
 
 Providing REST URIs to related sub resources like `orders/22/addresses/5` is not mandatory anymore, because all related data have already been included in the payload! We should continue to offer no more URIs like `/addresses/5`, 
-because the address resource has no context and isn't bound to a specific business use case! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address of an ongoing order process! 
-The question is, can an address exists outside an order or customer context and how to synchronize state changes between the order and the customer context?
+because the address resource has no context and isn't bound to a specific business use case! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address of an ongoing order process!
+But now here's a question: can an address exists outside an order or customer context and how can we synchronize state changes between the order and the customer context?
 
 Navigating a resource model and its relationships or complying to use case specific aggregates can have a big impact on the frontend design system!
 <br/>
@@ -491,8 +498,9 @@ in reactive streams and hand over the result to an object factory.
 
 **» Object Factory Pattern:**<br/>
 
-The object factory pattern helps to create complex objects like aggregates that involve the creation of other related objects and
-more importantly assists in type safety when constructing dynamic objects with ES6 spread, rest, destructuring and merging of JavaScript object literals.
+Objects can be constructed using regular constructors or using static factories. The object factory pattern helps to create complex objects like aggregates that involve the 
+creation of other related objects and more importantly assists in type safety when constructing dynamic objects with ES6+ features such as: spread, rest, destructuring and 
+merging of JavaScript object literals.
 
 Option 1:
 
