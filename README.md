@@ -97,11 +97,11 @@ is independent of vertical slicing. It's sufficient to comply with horizontal sl
 Angular applications are lazy-loading, scoping and distribution. 
 
 When application services carry out business or UI use cases, it may be a good idea to keep use cases that contain less logic in the UI controller, 
-like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use specialized components instead!
-In addition, we want to share state and logic of these specialized components with other independent components. 
+like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated classes instead!
+In addition, we want to share state and logic of these components with other independent components. 
 
-It's questionable whether higher granularity distributed across several layers introduce extra complexity in the frontend architecture. 
-Should we really comply to Domain-Driven Design in frontend development? As a consequence, many developers tend to lean toward weaker 
+It's fairly debatable whether higher granularity distributed across several layers introduce extra complexity in the frontend architecture. 
+Shall we really comply with Domain-Driven Design in frontend development? As a consequence, many developers tend to lean toward weaker 
 patterns because they see it as an unnecessary practice. Often a simpler data-centric approach is sufficient. For most web applications MVC 
 or Flux/Redux may be more appropriate. Before starting using advanced concepts we must validate incoming requirements.
 
@@ -147,11 +147,11 @@ Following checklist can help to facilitate the orchestration of ngModules:<br/>
 The bounded context pattern in Domain-Driven Design divides the domain model into related domain fragments. In a service-based environment a 
 bounded context marks the boundaries of an application service. An application service is a concretion of the bounded context pattern! 
 This is similar to **Domain Modules** where we mark the boundaries based on features. Applying the bounded context pattern to domain modules 
-allows us to structure modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
+allows us to structure Angular modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
 several aggregates. 
 
-An important consideration when modeling a server-side bounded context is that it doesn't require a fully integrated uniform interface. 
-Since a bounded context represents a composition of objects, it's sufficient to couple the bounded context to the root URL (entry point):
+An important consideration when modeling a server-side bounded context is that it doesn't require a fully integrated uniform interface according
+to RESTful practices. Since a bounded context represents a collection of associated aggregates, it's sufficient to couple the bounded context to the root URL (entry point):
 `/BoundedContextA/*API`; `/BoundedContextB/*API`. We still can use arbitrary REST URIs such as `/order/{id}/items/{id}` in the router 
 configuration to allow "In-App-Navigation" as the presentation layer is agnostic of other layers. A bounded context can be assigned either 
 to an entire page or to page segments.
@@ -365,9 +365,8 @@ One of the most important characteristics of the aggregate pattern is to protect
 **» Routing, REST and DDD Aggregates**<br/>
 
 Because the navigation pattern of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must 
-reexamine the idea of building client-side aggregates. As an aggregate builds a group of domain-related entities and value objects, wouldn't we then have to group REST resources instead? 
-Presuming that a requested REST resource isn't already an aggregate, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses`, `/contactinfo` etc. 
-to a client-side aggregate? 
+reexamine the idea of building client-side aggregates. As an aggregate builds a group of domain-related entities and value objects, wouldn't we then have to group resources? 
+Presuming that a requested resource isn't already an aggregate, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses`, `/contactinfo` to a client-side e.g. order aggregate? 
 
 In the classic database-centric approach database tables and their relations were identified as the foundation of resources or a resource model.
 But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A REST resource may be a representation of a single entity or a 
@@ -378,13 +377,13 @@ an application or repository service would provide the public interface to cover
 as an anti-corruption layer to the underlying resource model. Unfortunately, this approach wouldn't work well, since the creation process of an aggregate on 
 the client-side would result in countless additional HTTP requests (N + 1 Problem). Hence, the aggregate should be provided by the backend!
 
-Even in the case of server-side created aggregates, something seems to be wrong here! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data about customers, products or addresses, 
+Even in the case of server-side generated aggregates, something seems to be wrong here! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data about customers, products or addresses, 
 then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and consequently process an HTTP update: `PUT: /orders/22 : {order:{ address... }}`, 
 or we break out and use a dedicated REST call: `PUT: orders/22/addresses/5 : {address:{}}`. The second approach seems to contradict the basic idea of an aggregate to avoid revealing its internal state to the outside world! 
 
 Providing REST URIs to related sub resources like `orders/22/addresses/5` is not mandatory anymore, because all related data have already been included in the payload! We should continue to offer no more URIs like `/addresses/5`, 
 because the address resource has no context and isn't bound to a specific business use case! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address of an ongoing order process! 
-The question is, can an address exists outside an order or customer context?
+The question is, can an address exists outside an order or customer context and how to synchronize state changes between the order and the customer context?
 
 Navigating a resource model and its relationships or complying to use case specific aggregates can have a big impact on the frontend design system!
 <br/>
@@ -403,7 +402,7 @@ Instead, focusing on reducing round-trips is still valid.
 **Q**: Is building purpose-specific aggregates for the sake of every client burdening the backend?<br>
 **A**: Patterns such as Backend-For-Frontend (BFF), API-Gateway etc. can help to address client-specific requests!
 
-**Q**: How can the GUI designer help, to reduce the need for aggregates?<br>
+**Q**: How can a GUI designer help to reduce the requests for aggregates?<br>
 **A**: By defining GUI patterns that don't require aggregations and comply with the navigational behaviour of hypermedia APIs!
 
 **» View Model**<br/>
@@ -1095,7 +1094,7 @@ export class OrderComponent {
 
 View model objects may also be elaborated with Angular resolver services!
 
-## Application-, Domain- and Infrastructure Services
+## Application-, Domain-, Infrastructure- and UI Services
 
 One downside of sharing and binding state through services is that they are coupled to the view. Delayed changes to the state must be managed
 by asynchronous binding techniques to **keep the shared state in sync**. However, with EventEmitters, Subjects or BehaviorSubjects we share data
