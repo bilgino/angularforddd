@@ -392,6 +392,8 @@ because the address resource has no context and isn't bound to a specific busine
 But now here's a question: can an address exists outside an order or customer context and how can we synchronize state changes between the order and the customer context?
 
 Navigating a resource model and its relationships or complying to use case specific aggregates can have a big impact on the frontend design system!
+For more information about the drawbacks of REST please visit the following website: https://www.howtographql.com/basics/1-graphql-is-the-better-rest/
+
 <br/>
 
 ![](src/assets/images/Aggregate_ACL.PNG)
