@@ -144,8 +144,7 @@ Following checklist can help to facilitate the orchestration of ngModules:<br/>
 
 **» Bounded Context Pattern**<br/>
 
-The bounded context pattern in Domain-Driven Design divides the domain model into related domain fragments. In a service-based environment a 
-bounded context marks the boundaries of an application service. An application service is a concretion of the bounded context pattern! 
+The bounded context pattern divides the domain model into related domain fragments. In a service-based environment a bounded context marks the boundaries of an application service. An application service is a concretion of the bounded context pattern! 
 This is similar to **Domain Modules** where we mark the boundaries based on features. Applying the bounded context pattern to domain modules 
 allows us to structure Angular modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
 several aggregates. 
@@ -214,7 +213,7 @@ class Employee {
 }
 ```
 
-In this example, domain logic tends to be duplicated in distant components and therefore may go out of sync and lead to data corruption.
+In this example, domain logic tends to be duplicated in distant components and may go out of sync and leads to data inconsistency.
 A rich domain model protects and encapsulates domain logic to ensure data consistency:
 
 **»  Effects of rich domain models**<br/>
@@ -263,7 +262,6 @@ class AccountService {
     }
     
     public deposit(){}
-    
     public widthDraw(){}
 }
 ```
@@ -321,7 +319,7 @@ Put simply, using rich domain models means more entities than services. Building
 
 **» Domain Model (DDD Aggregate Pattern)**<br/>
 
-The domain model entities contain data and domain-related behavior modeled around the business domain.
+The domain model entities contain data and behavior modeled around the business domain.
 In terms of DDD and CQRS, the domain model entity is an aggregate that contains only write operations that result in state changes.
 
 TypeScript domain model entity (CQS):
@@ -350,18 +348,18 @@ One of the most important characteristics of the aggregate pattern is to protect
 
 **» Aggregate entity checklist:**
 
-- Is a top-level/core business object
-- Is bounded from the viewpoint of a business use cases
-- Is based on a root entity and typically acts as a cluster of domain-related entities and value objects
-- Has global identity, state, lifecycle and receives the name of a bounded context
+- It's a top-level/core business object
+- It's bounded from the viewpoint of a business use cases
+- It's based on a root entity and typically acts as a cluster of related domain entities and value objects
+- It's global identity, state, lifecycle and receives the name of the bounded context
 - It's modeled around protecting domain invariants, encapsulation and data integrity
+- It validates all incoming actions and ensures that modifications don't contradict business rules
 - All possible invariants must be satisfied for each state change, when one part is updated, other parts might also need to be updated
-- It validates all incoming actions and ensures that modifications don't contradict domain rules 
 - The internal state can only be mutated by the public interface of the root aggregate 
 - Objects from outside can't make changes to inside objects they can only change the root object
 - Each use case should have only one aggregate, but can use other aggregates to retrieve information
 - Multiple aggregates can reuse one value object
-- Each aggregate root gets its own repository service
+- Each aggregate root gets its own repository 
 
 **» From the viewpoint of frontend development:**
 
@@ -373,17 +371,17 @@ One of the most important characteristics of the aggregate pattern is to protect
 **» Routing, REST and DDD Aggregates**<br/>
 
 Since the navigation pattern of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must 
-reexamine the idea of building client-side aggregates. As an aggregate builds a group of domain-related entities and value objects, wouldn't we then have to group resources instead? 
-Presuming that a requested resource isn't already an aggregate, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` to a client-side e.g. order aggregate? 
+reexamine the idea of building client-side aggregates. As an aggregate builds a group of related domain entities and value objects, wouldn't we then have to group resources instead? 
+Presuming that the requested resource isn't already an aggregate, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` to a client-side aggregate? 
 
-In the classic data-centric approach database tables and their relations were identified as the foundation of resources or a resource model.
+In the classic data-centric approach, database tables and their relations were identified as the foundation of resources or the resource model.
 But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A REST resource may be a representation of a single entity or a 
-composition of several entities built around business use cases, database tables, GUI models or any special-purpose of the client. That is, Domain-Driven-, Data-Driven- or UX-Driven Design!
+composition of several entities, database tables, GUI models or any special-purpose of the client. That is, Domain-Driven-, Data-Driven- or UX-Driven Design!
 
 Unless a REST resource is already an aggregate, we would need to stitch the aggregate together for each initial routing event and would need to provide a query API to the internal state of the aggregate. Consequently, 
 an application or repository service would provide the public interface to cover all queries to the aggregate. In this scenario, the repository service acts 
 as an anti-corruption layer to the underlying resource model. Unfortunately, this approach wouldn't work well, since the creation process of an aggregate on 
-the client-side would result in countless additional HTTP requests (N + 1 Problem). Hence, the aggregate should be provided by the backend!
+the client-side would result in countless additional HTTP requests (N + 1 Problem)! Hence, the aggregate should be provided by the backend!
 
 Even in the case of server-side generated aggregates, something seems to be wrong here! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data about customers, products or addresses, 
 then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and consequently process an HTTP update: `PUT: /orders/22 : {order:{ address... }}`, 
@@ -415,7 +413,7 @@ Instead, focusing on reducing round-trips is still valid.
 
 **» View Model**<br/>
 
-View models are mere data objects and usually don't contain any domain-related behavior. Hence, they are not a part of the domain layer.
+View models are mere data objects and usually don't contain any domain behavior. Hence, they are not a part of the domain layer.
 View models are supportive in providing data to the view and might extend super view model classes to inherit common properties or behaviour.
 They are typically created by merging two or more existing models into one model and are an essential part of every good frontend architecture.
 
