@@ -164,8 +164,8 @@ Interaction between the bounded context pattern and domain modules:
 
 A common practice in Angular projects is to structure the code base into `/core`, `/shared`, `/features` folders according
 to the angular.io styleguide: https://angular.io/guide/styleguide#overall-structural-guidelines. 
-Unfortunately, this approach isn't sufficient for a complex project and is mainly inspired by technical constraints. 
-If setting up a folder structure, a domain-driven approach is better suited for complex applications.
+Unfortunately, this approach isn't sufficient for complex projects and is mainly inspired by technical constraints. 
+When setting up a folder structure, a domain-driven approach is better suited for complex applications.
 
 Domain-driven scaffolding:
 
@@ -189,9 +189,9 @@ The view model and domain model should maintain different data structures to kee
 - Rich Domain Model
 - View Model 
 
-The anemic domain model is quite often used in CRUD-based web applications as  value container without any behavior of its own. However, it's considered an anti-pattern 
-because it doesn't include business logic and can't protect its invariants. Furthermore, it introduces a tight coupling with the client. Using rich domain models instead, 
-we prevent domain logic from leaking into other layers or surrounding services. The following example shows the negative effects of anemic domain models. 
+The anemic domain model is quite often used in CRUD-based web applications as value container without any behavior of its own. However, it's considered an anti-pattern 
+because it doesn't encompass business logic and can't protect its invariants. Furthermore, it introduces a tight coupling with the client. Using rich domain models instead, 
+we prevent domain logic from leaking into other layers or surrounding services. The following example shows the negative side effect of anemic domain models. 
 
 Domain logic is coupled to the client (UI controller): 
 
@@ -214,8 +214,8 @@ class Employee {
 }
 ```
 
-In this scenario, domain logic tends to be duplicated in distant components and therefore will go out of sync and lead to data corruption.
-A rich domain model hides, protects and encapsulates domain logic to ensure data consistency:
+In this example, domain logic tends to be duplicated in distant components and therefore may go out of sync and lead to data corruption.
+A rich domain model protects and encapsulates domain logic to ensure data consistency:
 
 **»  Effects of rich domain models**<br/>
 ```
@@ -303,7 +303,7 @@ class Account {
 }
 
 @Injectable()
-class AccoutRepositoryService {
+class AccountRepositoryService {
     private accounts = [new Account(1, 4500), new Account(2, 2340)];
     
     constructor(){}
@@ -343,8 +343,8 @@ class Order {
 }
 ```
 
-In classic object-oriented programming the software model lacked of explicit boundaries. Relationships between classes brought a
-complexity that required an efficient design. The aggregate pattern takes a contextual approach by using groupings of entities and value objects 
+In traditional object-oriented development the software model lacked of explicit boundaries. Relationships between classes brought a
+complexity that required an efficient design. The DDD aggregate pattern takes a contextual approach by embracing groupings of entities and value objects 
 that are modeled around business rules and clear boundaries inside the software model making the system easier to reason about.
 One of the most important characteristics of the aggregate pattern is to protect it from being invalid and having an inconsistent state.
 
@@ -365,7 +365,7 @@ One of the most important characteristics of the aggregate pattern is to protect
 
 **» From the viewpoint of frontend development:**
 
-- Aggregates are immutable datastructures per default
+- Aggregates are immutable objects per default
 - Aggregates don't publish domain events
 - Inter-Aggregate references established by global IDs (primary keys) rather than by object references is optional
 - Aggregates build the foundation for view models
