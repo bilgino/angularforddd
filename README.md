@@ -149,15 +149,17 @@ This is similar to **Domain Modules** where we mark the boundaries based on feat
 allows us to structure Angular modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
 several aggregates. 
 
-An important consideration when modeling a server-side bounded context is that it doesn't require a fully integrated uniform interface according
-to RESTful practices. Since a bounded context represents a collection of associated aggregates, it's sufficient to couple the bounded context to the root URL (entry point):
-`/BoundedContextA/*API`; `/BoundedContextB/*API`. We still can use arbitrary REST URIs such as `/order/{id}/items/{id}` in the router 
+An important consideration when modeling a bounded context on the server-side is that it doesn't require a fully integrated REST API. 
+Since a bounded context represents one or more aggregates, it's sufficient to couple the bounded context to the root URL (root-resource):
+`/BoundedContextA/*API`; `/BoundedContextB/*API`. We still can use sub resource URLs like `/order/{id}/items/{id}` in the router 
 configuration to allow "In-App-Navigation" as the presentation layer is agnostic of other layers underneath. A bounded context can be assigned either 
 to an entire page or to page segments.
 
-Interaction between the bounded context pattern and domain modules:
+Interrelationship between the bounded context pattern and Angular domain modules:
 
 ![](src/assets/images/BoundedContext.png)
+
+The interrelationship between Angular, REST and DDD aggregates requires more labor which we will discuss shortly.
 
 **» Scaffolding**<br/>
 
@@ -922,7 +924,7 @@ The view model provider service may appear in different forms. It may appear as 
 
 Typically, application services provide query methods for retrieving view models of domain state (CQS). However, for 
 complicated page flows and user interfaces it would be inefficient to elaborate view models in a query method, 
-due to the large number of additional dependencies. Instead, we can use view model provider services to facilitate access to view models 
+due to the large amounts of additional dependencies. Instead, we can use view model provider services to facilitate access to view models 
 in a more efficient way. Consequently, the application service as well as any other component can use the view model provider service to retrieve presentation data. 
 
 ![](src/assets/images/QuerySideService.PNG)
