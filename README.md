@@ -460,7 +460,7 @@ newOrderViewModel.total = 444;
 newOrderViewModel.balance = -44;
 ```
 
-Necessary data transformations can reside in the same view model class. A better approach would be to create a dedicated artifact such as a mapper, translator,
+Necessary data transformations can reside in the same view model class. A better approach would be to use a dedicated component such as a mapper, translator,
 factory or an abstract super class that performs all UI-related transformations. In this way, we can decouple the transformation responsibilities to promote
 code reusability by subclassing.
 
@@ -494,16 +494,16 @@ newOrderViewModel.total = 444;
 newOrderViewModel.balance = -44;
 ```
 
-Due to performance implications, it's not recommended binding `getters` in the view's template. Instead, we will use public properties.
+Due to performance implications, it's not recommendable to bind `getters` in the template. Instead, we use public properties (primitive types).
 
-Hardcoding transformation methods in the view model causes tight coupling. A better approach is to process data transformations like filtering, sorting, grouping or destructuring etc.
-in reactive streams and hand over the result to an object factory.
+Hardcoding transformation methods in the view model class causes tight coupling. A better approach is to process data transformations such as filtering, sorting, grouping or destructuring etc.
+in reactive streams pipes and hand over the result to an object factory.
 
 **» Object Factory Pattern:**<br/>
 
 Objects can be constructed using regular constructors or using static factories. The object factory pattern helps to create complex objects like aggregates that involve the 
-creation of other related objects and more importantly assists in type safety when constructing dynamic objects with ES6+ features such as: spread, rest, destructuring and 
-merging of JavaScript object literals.
+creation of other related objects and more importantly assists in type safety with dynamic JavaScript objects and ES6+ features such as spread, rest, destructuring and 
+merging.
 
 Option 1:
 
