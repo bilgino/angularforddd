@@ -717,7 +717,7 @@ read(): Observable<Customer[]> {
 };
 ```
 
-The data mapper pattern is used in the repository service to elaborate the appropriate model schema. 
+The data mapper pattern is used in the repository service to assemble the appropriate model schema. 
 
 **» Structural Mapper Pattern**<br/>
 
@@ -845,7 +845,7 @@ const OrderDto = OrderMapper.mapToOrder(new Order(), Dto);
 Mapper checklist:
 
 - Bidirectional mapping is inevitable if using model-driven reactive forms
-- The mapper pattern in the repository service assists to elaborate a pure model
+- The mapper pattern in the repository service assists to assemble a pure model
 - Don't map view models in the repository service because view models may require multiple sources
 
 **» REST, HATEOAS & Mapping.**<br/>
@@ -860,7 +860,7 @@ For example, HATEOAS forms hyperlinks between external resources to make transit
 However, mapping hyperlinks to a client-side domain model isn't possible! In addition, when consuming REST APIs very often multiple HTTP request 
 need to be sent asynchronously to create a model for a specific use case in the presentation layer. If the applied HATEOAS implementation pattern
 forms hyperlinks in a response schema it would limit the user interface to incorporate with REST APIs synchronously. 
-UX designers usually don't model their interaction, navigation or screen patterns around HATEOAS. Furthermore, the Angular router engine doesn't 
+**UX designers usually don't model their interaction-, navigation- or screen patterns around HATEOAS or tree structures**. Furthermore, the Angular router engine doesn't 
 comply well with the URI templates of HATEOAS implementation patterns. HATEOAS has its advantages as well as disadvantages. Even though the router 
 in Angular complies with the navigational behaviour of hypermedia APIs, you should avoid HATEOAS for Angular SPA applications!
 
@@ -895,7 +895,7 @@ operators to implement the "projection phase" between the read and write side.
 With traditional CRUD-based web applications conform to the REST architectural style and the single data model approach,
 we may fall into the situation where we have to stitch together several resources to build a rich (view) model.
 Even in the case of RPC-like Web APIs, it's likely that we will encounter problems of this kind. Developers often use controller methods 
-to elaborate (view) models. Which in the end leads to monolithic controllers:
+to assemble (view) models. Which in the end leads to monolithic controllers:
 
 ![](src/assets/images/Up_Down_Flow.png)
 
@@ -923,7 +923,7 @@ The view model provider service may appear in different forms. It may appear as 
 ![](src/assets/images/Reactive_Flow.png)
 
 Typically, application services provide query methods for retrieving view models of domain state (CQS). However, for 
-complicated page flows and user interfaces it would be inefficient to elaborate view models in a query method, 
+complicated page flows and user interfaces it would be inefficient to assemble view models in a query method, 
 due to the large amounts of additional dependencies. Instead, we can use view model provider services to facilitate access to view models 
 in a more efficient way. Consequently, the application service as well as any other component can use the view model provider service to retrieve presentation data. 
 
@@ -1103,7 +1103,7 @@ export class OrderComponent {
 }
 ``` 
 
-View model objects may also be elaborated with Angular resolver services!
+View model objects may also be assembled with Angular resolver services!
 
 ## Application-, Domain-, Infrastructure- and UI Services
 
