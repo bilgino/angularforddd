@@ -92,16 +92,16 @@ in the presentation layer, particularly in SPA applications when navigating thro
 An isolated domain layer allows us to avoid domain logic leaking into other layers or surrounding services. In addition, we don't want to command against the server upon every user input. 
 Therefore, the domain layer pattern in the frontend architecture sounds like a very good idea.
 
-Domain-oriented layering is often considered the first structuring criterion in Angular applications. However, layered architecture 
-is independent of vertical slicing. It's sufficient to comply with horizontal slicing. The main reasons for modular segmentation in 
+Domain-oriented layering is often considered the first structuring criterion in Angular applications. However, layered architectures 
+are independent of vertical abstraction. For many applications it's sufficient to stick to the horizontal abstraction. The main reasons for modular segmentation in 
 Angular applications are lazy-loading, scoping and distribution. 
 
-When application services carry out business or UI use cases, it may be a good idea to keep use cases that contain less logic in the UI controller, 
+When application services carry out business use cases, it may be a good idea to keep business use cases that contain less logic in the UI controller, 
 like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated classes instead!
 In addition, we want to share state and logic of these components with other independent components. 
 
-It's fairly debatable whether higher granularity distributed across several layers introduce extra complexity in the frontend architecture. 
-Shall we really comply with Domain-Driven Design in frontend development? As a consequence, many developers tend to lean toward weaker 
+It's fairly debatable whether higher granularity distributed across several layers introduce extra complexity in frontend architectures. 
+Should we really apply Domain-Driven Design for web frontend applications? As a consequence, many developers tend to lean toward weaker 
 patterns because they see it as an unnecessary practice. Often a simpler data-centric approach is sufficient. For most web applications MVC 
 or Flux/Redux may be more appropriate. Before starting using advanced concepts we must validate incoming requirements.
 
@@ -376,7 +376,7 @@ Since the navigation pattern of the Angular router engine complies with the navi
 reexamine the idea of building client-side aggregates. As an aggregate builds a group of related domain entities and value objects, wouldn't we then have to group resources instead? 
 Presuming that the requested resource isn't already an aggregate, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` to a client-side aggregate? 
 
-In the classic data-centric approach, database tables and their relations were identified as the foundation of resources or the resource model.
+In the classic data-centric approach, database tables and their relations are identified as the foundation of resources or the resource model.
 But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A REST resource may be a representation of a single entity or a 
 composition of several entities, database tables, GUI models or any special-purpose of the client. That is, Domain-Driven-, Data-Driven- or UX-Driven Design!
 
