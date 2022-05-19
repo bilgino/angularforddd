@@ -866,55 +866,54 @@ in Angular complies with the navigational behaviour of hypermedia APIs, you shou
 
 ## Services
 
-Singleton services are important aspects in Angular applications. Most of the functionality that doesn't belong to UI components typically
-resides in the service layer. Later, we will discuss the service layer pattern in the form of application-, domain- and infrastructure services according
-to Domain-Driven Design practices. The repository pattern will be used in favor of state management services. 
+Singleton services are important constructs in Angular applications. Most of the functionality that doesn't belong to UI components typically
+resides in the service layer. Later, we will discuss the service layer pattern in the form of application-, domain- and infrastructure services conform
+to Domain-Driven Design practices.
 
 **» Stateful Services vs. Stateful Repositories**<br/>
 
 Just as mentioned before, it's common for Angular projects to use services for business functionality and state management. 
 We typically use stateful services if we need to share data across components or process HTTP requests and responses that perform CRUD operations. 
-In order to comply with Domain-Driven Design we will implement reactive repository services in favor of an active data store. 
-The repository service acts as a reactive storage place for globally accessible objects that can be used by other independent components. 
-Repositories in frontend architectures are not just for entities, but for all objects including anemic domain models or view models.
-Repositories also act as an anti-corruption layer allowing us to build models without its structure being influenced by the underlying Web-API interface.
-This is useful when piecing together an aggregate based on a fine-grained resource-oriented Web-API. 
+In order to comply with Domain-Driven Design, **we will use a reactive repository services in favor of an active data store to save the domain state and UI state.
+The repository service acts as a reactive storage place for globally accessible data which can be used by other independent components. 
+Repositories aren't only for entities, but for all objects including anemic domain models or view models. Repositories often act as an 
+anti-corruption layer allowing us to assemble data models without their structure being influenced by the underlying Web-API.
 
 Furthermore, we will introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. 
 The CQRS pattern enables us to answer different use cases with the respective data model. State changes in the repository will immediately
-replicate back to the view model (read side), that is, reactive projection through observables. Projections can be leveraged in several ways or layers. 
+replicate back to the view model (read side), that is, reactive projection through observables. A projection can be leveraged in several ways or layers. 
 The most common approach is an event-based projection causing an eventually consistent system. However, we will not encounter any problems of this kind,
-due to the reactive design of RxJS (Angular).
+due to the reactive design of Angular (RxJS).
 
 A reactive API exposes hot observables (BehaviorSubjects etc.) to manage the complexity of asynchronous data handling. If we share data with 
 other components, we must keep track of changes to prevent stale data and keep the UI in sync. RxJS gives us many great tools and 
-operators to implement the "projection phase" between the read and write side. 
+operators to implement the "projection phase" between the read and write side, which we will discuss shortly as "Projection Patterns".
 
 **» CQRS in the frontend?**<br/>
 
 With traditional CRUD-based web applications conform to the REST architectural style and the single data model approach,
 we may fall into the situation where we have to stitch together several resources to build a rich (view) model.
-Even in the case of RPC-like Web APIs, it's likely that we will encounter problems of this kind. Developers often use controller methods 
-to assemble (view) models. Which in the end leads to monolithic controllers:
+Even in the case of RPC-style Web APIs, it's likely that we will encounter problems of this kind. Developers often use UI controller methods 
+to assemble view models which in the end leads to monolithic UI controllers:
 
 ![](src/assets/images/Up_Down_Flow.png)
 
 The domain model focuses on business logic rather than presentation needs. Introducing a view model provider services to manage 
-complicated page flows and user interfaces allows us to query the appropriate view model for different UI scenarios. The view model provider service is a perfect 
-fit to pre-compute filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). That is, the CQRS pattern supports us in avoiding 
-over-bloated all-in-one models. The CQRS pattern may overcomplicate the system design, instead of simplifying it. Use it with care! 
+complicated page flows and user interfaces allows us to query the appropriate view model for different UI flows. A view model provider service is a perfect 
+fit to pre-compute filtering and sorting logic (https://angular.io/guide/styleguide#style-04-13). That is, the CQRS pattern helps to avoid over-bloated all-in-one models. 
+The CQRS pattern may overcomplicate the system design, instead of simplifying it. Use it with care! 
 
 CQRS in the frontend design system has many advantages:
 
 - Separating concerns of each data model
 - Unidirectional data flow
 - Composing several API endpoints
-- Immutable view models complies with the `.onPush` strategy
+- Immutable view models comply with the `.onPush` strategy
 - sort() and filter() pipes can be detached from templates (https://angular.io/guide/styleguide#do-not-add-filtering-and-sorting-logic-to-pipes)
 
-The view model provider service may appear in different forms. It may appear as a query method in an application service, or as a dedicated class:
+A view model provider may appear in different forms. It may appear as a query method in an application service, as a resolver or as special-purpose class:
 
-**» CQRS with API Segregation (Feature Services)**<br/>
+**» CQRS with API Segregation for Feature Services**<br/>
 
 ![](src/assets/images/Service_CQRS.png)
 
@@ -925,7 +924,8 @@ The view model provider service may appear in different forms. It may appear as 
 Typically, application services provide query methods for retrieving view models of domain state (CQS). However, for 
 complicated page flows and user interfaces it would be inefficient to assemble view models in a query method, 
 due to the large amounts of additional dependencies. Instead, we can use view model provider services to facilitate access to view models 
-in a more efficient way. Consequently, the application service as well as any other component can use the view model provider service to retrieve presentation data. 
+in a more efficient way. Consequently, the application service, resolver service, UI Controller or any other component can use the view model 
+provider service to retrieve presentation data. 
 
 ![](src/assets/images/QuerySideService.PNG)
 
