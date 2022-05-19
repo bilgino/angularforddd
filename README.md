@@ -322,7 +322,7 @@ Put simply, using rich domain models means more entities than services. Building
 **» Domain Model (DDD Aggregate Pattern)**<br/>
 
 The domain model entities contain data and behavior modeled around the business domain.
-In terms of DDD and CQRS, the domain model entity is an aggregate that contains only write operations that result in state changes.
+In terms of DDD and CQRS, the domain model entity is an aggregate that contains only write operations that result in state transitions.
 
 TypeScript domain model entity (CQS):
 
@@ -391,7 +391,7 @@ or we break out and use a dedicated REST call: `PUT: orders/22/addresses/5 : {ad
 
 Providing REST URIs to related sub resources like `orders/22/addresses/5` isn't mandatory anymore. Since all related data have already been included in the payload, we should continue to offer no more URIs like `/addresses/5`, 
 because the address resource has no context and isn't bound to a specific business use case! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address of an ongoing order process!
-But now here's a question: can an address exists outside an order or customer context and how can we synchronize state changes between the order and the customer context?
+But now here's a question: can an address exists outside an order or customer context and how can we synchronize state transitions between the order and the customer context?
 
 Navigating a resource model and its relationships or complying to use case specific aggregates can have a big impact on the frontend design system!
 For more information about the drawbacks of REST please visit the following website: https://www.howtographql.com/basics/1-graphql-is-the-better-rest/
@@ -880,13 +880,13 @@ Repositories aren't only for entities, but for all objects including anemic doma
 anti-corruption layer allowing us to assemble data models without their structure being influenced by the underlying Web-API.
 
 Furthermore, we will introduce the CQRS pattern to stem the heavy-lift when building complicated page flows and user interfaces. 
-The CQRS pattern enables us to answer different use cases with the respective data model. State changes in the repository will immediately
+The CQRS pattern enables us to answer different use cases with the respective data model. State transitions in the repository will immediately
 replicate back to the view model (read side), that is, reactive projection through observables. A projection can be leveraged in several ways or layers. 
 The most common approach is an event-based projection causing an eventually consistent system. However, we will not encounter any problems of this kind,
 due to the reactive design of Angular (RxJS).
 
 A reactive API exposes hot observables (BehaviorSubjects etc.) to manage the complexity of asynchronous data handling. If we share data with 
-other components, we must keep track of changes to prevent stale data and keep the UI in sync. RxJS gives us many great tools and 
+other components, we must keep track of state transitions to prevent stale data and keep the UI in sync. RxJS gives us many great tools and 
 operators to implement the "projection phase" between the read and write side, which we will discuss shortly as "Projection Patterns".
 
 **» CQRS in the frontend?**<br/>
@@ -1000,7 +1000,7 @@ The single service approach makes it difficult to gather multiple sources and co
 
 **» Projection Patterns**<br/>
 
-With the "projection by entity" pattern changes will be reflected almost simultaneously. 
+With the "projection by entity" pattern state transitions will be reflected almost simultaneously. 
 
 ![](src/assets/images/VMPRO.png)
 
@@ -1107,9 +1107,9 @@ View model objects may also be assembled with Angular resolver services!
 
 ## Application-, Domain-, Infrastructure- and UI Services
 
-One downside of sharing and binding state through services is that they are coupled to the view. Delayed changes to the state must be managed
-by asynchronous binding techniques to **keep the shared state in sync**. However, with EventEmitters, Subjects or BehaviorSubjects we share data
-through notifications. We subscribe and react to state changes using notification services. Those notifications are more than just changes to bound values.
+One downside of sharing and binding state through services is that they are coupled to the view. Delayed state transitions must be managed
+through asynchronous techniques to **keep the shared state in sync**. However, with EventEmitters, Subjects or BehaviorSubjects we share data
+through event notifications. We subscribe and react to state transitions using notification services. Those notifications are more than just changes to bound values.
 
 **» Application Service**<br/>
 
@@ -1178,7 +1178,7 @@ class Customer {
 
 **» Reactive CUD Repository**<br/>
 
-By implementing a CQRS-oriented repository, we share state and communicate domain state changes through reactive operators (RxJS BehaviorSubjects),
+By implementing a CQRS-oriented repository, we share state and communicate domain state transitions through reactive operators (RxJS BehaviorSubjects),
 along with the operations, transformations, and rules for creating, manipulating and storing domain state, emitting data anytime a business action
 occurs.The repository is allowed to perform data queries, but we don't use the repository for reporting! Unlike the Redux pattern where all the 
 state got located in a single central store, we undoubtedly must think a bit more complex on how to manage state crossing several layers. 
@@ -1229,9 +1229,9 @@ export class UIService{
 
 **» Keep the state in sync**<br/>
 
-Angular's change detection provides notification of any changes to state values by `getter` accessor methods, if the values are bound in the template. 
-This way, we keep the state in sync. Observables, Subjects or BehaviorSubjects can help to simplify asynchronous data-handling. 
-When sharing data that should always be in sync, reactive extensions are good solutions to this situation.
+Angular's built-in change detection allows us to synchronize state transitions through `getter` accessor methods. Observables, Subjects or 
+BehaviorSubjects advocates to simplify asynchronous data processing. When sharing data between components that should always be in sync, reactive extensions 
+are the best solutions to this challenge.
 
 # Component Tree Design
 
