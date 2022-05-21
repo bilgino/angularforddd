@@ -434,6 +434,7 @@ View model checklist:
 - Might or might not have dependencies
 - Should be located in its own file, repository service or UI container component
 - The name ends with the suffix -View e.g. UserProfileView, UserListView, UserDetailsView
+- The name of the view model is equivalent to the name of the UI Component e.g. UserListComponent
 
 Examples:
 
@@ -717,15 +718,23 @@ read(): Observable<Customer[]> {
 };
 ```
 
-The data mapper pattern is used in the repository service to assemble the appropriate model schema. 
+The data mapper pattern is used in the repository service to assemble the appropriate model schema.
 
 **» Structural Mapper Pattern**<br/>
 
-A data mapper performs a bidirectional transfer of data structures between two objects:
+The structural mapper performs a bidirectional transfer of data structures between two objects to ensure type safety with 
+class instances instead of JSON object declarations and interfaces used in arrays. In addition, we should always ensure the appropriate 
+data schema by using interfaces as contracts between the target and the source object. 
 
-Option 1 - Classic Assignment:
+Option 1 - Constructor Assignment:
 
 ```
+interface IOrder {
+    id: number;
+    status: Status;
+    total: number;
+}
+
 class Order {
     public id; 
     public status; 
@@ -738,10 +747,10 @@ class Order {
     }
 }
 
-const newOrder = new Order({id=22, status:Status.Pending, total:450})
+const orders = [new Order({id=22,status:Status.Pending,total:450})];
 ```
 
-Option 2 - EcmaScript Assignment:
+Option 2 - Constructor Assignment with ES6+:
 
 ```
 class Order {
@@ -769,10 +778,10 @@ class Order {
     }
 }
 
-const newOrder = new Order({id=22, status:Status.Pending});
+const orders = [new Order({id=22,status:Status.Pending})];
 ```
 
-Option 3 - Index Signature Assignment:
+Option 3 - Constructor Assignment with Index Signature:
 
 ```
 enum Status {
@@ -790,10 +799,10 @@ class Order {
     }
 }
 
-const mongo = new Order({ id: 33, status: Status.PENDING })
+const orders = [new Order({id:33,status:Status.PENDING})];
 ```
 
-Using an abstract super class to decouple the constructor assignment:
+Use an abstract super class to decouple the constructor assignment:
 
 ```
 enum Status {
@@ -813,11 +822,11 @@ abstract class IOrder {
 
 class Order extends IOrder {}
 
-const mongo = new Order({ id: 33, status: Status.PENDING })
+const orders = [new Order({id:33,status:Status.PENDING})];
 ```
 Unfortunately, index signature assignments don't support access modifier (public, private, protected).
 
-Option 4 - Mapper Assignment:
+Option 4 - Factory Mapper Assignment:
 
 ```
 class OrderMapper {
@@ -839,7 +848,33 @@ class OrderMapper {
     }
 }
 
-const OrderDto = OrderMapper.mapToOrder(new Order(), Dto);
+const orders = [OrderMapper.mapToOrder(new Order(), {id:33,status:Status.PENDING})];
+```
+
+Option 5 - Builder Pattern:
+
+```
+class Order {
+    public id;
+    public status;
+    public total;
+    public address: Address;
+    public customer: Customer;
+    
+    constructor() {}
+    
+    public setAddress(newAddress: Address): this {
+        this.address = new Address(newAddress);
+        return this;
+    }
+    
+    public setCustomer(newCustomer: Customer): this {
+        this.customer = new Customer(newCustomer);
+        return this.;
+    }
+}
+
+const orders = [new Order().setAddress({...}).setCustomer({...})];
 ```
 
 Mapper checklist:
