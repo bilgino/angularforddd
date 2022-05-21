@@ -369,6 +369,7 @@ One of the most important characteristics of the aggregate pattern is to protect
 - Aggregates don't publish domain events
 - Inter-Aggregate references established by global IDs (primary keys) rather than by object references is optional
 - Aggregates build the foundation for view models
+- Since the web browser is a monolithic environment with a homogenous stack, transactional boundaries aren't relevant
 
 **» Routing, REST and DDD Aggregates**<br/>
 
