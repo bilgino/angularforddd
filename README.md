@@ -78,27 +78,28 @@ communication through layers and demanding business logic from services. The mul
 
 Examples:<br/>
 
-Presentation layer: *ModalDialog, Popover, BreakpointObserver, LoadingSpinner*<br/>
+Presentation layer: *ModalDialogService, BreakpointObserver, LoadingSpinner, NavigationController*<br/>
 Application layer: *Authentication, Search*<br/>
-Domain layer: *Domain Logic, Business Logic*<br/>
+Domain layer: *Order, Payment, Customer, Shipment, Products*<br/>
 Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*
 *Logging, Error, Security, Configuration, Token, Monitoring, Date*
 
 **» Applying Domain-Driven Design to Angular**<br/>
 
-An important aspect of Domain-Driven Design is that the domain model is kept isolated from other concerns of the application. Ideally, the domain layer 
-is self-contained and focused on abstracting the business domain. Very often frontend applications validate business rules that are immediately reflected 
-in the presentation layer, particularly in SPA applications when navigating through HTML forms that have cross-dependencies in terms of distributed business rules. 
-An isolated domain layer allows us to avoid domain logic leaking into other layers or surrounding services. In addition, we don't want to command against the server upon every user input. 
+An important aspect of Domain-Driven Design is that the domain model is kept isolated from other concerns of the application. Ideally, the 
+domain layer is self-contained and focused on abstracting the business domain. Very often frontend applications validate business rules that
+are immediately reflected in the presentation layer, particularly in SPA applications when navigating through HTML forms that have 
+cross-dependencies in terms of distributed business rules. An isolated domain layer allows us to avoid domain logic leaking into other 
+layers or surrounding services. In addition, we don't want to command against the server upon every user input. 
 Therefore, the domain layer pattern in the frontend architecture sounds like a very good idea.
 
 Domain-oriented layering is often considered the first structuring criterion in Angular applications. However, layered architectures 
-are independent of vertical abstraction. For many applications it's sufficient to stick to the horizontal abstraction. The main reasons for modular segmentation in 
-Angular applications are lazy-loading, scoping and distribution. 
+are independent of vertical abstraction. For many applications it's sufficient to stick to the horizontal abstraction. The main reasons for 
+modular segmentation in Angular applications are lazy-loading, scoping and distribution. 
 
-When application services carry out business use cases, it may be a good idea to keep business use cases that contain less logic in the UI controller, 
-like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated classes instead!
-In addition, we want to share state and logic of these components with other independent components. 
+When application services carry out business use cases, it may be a good idea to keep business use cases that contain less logic in the UI 
+controller, like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated 
+classes instead! In addition, we want to share state and logic of these components with other independent components. 
 
 It's fairly debatable whether higher granularity distributed across several layers introduce extra complexity in frontend architectures. 
 Should we really apply Domain-Driven Design for web frontend applications? As a consequence, many developers tend to lean toward weaker 
@@ -114,8 +115,8 @@ Angular's core patterns such as modules, services, factories etc. affords us to 
 The angular.io styleguide states categories for organizing blocks of code: **Shared Modules** and **Widget Modules** contain the 
 most commonly used code, while **Domain Modules** encapsulate blocks of code, that is not intended to be used outside that module, 
 makes **Domain Modules** a good candidate for the bounded context pattern. The **Service Module** shares its content application 
-wide as singletons. The **Root Module** includes several domain modules. That is, the entry point is the root module. For a more complete 
-overview, visit the following website https://angular.io/guide/module-types#summary-of-ngmodule-categories
+wide as singletons. The **Root Module** includes several domain modules. That is, the entry point is the root module. For a more 
+complete overview, visit the following website https://angular.io/guide/module-types#summary-of-ngmodule-categories
 
 Angular's module system gives a clean design response:  
 
@@ -144,9 +145,9 @@ Following checklist can help to facilitate the orchestration of ngModules:<br/>
 
 **» Bounded Context Pattern**<br/>
 
-The bounded context pattern divides the domain model into related domain fragments. In a service-based environment a bounded context marks the boundaries of an application service. An application service is a concretion of the bounded context pattern! 
-This is similar to **Domain Modules** where we mark the boundaries based on features. Applying the bounded context pattern to domain modules 
-allows us to structure Angular modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
+The bounded context pattern divides the domain model into related domain fragments. In a service-based environment a bounded context marks the 
+boundaries of an application service. An application service is a concretion of the bounded context pattern! This is similar to **Domain Modules** where we mark the boundaries based on features. 
+Applying the bounded context pattern to domain modules allows us to structure Angular modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
 several aggregates. 
 
 An important consideration when modeling a bounded context on the server-side is that it doesn't require a fully integrated REST API. 
@@ -246,10 +247,15 @@ In the second example, domain logic is decoupled from the UI controller. Encapsu
 Keeping the model as independent as possible improves reusability and allows easier refactoring.
 Neither domain state nor domain logic should be written as part of the UI controller.
 
-Consequently, using feature services for structural and behavioral modeling while domain models remain pure value containers is another common bad 
-practice in Angular projects and known as the "Fat Service, Skinny Model" pattern: 
+Consequently, using feature services for structural and behavioral modeling while domain models remain pure value containers is another 
+common bad practice in Angular projects and known as "Fat Service, Skinny Model" pattern: 
 
 ```
+
+enum AMOUNT {
+    MAX_VALID: 100
+}
+
 @Injectable()
 class AccountService {
     private accounts = [{ id: 1, balance: 4500 }, { id: 2, balance: 2340 }];
@@ -273,16 +279,23 @@ We should strive to push domain logic into entities making boundaries become mor
 ```
 @Injectable()
 class AccountService {
+
     constructor(private accountRepository: AccountRepositoryService){}  
     
-    public changeBalance(id: number, amount: number): Account {
-        const account = this.accountRepository.getById(id);
-        account.updateBalance(amount);
-        return account;
+    public changeBalance(id: number, amount: number): Observable<Account> {
+        return this.accountRepository.getById(id).pipe(
+          map((account: Account) => {
+            account.updateBalance(amount);
+          })
+        );
     }
     
     public deposit(){}
     public widthDraw(){}
+}
+
+enum AMOUNT {
+    MAX_VALID: 100
 }
 
 class Account {
@@ -308,11 +321,11 @@ class AccountRepositoryService {
     
     constructor(){}
     
-    public getById(id: number): Account {
+    public getById(id: number): Observable<Account> {
         if (id <= 0) {
-            throw Error(...)
+            throw Error(...);
         }
-        return accounts.find(...)
+        return accounts.find(...);
     }
 }
 ```
@@ -365,11 +378,11 @@ One of the most important characteristics of the aggregate pattern is to protect
 
 **» From the viewpoint of frontend development:**
 
-- Aggregates are immutable objects per default
-- Aggregates don't publish domain events
+- Aggregates as a whole are immutable per default 
+- Aggregates don't publish domain events and won't be out‐of‐sync due to reactive state management
 - Inter-Aggregate references established by global IDs (primary keys) rather than by object references is optional
+- Since the web browser is a monolithic environment with a homogenous stack, aggregates can be reused anywhere
 - Aggregates build the foundation for view models
-- Since the web browser is a monolithic environment with a homogenous stack, transactional boundaries aren't relevant
 
 **» Routing, REST and DDD Aggregates**<br/>
 
@@ -504,7 +517,7 @@ in reactive streams pipes and hand over the result to an object factory.
 **» Object Factory Pattern:**<br/>
 
 Objects can be constructed using regular constructors or using static factories. The object factory pattern helps to create complex objects like aggregates that involve the 
-creation of other related objects and more importantly assists in type safety with dynamic JavaScript objects and ES6+ features such as spread, rest, destructuring and 
+creation of other related objects and more importantly assists in type safety with JavaScript objects and ES6+ features such as spread, rest, destructuring and 
 merging.
 
 Option 1:
