@@ -93,9 +93,9 @@ cross-dependencies in terms of distributed business rules. As an example, we don
 An isolated domain layer allows us to avoid domain logic leaking into other layers or surrounding services. In addition, we don't want to command against the server upon every user input. 
 Therefore, the domain layer pattern in the frontend architecture sounds like a very good idea.
 
-Domain-oriented layering is often considered the first structuring criterion in Angular applications. However, layered architectures 
-are independent of vertical abstraction. For many applications it's sufficient to stick to the horizontal abstraction. The main reasons for 
-modular segmentation in Angular applications are lazy-loading, scoping and distribution. 
+Domain-oriented layering is often considered the first structuring criterion in Angular applications. For many applications however, it's sufficient to
+stick with horizontal slicing, since vertical slicing isn't mandatory. The main reasons for modular segmentation in Angular applications are lazy-loading, 
+scoping and distribution. 
 
 When application services carry out business use cases, it may be a good idea to keep business use cases that contain less logic in the UI 
 controller, like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated 
