@@ -78,19 +78,19 @@ communication through layers and demanding business logic from services. The mul
 
 Examples:<br/>
 
-Presentation layer: *ModalDialogService, BreakpointObserver, LoadingSpinner, NavigationController*<br/>
+Presentation layer: *ModalDialogService, BreakpointObserver, LoadingSpinner, NavController*<br/>
 Application layer: *Authentication, Search*<br/>
-Domain layer: *Order, Payment, Customer, Shipment, Products*<br/>
+Domain layer: *Order, Payment, Customer, Shipment, Product, Address, Inventory*<br/>
 Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*
 *Logging, Error, Security, Configuration, Token, Monitoring, Date*
 
 **» Applying Domain-Driven Design to Angular**<br/>
 
 An important aspect of Domain-Driven Design is that the domain model is kept isolated from other concerns of the application. Ideally, the 
-domain layer is self-contained and focused on abstracting the business domain. Very often frontend applications validate business rules that
+domain layer is self-contained and focuses on abstracting the business domain. Very often frontend applications validate business rules that
 are immediately reflected in the presentation layer, particularly in SPA applications when navigating through HTML forms that have 
-cross-dependencies in terms of distributed business rules. An isolated domain layer allows us to avoid domain logic leaking into other 
-layers or surrounding services. In addition, we don't want to command against the server upon every user input. 
+cross-dependencies in terms of distributed business rules. As an example, we don't want to display the order button, if the basket is empty.
+An isolated domain layer allows us to avoid domain logic leaking into other layers or surrounding services. In addition, we don't want to command against the server upon every user input. 
 Therefore, the domain layer pattern in the frontend architecture sounds like a very good idea.
 
 Domain-oriented layering is often considered the first structuring criterion in Angular applications. However, layered architectures 
