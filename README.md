@@ -403,8 +403,8 @@ Even in the case of server-side generated aggregates, something seems to be wron
 then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and consequently process an HTTP update: `PUT: /orders/22 : {order:{ address... }}`, 
 or we break out and use a dedicated REST call: `PUT: orders/22/addresses/5 : {address:{}}`. The second approach seems to contradict the basic idea of an aggregate to avoid revealing its internal state to the outside world! 
 
-Providing REST URIs to related sub resources like `orders/22/addresses/5` isn't mandatory anymore. Since all related data have already been included in the payload, we should continue to offer no more URIs like `/addresses/5`, 
-because the address resource has no context and isn't bound to a specific business use case! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address of an ongoing order process!
+Providing REST URIs to related sub resources like `orders/22/addresses/5` isn't mandatory anymore since all related entities have already been included in the payload. We should continue to offer no more URIs like `/addresses/5`, 
+as the address resource has no context and isn't bound to a specific business use case! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address of an ongoing order process!
 But now here's a question: can an address exists outside an order or customer context and how can we synchronize state transitions between the order and the customer context?
 
 Navigating a resource model and its relationships or complying to use case specific aggregates can have a big impact on the frontend design system!
