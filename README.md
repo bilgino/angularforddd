@@ -397,7 +397,7 @@ composition of several entities, database tables, GUI models or any special-purp
 Unless a REST resource is already an aggregate, we would need to stitch the aggregate together for each initial routing event and would need to provide a query API to the internal state of the aggregate. Consequently, 
 an application or repository service would provide the public interface to cover all queries to the aggregate. In this scenario, the repository service acts 
 as an anti-corruption layer to the underlying resource model. Unfortunately, this approach wouldn't work well, since the creation process of an aggregate on 
-the client-side would result in countless additional HTTP requests (N + 1 Problem)! Hence, the aggregate should be provided by the backend!
+the client-side could result in countless additional HTTP requests (N + 1 Problem)! Hence, the aggregate should be provided by the backend!
 
 Even in the case of server-side generated aggregates, something seems to be wrong here! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data about customers, products or addresses, 
 then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and consequently process an HTTP update: `PUT: /orders/22 : {order:{ address... }}`, 
@@ -405,7 +405,7 @@ or we break out and use a dedicated REST call: `PUT: orders/22/addresses/5 : {ad
 
 Providing REST URIs to related sub resources like `orders/22/addresses/5` isn't mandatory anymore since all related entities have already been included in the payload. We should continue to offer no more URIs like `/addresses/5`, 
 as the address resource has no context and isn't bound to a specific business use case! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address of an ongoing order process!
-But now here's a question: can an address exists outside an order or customer context and how can we synchronize state transitions between the order and the customer context?
+But now here's some questions: can an address exists outside an order or customer context and how can we synchronize state transitions between the order and the customer context?
 
 Navigating a resource model and its relationships or complying to use case specific aggregates can have a big impact on the frontend design system!
 For more information about the drawbacks of REST please visit the following website: https://www.howtographql.com/basics/1-graphql-is-the-better-rest/
