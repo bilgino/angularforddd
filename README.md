@@ -6,7 +6,7 @@ An introduction for building large-scale enterprise applications with Angular.
 Applying Object-Oriented Design, Domain-Driven Design and Command-Query-Responsibility-Segregation in the frontend architecture, we break down complex requirements 
 into logical boundaries and divide business logic into layers with different responsibilities to keep our code in good condition.
 
-## Frontend coupled to OOD, DDD and CQRS
+# Frontend coupled to OOD, DDD and CQRS
 
 The building blocks of Angular already encompasses code organisation strategies. Nevertheless, to gain a better design we will bypass the 
 traditional data-centric approach and consider strategies like Object-Oriented Design, Domain-Driven Design and Command-Query-Responsibility-Segregation for frontend architectures:
@@ -33,10 +33,31 @@ The Aspect Oriented Programming promotes an abstraction and encapsulation of cro
 resulting in loose coupling between the actual logic and the infrastructure logic. For more information about AOP in TypeScript please
 visit the following website: https://jaxenter.com/cross-cutting-concerns-angular-2-typescript-128925.html
 
-## Layered Architecture
+## Applying Domain-Driven Design to Angular 
 
+An important aspect of Domain-Driven Design is that the domain model is kept isolated from other concerns of the application. Ideally, the
+domain layer is self-contained and focuses on abstracting the business domain. Very often frontend applications validate business rules that
+are immediately reflected in the presentation layer, particularly in SPA applications when navigating through HTML forms that have
+cross-dependencies in terms of distributed business rules. As an example, we don't want to display the order button, if the basket is empty.
+An isolated domain layer allows us to avoid domain logic leaking into other layers or surrounding services. In addition, we don't want to command against the server upon every user input.
+Therefore, the domain layer pattern in the frontend architecture sounds like a very good idea.
+
+Domain-oriented layering is often considered the first structuring criterion in Angular applications. For many applications however, it's sufficient to
+stick with horizontal slicing, since vertical slicing isn't mandatory. The main reasons for modular segmentation in Angular applications are lazy-loading,
+scoping and distribution.
+
+When application services carry out business use cases, it may be a good idea to keep business use cases that contain less logic in the UI
+controller, like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated
+classes instead! In addition, we want to share state and logic of these components with other independent components.
+
+It's fairly debatable whether higher granularity distributed across several layers introduce extra complexity in frontend architectures.
+Should we really apply Domain-Driven Design for web frontend applications? As a consequence, many developers tend to lean toward weaker
+patterns because they see it as an unnecessary practice. Often a simpler data-centric approach is sufficient. For most web applications MVC
+or Flux/Redux may be more appropriate. Before starting using advanced concepts we must validate incoming requirements.
 Considering multilayered (4-tier) architectures, the question arises of how to organize layers in SPA applications? This question refers to code splitting,
 communication through layers and demanding business logic from services. The multilayered architecture in Domain-Driven Design embraces following layers:
+
+## Layered Architecture
 
 **» Horizontal slicing**<br/> Slicing the application into layers...
 
@@ -83,28 +104,6 @@ Application layer: *Authentication, Search*<br/>
 Domain layer: *Order, Payment, Customer, Shipment, Product, Address, Inventory*<br/>
 Infrastructure layer: *Persistence, Caching, Messaging, Crypto, Converter, Validation, Translation*
 *Logging, Error, Security, Configuration, Token, Monitoring, Date*
-
-**» Applying Domain-Driven Design to Angular**<br/>
-
-An important aspect of Domain-Driven Design is that the domain model is kept isolated from other concerns of the application. Ideally, the 
-domain layer is self-contained and focuses on abstracting the business domain. Very often frontend applications validate business rules that
-are immediately reflected in the presentation layer, particularly in SPA applications when navigating through HTML forms that have 
-cross-dependencies in terms of distributed business rules. As an example, we don't want to display the order button, if the basket is empty.
-An isolated domain layer allows us to avoid domain logic leaking into other layers or surrounding services. In addition, we don't want to command against the server upon every user input. 
-Therefore, the domain layer pattern in the frontend architecture sounds like a very good idea.
-
-Domain-oriented layering is often considered the first structuring criterion in Angular applications. For many applications however, it's sufficient to
-stick with horizontal slicing, since vertical slicing isn't mandatory. The main reasons for modular segmentation in Angular applications are lazy-loading, 
-scoping and distribution. 
-
-When application services carry out business use cases, it may be a good idea to keep business use cases that contain less logic in the UI 
-controller, like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated 
-classes instead! In addition, we want to share state and logic of these components with other independent components. 
-
-It's fairly debatable whether higher granularity distributed across several layers introduce extra complexity in frontend architectures. 
-Should we really apply Domain-Driven Design for web frontend applications? As a consequence, many developers tend to lean toward weaker 
-patterns because they see it as an unnecessary practice. Often a simpler data-centric approach is sufficient. For most web applications MVC 
-or Flux/Redux may be more appropriate. Before starting using advanced concepts we must validate incoming requirements.
 
 # Angular core patterns
 
@@ -251,7 +250,6 @@ Consequently, using feature services for structural and behavioral modeling whil
 common bad practice in Angular projects and known as "Fat Service, Skinny Model" pattern: 
 
 ```
-
 enum AMOUNT {
     MAX_VALID: 100
 }
