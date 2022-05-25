@@ -37,10 +37,10 @@ visit the following website: https://jaxenter.com/cross-cutting-concerns-angular
 
 An important aspect of Domain-Driven Design is that the domain model is kept isolated from other concerns of the application. Ideally, the
 domain layer is self-contained and focuses on abstracting the business domain. Very often frontend applications validate business rules that
-are immediately reflected in the presentation layer, particularly in SPA applications when navigating through HTML forms that have
+are immediately reflected back to the user interface, particularly in SPA applications when navigating through HTML forms that have
 cross-dependencies in terms of distributed business rules. As an example, we don't want to display the order button, if the basket is empty.
-An isolated domain layer allows us to avoid domain logic leaking into other layers or surrounding services. In addition, we don't want to command against the server upon every user input.
-Therefore, the domain layer pattern in the frontend architecture sounds like a very good idea.
+An isolated domain layer allows us to avoid domain logic leaking into other layers or surrounding services. In addition, we don't want to command 
+against the server upon every user input. Therefore, the domain layer pattern in the frontend architecture sounds like a very good idea.
 
 Domain-oriented layering is often considered the first structuring criterion in Angular applications. For many applications however, it's sufficient to
 stick with horizontal slicing, since vertical slicing isn't mandatory. The main reasons for modular segmentation in Angular applications are lazy-loading,
