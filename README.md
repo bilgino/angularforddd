@@ -250,10 +250,6 @@ Consequently, using feature services for structural and behavioral modeling whil
 common bad practice in Angular projects and known as "Fat Service, Skinny Model" pattern: 
 
 ```
-enum AMOUNT {
-    MAX_VALID: 100
-}
-
 @Injectable()
 class AccountService {
     private accounts = [{ id: 1, balance: 4500 }, { id: 2, balance: 2340 }];
@@ -290,10 +286,6 @@ class AccountService {
     
     public deposit(){}
     public widthDraw(){}
-}
-
-enum AMOUNT {
-    MAX_VALID: 100
 }
 
 class Account {
@@ -374,10 +366,14 @@ One of the most important characteristics of the aggregate pattern is to protect
 - Multiple aggregates can reuse one value object
 - Each aggregate root gets its own repository 
 
+The aggregate spans objects relevant to the use case and its domain rules:
+
+![](src/assets/images/Aggregate_BR.PNG)
+
 **» From the viewpoint of frontend development:**
 
 - Aggregates as a whole are immutable per default 
-- Aggregates don't publish domain events and won't be out‐of‐sync due to reactive state management
+- Aggregates don't publish domain events and won't be out‐of‐sync due to reactivity
 - Inter-Aggregate references established by global IDs (primary keys) rather than by object references is optional
 - Since the web browser is a monolithic environment with a homogenous stack, aggregates can be reused anywhere
 - Aggregates build the foundation for view models
@@ -987,18 +983,18 @@ Using a single feature service or repository service for reads and writes (CQS):
 @Injectable()
 class ProductsService { 
 
-    private productsSelectedIds: number[] = [0,4,9];
+    private selectedProductIds: number[] = [1,4,9];
     private products: Product[] = [];
-    private productsSelected$: Subject<number> = new BehaviorSubject<number>(selectedProducts);
+    private selectedProductIds$: Subject<number> = new BehaviorSubject<number>(selectedProductIds);
     private products$: Subject<Product[]> = new BehaviorSubject<Product[]>(products);
 
-    private selectedProductListView: Observable<Readonly<ProductView>[]> = combineLatest([
+    private productListView: Observable<Readonly<ProductListView>[]> = combineLatest([
         this.products$,
-        this.productsSelected$,
+        this.selectedProductIds$,
     ]).pipe(
         map(([products, selected]: [Product[], number[]]) => {
             return products.map((item: Product) => {
-                return ProductView.create({
+                return ProductListView.create({
                     ...item,
                     active: selected.includes(item.id),
                 });
@@ -1014,24 +1010,29 @@ class ProductsService {
     private loadProducts(): void {
         return this.http.get<Product[]>('/products').subscribe(products => this.products$.next(products));
     }
-    // Read
-    public getSelectedProductsListView(): Observable<Readonly<ProductView>[]> {
-        return this.selectedProductsListView;
+    
+    // READ
+    public getSelectedProductListView(): Observable<Readonly<ProductListView>[]> {
+        return this.productListView.asObservable();
     }
     
+    // ADD
     public addSelectedProduct(id:number): void {
-        this.productsSelectedIds = [...productsSelectedIds, id];
-        this.productsSelected$.next(this.selectedProducts);
+        this.selectedProductIds = [...selectedProductIds, id];
+        this.selectedProductIds$.next(this.selectedProductIds);
     }
-    // Create
+    
+    // CREATE
     public createProduct(): void {
         ...
     }
-    // Update
+    
+    // UPDATE
     public updateProduct(): void {
         ...
     }
-    // Delete
+    
+    // DELETE
     public deleteProduct(): void {
         ...
     }
