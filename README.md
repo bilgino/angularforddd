@@ -926,11 +926,11 @@ CQRS in the frontend design system has many advantages:
 
 A view model provider may appear in different forms. It may appear as a query method in an application service, as a resolver or as special-purpose class:
 
-**» CQRS with API Segregation for Feature Services**<br/>
+**» CQRS with API Segregation using Feature Services**<br/>
 
 ![](src/assets/images/Service_CQRS.png)
 
-**» CQRS in compliance with DDD tactical patterns**<br/>
+**» CQRS with DDD tactical patterns using Providers**<br/>
 
 ![](src/assets/images/Reactive_Flow.png)
 
@@ -1011,7 +1011,7 @@ class ProductsService {
 
 The single service approach makes it difficult to gather multiple sources and could lead to circular dependencies. 
 
-**» CQRS and the Command Pattern**<br/>
+**» CQRS with Commands and Queries using the Command Pattern**<br/>
 
 @TODO [text]
 @TODO [image]
@@ -1063,40 +1063,40 @@ class Order extends OrderViewModel {
 ``` 
 
 This implementation has some drawbacks either. It only works for a single entity! 
-What if a view model requires several sources? We can create a dedicated class in form of a view model provider service. 
-The purpose of the view model provider service is to enclose and create view models for specific use cases. 
+What if a view model requires several sources? We can create a special-purpose class in form of a view model provider service. 
+The purpose of the view model provider service is to tailor view models for specific use cases. 
 
 ```
 @Injectable()
-class OrderViewModelProvider {
+class OrderViewProvider {
    
     constructor(
       private orderRepository: OrderRepositoryService,             
-      private productRepository: ProductRepositoryService,                         
+      private productRepository: ProductRepositoryService,
+      private customerRepository: CustomerRepositoryService,                             
       private translateService: TranslationService              
       ){}
 
-    public getOrdersByStatus(status:string): Observable<Array<OrderViewModel>> {
+    public getOrdersByStatus(status:string): Observable<Array<OrderView>> {
         return this._orderRepository.getAll()
         .pipe(
-          groupBy(status),
           filter(status),
           map(()=>{
-             return translateService(data);             
+             return translateService();             
           })
           mergeMap(()=>{
-             return of([new OrderViewModel(data)...]);             
+             return of([new OrderView()...]);             
           })
         )
     }
     
-    public getProductsByOrderId(id:number): Observable<Array<ProductViewModel>> {
+    public getProductByOrderId(id:number): Observable<Array<ProductView>> {
         return combineLatest([this._orderRepository.getOrders(), this._productRepository.getProducts()])
         .pipe(
           filter(id),
           groupBy(),
           mergeMap([...]) => {
-            return of([new ProductViewModel(data)...]);           
+            return of([new ProductView()...]);           
           }),
           shareReplay(1)
         )        
@@ -1105,17 +1105,17 @@ class OrderViewModelProvider {
 }
 ``` 
 
-Requesting the view model provider service in the view controller class:
+Requesting the view model provider service in the view component class:
 
 ```
 @Component({
   selector: 'order',
   template: `...`,
-  providers: [OrderViewModelProvider]
+  providers: [OrderViewProvider]
 })
 export class OrderComponent {
 
-  constructor(private orderProvider: OrderViewModelProvider) {
+  constructor(private orderProvider: OrderViewProvider) {
     this.orderProvider.getOrdersByStatus('pending').subscribe(()=>{})
   }
 }
