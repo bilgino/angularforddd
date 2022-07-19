@@ -531,19 +531,20 @@ newOrder.propertyB = ...
 Option 2:
 
 ```
-interface OrderProps {
+interface IOrder{
     status: OrderStatus;
 }
 
-class Order {
+class Order implements IOrder {
     public status: OrderStatus;
     
-    private constructor(props: OrderProps) {
-    	this.status = props.status;
+    private constructor(props : IOrder){
+        this.status = props.status;
     }
     
-    public static create(props: OrderProps): Order {
-      return new Order(props);
+    public static create(props: IOrder): Order {
+        if(!props) return new Order();
+        return new Order(props);
     }
     
     public static empty(): Order {
@@ -562,41 +563,10 @@ class Order {
 }
 
 const newOrder = Order.create({status:OrderStatus.Pending});
-const emptyOrder = Order.empty();
-```
-
-Option 3:
-
-```
-interface IOrder{
-    status: OrderStatus;
-}
-
-class Order implements IOrder {
-
-    private constructor(public status = OrderStatus.New){}
-    
-    public static create(json: IOrder): Order {
-        if(!json) return new Order();
-        return new Order(json.status);
-    }
-    
-    public toJSON(): object {
-        const serialized = Object.assign(this);
-        delete serialized.status;
-        return serialized;
-    }
-    
-    public toString(): string {
-        return "";
-    }
-}
-
-const newOrder = Order.create({status:OrderStatus.Pending});
 const jsonOrder = newOrder.toJSON();
 ```
 
-Option 4:
+Option 3:
 
 ```
 abstract class ViewModel {
@@ -630,7 +600,7 @@ class ProductViewModel extends ViewModel {
   }
   
   private static canNotCreate(props: IProductView): boolean {
-    // validate props and return validation result
+    // validate props and return error
   }
   
   public static create(props: IProductViewModel): Readonly<ProductViewModel> {
@@ -917,7 +887,7 @@ to Domain-Driven Design practices.
 
 Just as mentioned before, it's common for Angular projects to use services for business functionality and state management. 
 We typically use stateful services if we need to share data across components or process HTTP requests and responses that perform CRUD operations. 
-In order to comply with Domain-Driven Design, **we will use a reactive repository services in favor of an active data store to save the domain state and UI state.
+In order to comply with Domain-Driven Design, we will use a reactive repository services in favor of an active data store to save the domain state and UI state.
 The repository service acts as a reactive storage place for globally accessible data which can be used by other independent components. 
 Repositories aren't only for entities, but for all objects including anemic domain models or view models. Repositories often act as an 
 anti-corruption layer allowing us to assemble data models without their structure being influenced by the underlying Web-API.
@@ -1046,7 +1016,7 @@ The single service approach makes it difficult to gather multiple sources and co
 @TODO [text]
 @TODO [image]
 
-**» Projection Patterns**<br/>
+**» View Model Provider Patterns**<br/>
 
 With the "projection by entity" pattern state transitions will be reflected almost simultaneously. 
 
@@ -1200,9 +1170,15 @@ applications. In Angular applications, stateful services are the first choice to
 
 There are an array of different states to deal with:
 
-Domain State | Addressable State (URL) | Draft State | Persisted State | UI State | Session State | Application State |
-------------|------------------|-------------|-----------------|--------------|--------------|--------------|
-Entity | Sort/Filter/Search | E-Mail, Comments | IndexedDB, Local Storage | Scroll-position| Cookies, Session Storage | Online/Offline|
+Type | Example                  | Location  | 
+------------|--------------------------|-----------|
+Domain State | Entity, Resource, Model  | Im-Memory, Browser API
+User Interface State | Scrollposition, Panel, Zoom | Im-Memory, Browser API
+Addressable State | /?sort /?filter /?search | Browser History API
+Draft State | Comments, Mails          | In-Memory, Browser Storage API
+Session State | Tokens, Keys             | In-Memory, Browser Storage API, Cookies
+Application State | Online/Offline           | Browser API
+ERROR State | throw Error()            | Client / Server
 
 ## Domain state   
 
