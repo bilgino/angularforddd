@@ -1164,16 +1164,16 @@ export class NotificationService {
 
 # State Management 
 
-With Single Page Applications (SPA), we get the flexibility and cross-platform functionality of a web application as well as the 
+With Single Page Applications (SPA), we get the flexibility and cross-platform functionality of web applications as well as the 
 client state management of native applications. Typically, SPA applications have more complex states than traditional server-side 
-applications. In Angular applications, stateful services are the first choice to share state beyond the lifetime of components. 
+applications. In Angular applications, stateful services are first-class entities for sharing state across components. 
 
-There are an array of different states to deal with:
+There are many different state types to deal with:
 
 Type | Example                  | Location  | 
 ------------|--------------------------|-----------|
 Domain State | Entity, Resource, Model  | Im-Memory, Browser API
-User Interface State | Scrollposition, Panel, Zoom | Im-Memory, Browser API
+User Interface State | Position, Panel, Zoom    | Im-Memory, Browser API
 Addressable State | /?sort /?filter /?search | Browser History API
 Draft State | Comments, Mails          | In-Memory, Browser Storage API
 Session State | Tokens, Keys             | In-Memory, Browser Storage API, Cookies
