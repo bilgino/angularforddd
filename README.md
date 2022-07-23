@@ -383,9 +383,9 @@ The aggregate spans objects relevant to the use case and its domain rules:
 
 **» Routing, REST and DDD Aggregates**<br/>
 
-Since the navigation pattern of the Angular router engine complies with the navigational behavior of hypermedia systems (HATEOAS) where URIs identify resources conform to RESTful 
+Since the navigation principle of the Angular router engine adheres to the navigational behavior of hypermedia systems (HATEOAS) where URIs identify linked resources conform to RESTful 
 practices, we should reexamine the idea of building client-side aggregates. Since an aggregate builds a group of related domain entities and value objects, wouldn't we then have to group 
-resources instead?
+linked resources instead?
 
 In the classic data-centric approach, database tables and their relations are used as a foundation for the resource model. But is this common and always true? 
 Well, it all depends on the use case and how we interpret a REST resource! A REST resource may be a representation of a single entity, database table or a materialized view. 
