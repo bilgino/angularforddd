@@ -396,16 +396,17 @@ repository service provides the public interface to handle all queries to the ag
 resource model. Unfortunately, this approach might not work well, since the creation of an aggregate on the client-side could result in countless additional HTTP requests 
 (N + 1 Problem)! Hence, the aggregate entity as a conceptual whole should be negotiated with the REST API!
 
-Even in the case of server-side created aggregates, something doesn't feel right here! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data 
-like addresses, then how do we update the address of an order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and process an HTTP update 
-command: `PUT: /orders/22 : {order:{ address... }}` or we can use a dedicated REST endpoint for updating the order address: `PUT: orders/22/addresses/5 : {address:{}}`.
-The server-side request handler would fetch the order aggregate entity by its ID property from the repository and process an update like `Order.updateAddress(newAddress)`.
-The second approach seems to contradict the basic idea of an aggregate to avoid revealing its internal state to ensure transactional consistency boundaries. 
+Even in the case of server-side aggregates, something doesn't feel right here! First, we shouldn't provide a pure domain entity to the client side. Secondly, if 
+the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data like the delivery address, then how do we update the delivery address of an order? 
+Either we invoke a business method of the order aggregate like `Order.updateDeliveryAddress(newAddress)` and consequently process an HTTP update command: `PUT: /orders/22 : {order:{ deliveryAddress... }}` 
+or we can use a dedicated REST endpoint for updating the order delivery address: `PUT: orders/22/addresses/5 : {deliveryAddress:{}}`. The server-side request handler would now fetch the order 
+aggregate entity using its ID property from the repository and process an update like `Order.updateDeliveryAddress(newAddress)`. The second approach seems to contradict the basic 
+idea of an aggregate to avoid revealing its internal state to ensure transactional consistency boundaries!? 
 
 We shouldn't strive to use REST URLs like `/addresses/5`, since the address resource is without any context! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address 
 of an ongoing order process! But now here's a question: can an address exists outside an order or customer context? 
 
-Navigating a resource model and its relationships or complying to use case related aggregates can have a big impact on the frontend architecture!
+Navigating a resource model and its relationships or adhering to use case(s) related aggregates can have a big impact to the frontend architecture!
 For more information about the drawbacks of REST please visit the following website: https://www.howtographql.com/basics/1-graphql-is-the-better-rest/
 
 <br/>
