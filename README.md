@@ -379,7 +379,7 @@ The aggregate spans objects relevant to the use case and its domain rules:
 - Aggregates don't publish domain events and won't be out‐of‐sync due to data reactivity using RxJS
 - Inter-Aggregate references established by global IDs (primary keys) rather than by object declarations is optional
 - Since the web browser is a monolithic environment with a homogenous stack, aggregates can be reused anywhere
-- Aggregates build the foundation for view models, if the backend architecture isn't in compliance with CQRS.
+- Aggregates build the foundation for view models, if the backend architecture isn't in adherence with CQRS.
 
 **» Routing, REST and DDD Aggregates**<br/>
 
