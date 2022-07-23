@@ -355,7 +355,7 @@ One of the most important aspects of the aggregate pattern is to protect it from
 
 **» Aggregate entity checklist:**
 
-- It's a top-level/core business object
+- It's a top-level core business object
 - It's bounded from the viewpoint of a business use cases
 - It's based on a root entity and typically acts as a cluster of related domain entities and value objects
 - It's global identity, state, lifecycle and receives the name of the bounded context
@@ -386,18 +386,18 @@ Since the navigation pattern of the Angular router engine complies with the navi
 practices, we should reexamine the idea of building client-side aggregates. Since an aggregate builds a group of related domain entities and value objects, wouldn't we then have to group 
 resources instead?
 
-In the classic data-centric approach database tables and their relations are used as a foundation for the resource model. But is this common and always true? 
+In the classic data-centric approach, database tables and their relations are used as a foundation for the resource model. But is this common and always true? 
 Well, it all depends on the use case and how we interpret a REST resource! A REST resource may be a representation of a single entity, database table or a materialized view. 
 But how do we map a REST URL like `/addresses/22` etc. to a client-side aggregate such as `/orders/4` or `/customers/54`?
 
 If we consume a fine-grained REST API, we would have to stitch together all resources to create an aggregate for each initial routing event. Consequently, an application or 
 repository service provides the public interface to handle all queries to the aggregate. In this scenario, the repository service acts as an anti-corruption layer to the underlying 
 resource model. Unfortunately, this approach might not work well, since the creation of an aggregate on the client-side could result in countless additional HTTP requests 
-(N + 1 Problem)! Hence, the aggregate entity should be exchanged and provided by the REST API as a whole!
+(N + 1 Problem)! Hence, the aggregate entity as a whole should be negotiated with the REST API!
 
 Even in the case of server-side created aggregates, something doesn't feel right here! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data 
 like addresses, then how do we update the address of an order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and process an HTTP update 
-command: `PUT: /orders/22 : {order:{ address... }}`. Alternatively we can use a dedicated REST endpoint for updating the order address: `PUT: orders/22/addresses/5 : {address:{}}`.
+command: `PUT: /orders/22 : {order:{ address... }}` or we can use a dedicated REST endpoint for updating the order address: `PUT: orders/22/addresses/5 : {address:{}}`.
 The server-side request handler would fetch the order aggregate entity by its ID property from the repository and process an update like `Order.updateAddress(newAddress)`.
 The second approach seems to contradict the basic idea of an aggregate to avoid revealing its internal state to ensure transactional consistency boundaries. 
 
