@@ -361,15 +361,15 @@ One of the most important aspects of the aggregate pattern is to protect it from
 - It's based on a root entity and typically acts as a cluster of related domain entities and value objects
 - It's global identity, state, lifecycle and receives the name of the bounded context
 - It's modeled around protecting business invariants, encapsulation and data integrity
-- It validates all incoming actions and ensures that modifications don't contradict business rules
-- All possible invariants must be satisfied for each state change, when one part is updated, other parts might also need to be updated
+- It validates all incoming actions and ensures that modifications don't contradict business invariants
+- All possible business invariants must be satisfied for each state change, when one part is updated, other parts might too
 - The internal state can only be mutated by the public interface of the root aggregate 
-- Objects from outside can't make changes to inside objects they can only change the root object
-- Each use case should have only one aggregate, but can use other aggregates to retrieve information
-- Multiple aggregates can reuse one value object
+- Objects from outside can't make changes to inside objects, they can only change the root object
+- Each use case should have only one aggregate but can use other aggregates to retrieve information
+- Multiple aggregates can reuse a value object
 - Each aggregate root gets its own repository 
 
-The aggregate spans objects relevant to the use case and its domain rules:
+The aggregate spans objects relevant to the use case and its business invariants:
 
 ![](src/assets/images/Aggregate_BR.PNG)
 
