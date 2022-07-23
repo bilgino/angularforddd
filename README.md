@@ -36,7 +36,7 @@ resulting in loose coupling between the actual logic and the infrastructure logi
 
 An important concept of Domain-Driven Design is that the domain model is kept isolated from other concerns of the application. Ideally, the
 domain layer is self-contained and focuses on abstracting the business domain. Very often frontend applications validate business rules that
-are immediately reflected to the user interface, especially in SPA applications when navigating through HTML forms that have cross-dependencies 
+are immediately reflected to the UI layer, especially in SPA applications when navigating through HTML forms that have cross-dependencies 
 in terms of distributed business rules. As an example, we don't display the "place order" button, if the basket is empty. Another example would be 
 offline applications (PWAs) where a big part of the business logic must be replicated to the client side! An isolated domain layer allows us to 
 avoid domain logic leaking into other layers or surrounding services. In addition, we don't want to command against the server upon every user input. 
@@ -873,7 +873,7 @@ server response schema to a complex object graph (domain model):
 For example, HATEOAS embraces hyperlinks between external resources to make transitions through the application state by navigating links. 
 However, mapping links to a client-side domain model isn't possible! In addition, when consuming REST APIs very often multiple HTTP request 
 need to be performed asynchronously to create a model for a specific use case in the presentation layer. If the applied HATEOAS pattern
-forms links in a response it would limit the user interface to incorporate with REST APIs synchronously. 
+forms links in the response it would limit and enforce the UI layer to incorporate with REST APIs synchronously. 
 **UX designers usually don't model their interaction-, navigation- or screen patterns around hypermedia systems**. Furthermore, the Angular router engine doesn't 
 comply well with the URI templates of hypermedia formats. HATEOAS may decouple the backend from the frontend, but couples the frontend to the backend.
 Although the Angular router engine complies with the navigational behaviour of hypermedia systems, you should avoid HATEOAS for Angular SPA applications!
