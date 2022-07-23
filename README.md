@@ -386,7 +386,7 @@ Since the navigation pattern of the Angular router engine complies with the navi
 practices, we should reexamine the idea of building client-side aggregates. Since an aggregate builds a group of related domain entities and value objects, wouldn't we then have to group 
 resources instead?
 
-In the classic data-centric approach database tables and their relations are used as a foundation for a resource model. But is this common and always true? 
+In the classic data-centric approach database tables and their relations are used as a foundation for the resource model. But is this common and always true? 
 Well, it all depends on the use case and how we interpret a REST resource! A REST resource may be a representation of a single entity, database table or a materialized view. 
 But how do we map a REST URL like `/addresses/22` etc. to a client-side aggregate such as `/orders/4` or `/customers/54`?
 
