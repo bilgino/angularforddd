@@ -152,7 +152,7 @@ several aggregates.
 An important consideration when modeling a bounded context on the server-side is that it doesn't fully comply with RESTful practices. 
 Since a bounded context represents one or more aggregates, it's sufficient to couple the bounded context to the root URL (root-resource):
 `/BoundedContextA/*API`; `/BoundedContextB/*API`. We still can use sub resource URLs like `/order/{id}/items/{id}` in the router 
-configuration to allow "In-App-Navigation" as the presentation layer is agnostic of the layers underneath. **A bounded context can be assigned either 
+configuration to allow "In-App-Navigation" as the UI layer is agnostic of the layers underneath. **A bounded context can be assigned either 
 to an entire page or to page segments.**
 
 Interrelationship between the bounded context pattern and Angular domain modules:
@@ -873,7 +873,7 @@ server response schema to a complex object graph (domain model):
 
 For example, HATEOAS embraces hyperlinks between external resources to make transitions through the application state by navigating links. 
 However, mapping links to a client-side domain model isn't possible! In addition, when consuming REST APIs very often multiple HTTP request 
-need to be performed asynchronously to create a model for a specific use case in the presentation layer. If the applied HATEOAS pattern
+need to be performed asynchronously to create a model for a specific use case in the UI layer. If the applied HATEOAS pattern
 forms links in the response it would limit and enforce the UI layer to incorporate with REST APIs synchronously. 
 **UX designers usually don't model their interaction-, navigation- or screen patterns around hypermedia systems**. Furthermore, the Angular router engine doesn't 
 comply well with the URI templates of hypermedia formats. HATEOAS may decouple the backend from the frontend, but couples the frontend to the backend.
