@@ -3,58 +3,57 @@ An introduction for building large-scale enterprise applications with Angular.
 
 # Application architecture 
 
-Applying Object-Oriented Design, Domain-Driven Design and Command-Query-Responsibility-Segregation in the frontend architecture, we break down complex requirements 
-into logical boundaries and divide business logic into layers with different responsibilities to keep our code in good condition.
+Obeying the principles of Object-Oriented Design, Domain-Driven Design and Command-Query-Responsibility-Segregation in the frontend design system, 
+we break down complex requirements into logical boundaries and divide business logic into layers with different responsibilities to keep our code in 
+good condition.
 
 # Frontend coupled to OOD, DDD and CQRS
 
 The building blocks of Angular already encompasses code organisation strategies. Nevertheless, to gain a better design we will bypass the 
-traditional data-centric approach and consider strategies like Object-Oriented Design, Domain-Driven Design and Command-Query-Responsibility-Segregation for frontend architectures:
+traditional data-centric approach and consider building blocks of Domain-Driven Design for frontend architectures:
 
 ![](src/assets/images/frontend_arch.png)
 
 ## Object-Oriented Design
 
-Although functional programming has gained a strong foothold in frontend development in recent years, a consistent object-oriented approach
-might be better suited for TypeScript projects. Object-Oriented design allows us to approach a more human-readable code base, where the 
-ubiquitous language can help to build a better semantic and complex data types. It's important to note, that Angular embraces 
-both programming paradigms (Functional- and Object-Oriented Programming).
+Although functional programming has gained a strong foothold in frontend development in recent years, a consistent object-oriented approach might better 
+for TypeScript projects. Object-oriented programming allows us to approach a more human-readable code base, where the Ubiquitous Language can help to 
+build better semantic and complex data types. Angular embraces both programming paradigms, functional and object-oriented programming.
 
 **» Applying SOLID principles**<br/>
 
 In object orientation the SOLID principles can help to make better design decisions (high cohesion and low coupling). Applying the Dependency
-Inversion Principle, we ensure that layers depend on abstraction as opposed to depending on concretion. (Programming to an Interface)
+Inversion Principle, we ensure that layers depend on abstraction as opposed to depending on concretion (Programming to an Interface).
 
 **» Applying cross-cutting concerns**<br/>
 
-The infrastructure layer includes cross-cutting concerns such as logging, caching or security. A naive approach to implement cross-cutting
+Frontend applications also include cross-cutting concerns such as logging, caching or security. A naive approach to implement cross-cutting
 functionality usually leads to duplicated or coupled code, which violates Don't Repeat Yourself and the Single Responsibility Principle.
 The Aspect Oriented Programming promotes an abstraction and encapsulation of cross-cutting concerns by interlacing additional code,
-resulting in loose coupling between the actual logic and the infrastructure logic. For more information about AOP in TypeScript please
-visit the following website: https://jaxenter.com/cross-cutting-concerns-angular-2-typescript-128925.html
+resulting in loose coupling between the actual logic and the infrastructure logic. 
 
 ## Applying Domain-Driven Design to Angular 
 
-An important aspect of Domain-Driven Design is that the domain model is kept isolated from other concerns of the application. Ideally, the
+An important concept of Domain-Driven Design is that the domain model is kept isolated from other concerns of the application. Ideally, the
 domain layer is self-contained and focuses on abstracting the business domain. Very often frontend applications validate business rules that
-are immediately reflected back to the user interface, particularly in SPA applications when navigating through HTML forms that have
-cross-dependencies in terms of distributed business rules. As an example, we don't want to display the order button, if the basket is empty.
+are immediately reflected to the user interface, especially in SPA applications when navigating through HTML forms that have
+cross-dependencies in terms of distributed business rules. As an example, we don't display the order button, if the basket is empty.
 An isolated domain layer allows us to avoid domain logic leaking into other layers or surrounding services. In addition, we don't want to command 
-against the server upon every user input. Therefore, the domain layer pattern in the frontend architecture sounds like a very good idea.
+against the server upon every user input. Therefore, considering the domain layer pattern in the frontend architecture sounds like a very good idea.
 
 Domain-oriented layering is often considered the first structuring criterion in Angular applications. For many applications however, it's sufficient to
 stick with horizontal slicing, since vertical slicing isn't mandatory. The main reasons for modular segmentation in Angular applications are lazy-loading,
 scoping and distribution.
 
 When application services carry out business use cases, it may be a good idea to keep business use cases that contain less logic in the UI
-controller, like in the classic MVC pattern. However, we don't want to hide use cases from the rest of the application and use dedicated
-classes instead! In addition, we want to share state and logic of these components with other independent components.
+controller, like in the classic MVC pattern. However, we don't want to hide business use cases from the rest of the application and instead use special-purpose
+classes! In addition, we want to share state and logic of these classes with other independent classes.
 
-It's fairly debatable whether higher granularity distributed across several layers introduce extra complexity in frontend architectures.
-Should we really apply Domain-Driven Design for web frontend applications? As a consequence, many developers tend to lean toward weaker
-patterns because they see it as an unnecessary practice. Often a simpler data-centric approach is sufficient. For most web applications MVC
-or Flux/Redux may be more appropriate. Before starting using advanced concepts we must validate incoming requirements.
-Considering multilayered (4-tier) architectures, the question arises of how to organize layers in SPA applications? This question refers to code splitting,
+It's fairly debatable whether higher granularity distributed across several layers introduce extra complexity in frontend applications. As a consequence, 
+many developers tend to lean toward weaker patterns because they see it as an unnecessary practice. Often a simpler data-centric approach is sufficient. 
+For most web applications MVC or Flux/Redux may be more appropriate. Before starting using advanced concepts we must validate incoming requirements.
+
+Considering multilayered architectures, the question arises of how to organize layers in SPA applications? This question refers to code splitting,
 communication through layers and demanding business logic from services. The multilayered architecture in Domain-Driven Design embraces following layers:
 
 ## Layered Architecture
@@ -320,6 +319,9 @@ class AccountRepositoryService {
 }
 ```
 
+In the preceding example, we have seperated one business service into three layers with different responsibilities. Later, we will discuss the service layer 
+pattern in the form of application-, domain- and infrastructure services conform to Domain-Driven Design practices. 
+
 Put simply, using rich domain models means more entities than services. Building rich domain models is a major objective in object-oriented design.
 
 **» Domain Model (DDD Aggregate Pattern)**<br/>
@@ -327,7 +329,7 @@ Put simply, using rich domain models means more entities than services. Building
 The domain model entities contain data and behavior modeled around the business domain.
 In terms of DDD and CQRS, the domain model entity is an aggregate that contains only write operations that result in state transitions.
 
-TypeScript domain model entity (CQS):
+Example of a Domain Model Entity (CQS):
 
 ```
 class Order {
@@ -349,7 +351,7 @@ class Order {
 In traditional object-oriented development the software model lacked of explicit boundaries. Relationships between classes brought a
 complexity that required an efficient design. The DDD aggregate pattern takes a contextual approach by embracing groupings of entities and value objects 
 that are modeled around business rules and clear boundaries inside the software model making the system easier to reason about.
-One of the most important characteristics of the aggregate pattern is to protect it from being invalid and having an inconsistent state.
+One of the most important aspects of the aggregate pattern is to protect it from being invalid and having an inconsistent state. 
 
 **» Aggregate entity checklist:**
 
@@ -372,34 +374,35 @@ The aggregate spans objects relevant to the use case and its domain rules:
 
 **» From the viewpoint of frontend development:**
 
-- Aggregates as a whole are immutable per default 
+- Aggregates are immutable per default 
 - Aggregates don't publish domain events and won't be out‐of‐sync due to reactivity
 - Inter-Aggregate references established by global IDs (primary keys) rather than by object references is optional
-- Since the web browser is a monolithic environment with a homogenous stack, aggregates can be reused anywhere
+- Since the web browser is a monolithic environment with a homogenous stack, aggregates can be reused everywhere
 - Aggregates build the foundation for view models
 
 **» Routing, REST and DDD Aggregates**<br/>
 
-Since the navigation pattern of the Angular router engine complies with the navigational behavior of hypermedia APIs (HATEOAS) where URIs identify resources conform to RESTful practices, we must 
-reexamine the idea of building client-side aggregates. As an aggregate builds a group of related domain entities and value objects, wouldn't we then have to group resources instead? 
-Presuming that the requested resource isn't already an aggregate, the question arises of how to map URIs such as `/orders`, `/customers`, `/products`, `/addresses` to a client-side aggregate? 
+Since the navigation pattern of the Angular router engine complies with the navigational behavior of hypermedia systems (HATEOAS) where URIs identify resources conform to RESTful 
+practices, we should reexamine the idea of building client-side aggregates. Since an aggregate builds a group of related domain entities and value objects, wouldn't we then have to group 
+resources instead?
 
-In the classic data-centric approach, database tables and their relations are identified as the foundation of resources or the resource model.
-But is this common and always true? Well, it all depends on the requirements of the project and how we define a REST resource! A REST resource may be a representation of a single entity or a 
-composition of several entities, database tables, GUI models or any special-purpose of the client. That is, Domain-Driven-, Data-Driven- or UX-Driven Design!
+In the classic data-centric approach, database tables and their relations are often used as a foundation for resource models. But is this common and always true? 
+Well, it all depends on the use case and how we define a REST resource! A REST resource may be a representation of a single entity, database tables or UI model. 
+But how would we map a REST URL like `/addresses/22` etc. to a client-side aggregate such as `/orders/4` or `/customers/54`?
 
-Unless a REST resource is already an aggregate, we would need to stitch the aggregate together for each initial routing event and would need to provide a query API to the internal state of the aggregate. Consequently, 
-an application or repository service would provide the public interface to cover all queries to the aggregate. In this scenario, the repository service acts 
-as an anti-corruption layer to the underlying resource model. Unfortunately, this approach wouldn't work well, since the creation process of an aggregate on 
-the client-side could result in countless additional HTTP requests (N + 1 Problem)! Hence, the aggregate should be provided by the backend!
+If we consume a fine-grained REST API, we would have to stitch together all resources to create an aggregate at once for each initial routing event. Consequently, an application or 
+repository service provides the public interface to handle all queries to the aggregate. In this scenario, the repository service acts as an anti-corruption layer to the underlying 
+resource model. Unfortunately, this approach might not work well, since the creation process of an aggregate on the client-side could result in countless additional HTTP requests 
+(N + 1 Problem)! Hence, the aggregate entity should be provided as a whole concept by the REST API!
 
-Even in the case of server-side generated aggregates, something seems to be wrong here! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data about customers, products or addresses, 
-then how do we update the address of the order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and consequently process an HTTP update: `PUT: /orders/22 : {order:{ address... }}`, 
-or we break out and use a dedicated REST call: `PUT: orders/22/addresses/5 : {address:{}}`. The second approach seems to contradict the basic idea of an aggregate to avoid revealing its internal state to the outside world! 
+Even in the case of server-side provided aggregates, something doesn't feel right here! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data 
+like addresses, then how do we update the address of an order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and process an HTTP update 
+command: `PUT: /orders/22 : {order:{ address... }}`, or we can use a dedicated REST endpoint for updating the order address: `PUT: orders/22/addresses/5 : {address:{}}`. The second 
+approach seems to contradict the basic idea of an aggregate to avoid revealing the internal state to ensure transactional consistency boundaries. In the second approach the 
+server-side request handler (route controller) would fetch the order by the ID property and process an update like `Order.updateAddress(newAddress)`. 
 
-Providing REST URIs to related sub resources like `orders/22/addresses/5` isn't mandatory anymore since all related entities have already been included in the payload. We should continue to offer no more URIs like `/addresses/5`, 
-as the address resource has no context and isn't bound to a specific business use case! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address of an ongoing order process!
-But now here's some questions: can an address exists outside an order or customer context and how can we synchronize state transitions between the order and the customer context?
+We shouldn't use URIs like `/addresses/5` anymore, since the addresses are without any context! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address 
+of an ongoing order process! But now here's a question: can an address exists outside an order or customer context?
 
 Navigating a resource model and its relationships or complying to use case specific aggregates can have a big impact on the frontend design system!
 For more information about the drawbacks of REST please visit the following website: https://www.howtographql.com/basics/1-graphql-is-the-better-rest/
@@ -869,13 +872,13 @@ server response schema to a complex object graph (domain model):
 
 ![](src/assets/images/Mapper_Response.png)
 
-For example, HATEOAS forms hyperlinks between external resources to make transitions through the application state by navigating hyperlinks. 
-However, mapping hyperlinks to a client-side domain model isn't possible! In addition, when consuming REST APIs very often multiple HTTP request 
-need to be sent asynchronously to create a model for a specific use case in the presentation layer. If the applied HATEOAS implementation pattern
-forms hyperlinks in a response schema it would limit the user interface to incorporate with REST APIs synchronously. 
-**UX designers usually don't model their interaction-, navigation- or screen patterns around HATEOAS or tree structures**. Furthermore, the Angular router engine doesn't 
-comply well with the URI templates of HATEOAS implementation patterns. HATEOAS has its advantages as well as disadvantages. Even though the router 
-in Angular complies with the navigational behaviour of hypermedia APIs, you should avoid HATEOAS for Angular SPA applications!
+For example, HATEOAS embraces hyperlinks between external resources to make transitions through the application state by navigating links. 
+However, mapping links to a client-side domain model isn't possible! In addition, when consuming REST APIs very often multiple HTTP request 
+need to be performed asynchronously to create a model for a specific use case in the presentation layer. If the applied HATEOAS pattern
+forms links in a response it would limit the user interface to incorporate with REST APIs synchronously. 
+**UX designers usually don't model their interaction-, navigation- or screen patterns around hypermedia systems**. Furthermore, the Angular router engine doesn't 
+comply well with the URI templates of hypermedia formats. HATEOAS may decouple the backend from the frontend, but couples the frontend to the backend.
+Although the Angular router engine complies with the navigational behaviour of hypermedia systems, you should avoid HATEOAS for Angular SPA applications!
 
 ## Services
 
