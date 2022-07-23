@@ -386,25 +386,25 @@ Since the navigation pattern of the Angular router engine complies with the navi
 practices, we should reexamine the idea of building client-side aggregates. Since an aggregate builds a group of related domain entities and value objects, wouldn't we then have to group 
 resources instead?
 
-In the classic data-centric approach, database tables and their relations are often used as a foundation for resource models. But is this common and always true? 
-Well, it all depends on the use case and how we define a REST resource! A REST resource may be a representation of a single entity, database tables or UI model. 
-But how would we map a REST URL like `/addresses/22` etc. to a client-side aggregate such as `/orders/4` or `/customers/54`?
+In the classic data-centric approach database tables and their relations are used as a foundation for a resource model. But is this common and always true? 
+Well, it all depends on the use cases and how we define a REST resource! A REST resource may be a representation of a single entity, database table or view model. 
+But how do we map a REST URL like `/addresses/22` etc. to a client-side aggregate such as `/orders/4` or `/customers/54`?
 
-If we consume a fine-grained REST API, we would have to stitch together all resources to create an aggregate at once for each initial routing event. Consequently, an application or 
+If we consume a fine-grained REST API, we would have to stitch together all resources to create an aggregate for each initial routing event. Consequently, an application or 
 repository service provides the public interface to handle all queries to the aggregate. In this scenario, the repository service acts as an anti-corruption layer to the underlying 
-resource model. Unfortunately, this approach might not work well, since the creation process of an aggregate on the client-side could result in countless additional HTTP requests 
-(N + 1 Problem)! Hence, the aggregate entity should be provided as a whole concept by the REST API!
+resource model. Unfortunately, this approach might not work well, since the creation of an aggregate on the client-side could result in countless additional HTTP requests 
+(N + 1 Problem)! Hence, the aggregate entity as a whole concept should be provided by the REST API!
 
 Even in the case of server-side provided aggregates, something doesn't feel right here! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data 
 like addresses, then how do we update the address of an order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and process an HTTP update 
 command: `PUT: /orders/22 : {order:{ address... }}`, or we can use a dedicated REST endpoint for updating the order address: `PUT: orders/22/addresses/5 : {address:{}}`. The second 
 approach seems to contradict the basic idea of an aggregate to avoid revealing the internal state to ensure transactional consistency boundaries. In the second approach the 
-server-side request handler (route controller) would fetch the order by the ID property and process an update like `Order.updateAddress(newAddress)`. 
+server-side request handler would fetch the order aggregate entity by its ID property from the repository and process an update like `Order.updateAddress(newAddress)`. 
 
-We shouldn't use URIs like `/addresses/5` anymore, since the addresses are without any context! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address 
+We shouldn't use REST URLs like `/addresses/5`, since the address is without any context! As an example, calling `DELETE: /addresses/5 : {address:{id:5}}` may delete the address 
 of an ongoing order process! But now here's a question: can an address exists outside an order or customer context?
 
-Navigating a resource model and its relationships or complying to use case specific aggregates can have a big impact on the frontend design system!
+Navigating a resource model and its relationships or complying to use case specific aggregates can have a big impact on the frontend architecture!
 For more information about the drawbacks of REST please visit the following website: https://www.howtographql.com/basics/1-graphql-is-the-better-rest/
 
 <br/>
