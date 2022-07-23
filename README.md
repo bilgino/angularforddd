@@ -36,10 +36,11 @@ resulting in loose coupling between the actual logic and the infrastructure logi
 
 An important concept of Domain-Driven Design is that the domain model is kept isolated from other concerns of the application. Ideally, the
 domain layer is self-contained and focuses on abstracting the business domain. Very often frontend applications validate business rules that
-are immediately reflected to the user interface, especially in SPA applications when navigating through HTML forms that have
-cross-dependencies in terms of distributed business rules. As an example, we don't display the order button, if the basket is empty.
-An isolated domain layer allows us to avoid domain logic leaking into other layers or surrounding services. In addition, we don't want to command 
-against the server upon every user input. Therefore, considering the domain layer pattern in the frontend architecture sounds like a very good idea.
+are immediately reflected to the user interface, especially in SPA applications when navigating through HTML forms that have cross-dependencies 
+in terms of distributed business rules. As an example, we don't display the "place order" button, if the basket is empty. Another example would be 
+offline applications (PWAs) where a big part of the business logic must be replicated to the client side! An isolated domain layer allows us to 
+avoid domain logic leaking into other layers or surrounding services. In addition, we don't want to command against the server upon every user input. 
+Therefore, considering the domain layer pattern in the frontend architecture sounds like a very good idea.
 
 Domain-oriented layering is often considered the first structuring criterion in Angular applications. For many applications however, it's sufficient to
 stick with horizontal slicing, since vertical slicing isn't mandatory. The main reasons for modular segmentation in Angular applications are lazy-loading,
@@ -148,11 +149,11 @@ boundaries of an application service. An application service is a concretion of 
 Applying the bounded context pattern to domain modules allows us to structure Angular modules in a domain-driven approach. A bounded context should consist of at least one aggregate and may consist of 
 several aggregates. 
 
-An important consideration when modeling a bounded context on the server-side is that it doesn't require a fully integrated REST API. 
+An important consideration when modeling a bounded context on the server-side is that it doesn't fully comply with RESTful practices. 
 Since a bounded context represents one or more aggregates, it's sufficient to couple the bounded context to the root URL (root-resource):
 `/BoundedContextA/*API`; `/BoundedContextB/*API`. We still can use sub resource URLs like `/order/{id}/items/{id}` in the router 
-configuration to allow "In-App-Navigation" as the presentation layer is agnostic of other layers underneath. A bounded context can be assigned either 
-to an entire page or to page segments.
+configuration to allow "In-App-Navigation" as the presentation layer is agnostic of the layers underneath. **A bounded context can be assigned either 
+to an entire page or to page segments.**
 
 Interrelationship between the bounded context pattern and Angular domain modules:
 
@@ -375,10 +376,10 @@ The aggregate spans objects relevant to the use case and its domain rules:
 **» From the viewpoint of frontend development:**
 
 - Aggregates are immutable per default 
-- Aggregates don't publish domain events and won't be out‐of‐sync due to reactivity
-- Inter-Aggregate references established by global IDs (primary keys) rather than by object references is optional
-- Since the web browser is a monolithic environment with a homogenous stack, aggregates can be reused everywhere
-- Aggregates build the foundation for view models
+- Aggregates don't publish domain events and won't be out‐of‐sync due to data reactivity using RxJS
+- Inter-Aggregate references established by global IDs (primary keys) rather than by object declarations is optional
+- Since the web browser is a monolithic environment with a homogenous stack, aggregates can be reused anywhere
+- Aggregates build the foundation for view models, if the backend architecture isn't in compliance with CQRS.
 
 **» Routing, REST and DDD Aggregates**<br/>
 
@@ -393,7 +394,7 @@ But how do we map a REST URL like `/addresses/22` etc. to a client-side aggregat
 If we consume a fine-grained REST API, we would have to stitch together all resources to create an aggregate for each initial routing event. Consequently, an application or 
 repository service provides the public interface to handle all queries to the aggregate. In this scenario, the repository service acts as an anti-corruption layer to the underlying 
 resource model. Unfortunately, this approach might not work well, since the creation of an aggregate on the client-side could result in countless additional HTTP requests 
-(N + 1 Problem)! Hence, the aggregate entity as a whole should be negotiated with the REST API!
+(N + 1 Problem)! Hence, the aggregate entity as a conceptual whole should be negotiated with the REST API!
 
 Even in the case of server-side created aggregates, something doesn't feel right here! If the requested aggregate e.g. order aggregate (`GET: /orders/22`) already contains related data 
 like addresses, then how do we update the address of an order? Either we invoke a business method of the order aggregate like `Order.updateAddress(newAddress)` and process an HTTP update 
