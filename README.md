@@ -87,7 +87,7 @@ communication through layers and demanding business logic from services. The mul
 *» Validation layers*<br/>
 
 - Application layer: Data types (null, undefined), format (length, empty, whitespace), schema (email, creditcard)
-- Domain layer: Business/Domain Rules, Invariants<br/>
+- Domain layer: Business Rules, Business Invariants<br/>
 
 *» Angular adoption*<br/>
 
@@ -359,7 +359,7 @@ One of the most important aspects of the aggregate pattern is to protect it from
 - It's bounded from the viewpoint of a business use cases
 - It's based on a root entity and typically acts as a cluster of related domain entities and value objects
 - It's global identity, state, lifecycle and receives the name of the bounded context
-- It's modeled around protecting domain invariants, encapsulation and data integrity
+- It's modeled around protecting business invariants, encapsulation and data integrity
 - It validates all incoming actions and ensures that modifications don't contradict business rules
 - All possible invariants must be satisfied for each state change, when one part is updated, other parts might also need to be updated
 - The internal state can only be mutated by the public interface of the root aggregate 
@@ -1295,7 +1295,7 @@ with RESTful practices.
 Pathless or componentless routes are a good way to share data between sibling components. This kind of routes provide a way
 to load several components at a time. However, deep-linking is not supported how it should be. It exists a hack to enable 
 deep-linking to some extend. This is achieved by checking route params in named router outlets or by intervening with
-Resolvers or Route Guards. If specific invariants evaluate to true, we will display the component:
+Resolvers or Route Guards. If specific properties evaluate to true, we will display the component:
 
 `<router-outlet *ngIf="id==='22'" name='employee'></router-outlet>` 
 
