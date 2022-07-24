@@ -24,6 +24,7 @@ build better semantic and complex data types. Angular embraces both programming 
 
 In object orientation the SOLID principles can help to make better design decisions (high cohesion and low coupling). Applying the Dependency
 Inversion Principle, we ensure that layers depend on abstraction as opposed to depending on concretion (Programming to an Interface).
+This means that high-level modules (the application layer) shouldn't depend on low-level modules (the domain layer).
 
 **» Applying cross-cutting concerns**<br/>
 
